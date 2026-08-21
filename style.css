@@ -894,3 +894,187 @@ input[readonly] {
     display: block;
     margin: 0 auto 20px auto;
 }
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+.login-app {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f4f7f8 0%,
+            #e9f1f3 100%
+        );
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.login-app-caja {
+    width: 100%;
+    max-width: 460px;
+
+    background: #ffffff;
+
+    padding: 45px 50px;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 12px 35px
+        rgba(0, 0, 0, 0.12);
+
+    text-align: center;
+}
+
+
+.logo-login {
+    width: 115px;
+    height: auto;
+
+    display: block;
+
+    margin:
+        0 auto
+        18px auto;
+}
+
+
+.login-app-caja h1 {
+    margin: 0;
+
+    color: #087f9e;
+
+    font-size: 31px;
+
+    font-weight: 700;
+}
+
+
+.login-app-caja h2 {
+    margin:
+        8px 0 0 0;
+
+    color: #444;
+
+    font-size: 18px;
+
+    font-weight: 500;
+}
+
+
+.login-texto {
+    margin:
+        25px 0;
+
+    color: #666;
+
+    font-size: 14px;
+}
+
+
+.login-campos {
+    text-align: left;
+}
+
+
+.login-campos label {
+    display: block;
+
+    margin:
+        15px 0 7px;
+
+    color: #333;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+.login-campos input {
+    width: 100%;
+
+    padding: 13px 14px;
+
+    border:
+        1px solid #ccd4d8;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+
+    box-sizing: border-box;
+
+    outline: none;
+}
+
+
+.login-campos input:focus {
+    border-color: #087f9e;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(8, 127, 158, 0.12);
+}
+
+
+#botonIngresarApp {
+    width: 100%;
+
+    margin-top: 25px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #087f9e;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+#botonIngresarApp:hover {
+    background: #066d88;
+}
+
+
+#botonIngresarApp:disabled {
+    opacity: 0.7;
+
+    cursor: wait;
+}
+
+
+#mensajeLoginApp {
+    min-height: 20px;
+
+    margin-top: 15px;
+
+    color: #b42318;
+
+    font-size: 14px;
+}
+
+
+@media (max-width: 550px) {
+
+    .login-app-caja {
+        padding: 35px 22px;
+    }
+
+}
