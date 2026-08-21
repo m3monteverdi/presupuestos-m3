@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Historial de presupuestos</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="pagina-presupuesto">
+
+    <div class="barra-superior">
+
+        <a href="index.html" class="volver">
+            ← Volver al inicio
+        </a>
+
+        <span>Historial</span>
+
+    </div>
+
+
+    <main class="contenedor-presupuesto">
+
+        <section class="hoja-presupuesto">
+
+            <h1>Historial de presupuestos</h1>
+
+            <p class="subtitulo-historial">
+                Presupuestos guardados en la base de datos
+            </p>
+
+
+            <div class="buscador-historial">
+
+                <input
+                    type="text"
+                    id="buscarPresupuesto"
+                    placeholder="Buscar por Señores o Presupuesto N°"
+                >
+
+            </div>
+
+
+            <div class="tabla-historial">
+
+                <div class="fila-historial encabezado-historial">
+
+                    <div>Presupuesto</div>
+                    <div>Presupuesto N°</div>
+                    <div>Fecha</div>
+                    <div>Tipo</div>
+                    <div>Total</div>
+                    <div>Acciones</div>
+
+                </div>
+
+
+                <div id="listaHistorial"></div>
+
+            </div>
+
+
+            <div
+                id="mensajeHistorialVacio"
+                class="historial-vacio"
+            >
+                Cargando presupuestos...
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- SUPABASE -->
+
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase-config.js"></script>
+
+<script src="auth.js"></script>
+
+<script src="historial.js"></script>
+
+</body>
+</html>

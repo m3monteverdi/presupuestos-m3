@@ -1,0 +1,697 @@
+/* =====================================
+   PÁGINA DE PRESUPUESTO
+===================================== */
+
+.pagina-presupuesto {
+    background: #eef2f5;
+}
+
+.barra-superior {
+    height: 65px;
+    background: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 35px;
+
+    border-bottom: 1px solid #dce3e8;
+
+    font-weight: bold;
+}
+
+.volver {
+    color: #007e9f;
+    text-decoration: none;
+}
+
+.volver:hover {
+    text-decoration: underline;
+}
+
+.contenedor-presupuesto {
+    max-width: 1250px;
+    margin: 40px auto;
+    padding: 0 25px;
+}
+
+.hoja-presupuesto {
+    background: white;
+
+    padding: 45px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+
+/* ENCABEZADO */
+
+.encabezado-presupuesto {
+    display: grid;
+
+    grid-template-columns: 180px 1fr;
+
+    align-items: center;
+
+    margin-bottom: 35px;
+}
+
+.logo-m3 {
+    font-size: 52px;
+    font-weight: bold;
+
+    color: #0080a3;
+}
+
+.titulo-presupuesto {
+    background: #0080a3;
+    color: white;
+
+    padding: 12px 20px;
+
+    text-align: center;
+
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+/* DATOS GENERALES */
+
+.datos-presupuesto {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 18px 35px;
+}
+
+.campo {
+    display: grid;
+
+    grid-template-columns: 130px 1fr;
+
+    align-items: center;
+}
+
+.campo label {
+    font-weight: bold;
+}
+
+.campo-ancho {
+    grid-column: 1 / -1;
+}
+
+input,
+select {
+    width: 100%;
+
+    padding: 11px;
+
+    border: 1px solid #ccd5dc;
+    border-radius: 7px;
+
+    background: white;
+
+    font-size: 15px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+
+    border-color: #0080a3;
+
+    box-shadow: 0 0 0 3px rgba(0, 128, 163, 0.10);
+}
+
+input[readonly] {
+    background: #f4f6f8;
+}
+
+
+/* TEXTO */
+
+.consideracion {
+    margin: 35px 0;
+
+    line-height: 1.5;
+
+    font-weight: 600;
+}
+
+
+/* SECCIONES */
+
+.titulo-seccion {
+    margin-top: 30px;
+
+    background: #0080a3;
+    color: white;
+
+    padding: 10px 15px;
+
+    font-size: 16px;
+}
+
+.subtitulo-servicio {
+    margin-top: 25px;
+    margin-bottom: 10px;
+
+    font-size: 15px;
+}
+
+
+/* TABLAS */
+
+.tabla-formulario {
+    border: 1px solid #d8dfe4;
+
+    overflow: hidden;
+
+    margin-bottom: 20px;
+}
+
+.fila {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        0.8fr
+        1.2fr
+        1fr
+        1fr
+        1fr;
+}
+
+.fila-aditivo {
+    grid-template-columns:
+        1fr
+        0.8fr
+        2fr
+        1fr
+        1fr;
+}
+
+.fila-servicio {
+    grid-template-columns:
+        1fr
+        2fr
+        1fr
+        1fr;
+}
+
+.fila > div {
+    padding: 7px;
+
+    border-right: 1px solid #d8dfe4;
+}
+
+.fila > div:last-child {
+    border-right: none;
+}
+
+.encabezado-tabla {
+    background: #eaf0f3;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    text-align: center;
+
+    align-items: center;
+}
+
+
+/* RESUMEN */
+
+.resumen {
+    max-width: 750px;
+
+    margin-left: auto;
+
+    margin-top: 35px;
+}
+
+.linea-resumen,
+.total-final {
+    display: grid;
+
+    grid-template-columns: 1fr 180px;
+
+    align-items: center;
+
+    padding: 11px 15px;
+
+    border-bottom: 1px solid #d8dfe4;
+}
+
+.linea-resumen strong,
+.total-final strong {
+    text-align: right;
+}
+
+.descuento input {
+    text-align: right;
+}
+
+.total-final {
+    background: #0080a3;
+    color: white;
+
+    margin-top: 5px;
+
+    font-size: 17px;
+    font-weight: bold;
+}
+
+
+/* CONDICIONES */
+
+.condiciones {
+    margin-top: 45px;
+
+    font-size: 13px;
+
+    line-height: 1.55;
+}
+
+.condiciones h3 {
+    margin-top: 18px;
+    margin-bottom: 6px;
+}
+
+.condiciones p {
+    margin-bottom: 7px;
+}
+
+.sin-iva {
+    margin-top: 25px;
+
+    font-weight: bold;
+}
+
+
+/* BOTONES */
+
+.acciones-presupuesto {
+    margin-top: 40px;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 15px;
+}
+
+.acciones-presupuesto .boton {
+    width: auto;
+
+    min-width: 190px;
+}
+
+
+/* PANTALLAS MÁS CHICAS */
+
+@media (max-width: 900px) {
+
+    .datos-presupuesto {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-ancho {
+        grid-column: auto;
+    }
+
+    .fila,
+    .fila-aditivo,
+    .fila-servicio {
+        display: block;
+    }
+
+    .encabezado-tabla {
+        display: none;
+    }
+
+}
+/* =====================================
+   HISTORIAL
+===================================== */
+
+.subtitulo-historial {
+    margin-top: 8px;
+    margin-bottom: 30px;
+
+    color: #66737f;
+}
+
+.buscador-historial {
+    margin-bottom: 25px;
+}
+
+.buscador-historial input {
+    max-width: 500px;
+}
+
+.tabla-historial {
+    border: 1px solid #d8dfe4;
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+.fila-historial {
+    display: grid;
+
+    grid-template-columns:
+        1.4fr
+        1.2fr
+        1fr
+        1fr
+        1fr
+        1.3fr;
+
+    align-items: center;
+}
+
+.fila-historial > div {
+    padding: 13px;
+
+    border-right: 1px solid #d8dfe4;
+}
+
+.fila-historial > div:last-child {
+    border-right: none;
+}
+
+.encabezado-historial {
+    background: #0080a3;
+    color: white;
+
+    font-weight: bold;
+}
+
+.historial-vacio {
+    padding: 40px;
+
+    text-align: center;
+
+    color: #7b8790;
+}
+/* =====================================
+   ACTUALIZAR PRECIOS
+===================================== */
+
+.panel-precios {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px 30px;
+
+    margin: 20px 0 35px;
+}
+
+.precio-item {
+    display: grid;
+
+    grid-template-columns:
+        1fr 180px;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid #e1e6ea;
+}
+
+.precio-item label {
+    font-weight: bold;
+}
+
+.precio-item input {
+    text-align: right;
+}
+
+.mensaje-precios {
+    margin-top: 20px;
+
+    text-align: right;
+
+    font-weight: bold;
+
+    color: #007e9f;
+}
+
+
+@media (max-width: 800px) {
+
+    .panel-precios {
+        grid-template-columns: 1fr;
+    }
+
+}
+/* =====================================
+   HISTORIAL - DATOS
+===================================== */
+
+.fila-historial {
+    display: grid;
+
+    grid-template-columns:
+        2fr
+        1.2fr
+        1.1fr
+        1.5fr
+        1.2fr;
+
+    align-items: center;
+}
+
+
+.fila-historial > div {
+    padding: 14px;
+
+    border-right: 1px solid #d8dfe4;
+}
+
+
+.fila-historial > div:last-child {
+    border-right: none;
+}
+
+
+.encabezado-historial {
+    background: #0080a3;
+
+    color: white;
+
+    font-weight: bold;
+}
+
+
+.fila-historial-datos {
+    border-top: 1px solid #d8dfe4;
+
+    background: white;
+}
+
+
+.fila-historial-datos:hover {
+    background: #f3f7f9;
+}
+
+
+.historial-vacio {
+    padding: 35px;
+
+    text-align: center;
+
+    color: #7b8790;
+}
+
+
+.buscador-historial {
+    margin-bottom: 25px;
+}
+
+
+.buscador-historial input {
+    max-width: 500px;
+}
+/* =====================================
+   HISTORIAL CON ACCIONES
+===================================== */
+
+.fila-historial {
+    grid-template-columns:
+        2fr
+        1.1fr
+        1fr
+        1.4fr
+        1.2fr
+        1.5fr;
+}
+
+
+.acciones-historial {
+    display: flex;
+
+    gap: 7px;
+}
+
+
+.boton-historial {
+    border: none;
+
+    border-radius: 6px;
+
+    padding: 8px 12px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+}
+
+
+.boton-ver {
+    background: #0080a3;
+
+    color: white;
+}
+
+
+.boton-eliminar {
+    background: #eceff1;
+
+    color: #4a4a4a;
+}
+
+
+.boton-ver:hover {
+    opacity: 0.85;
+}
+
+
+.boton-eliminar:hover {
+    background: #dde2e5;
+}
+
+
+/* =====================================
+   VER PRESUPUESTO
+===================================== */
+
+.detalle-encabezado {
+    margin-bottom: 30px;
+}
+
+
+.detalle-tipo {
+    color: #66737f;
+
+    margin-bottom: 5px;
+}
+
+
+.detalle-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px 30px;
+
+    margin: 20px 0 35px;
+}
+
+
+.detalle-item {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 12px;
+
+    border-bottom: 1px solid #e1e6ea;
+}
+
+
+.detalle-item span {
+    color: #66737f;
+}
+
+
+.detalle-total {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 35px;
+
+    padding: 18px;
+
+    background: #0080a3;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+@media (max-width: 800px) {
+
+    .detalle-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+/* =====================================
+   LOGIN ADMINISTRADOR
+===================================== */
+
+.login-admin {
+    max-width: 550px;
+
+    margin: 30px auto 0;
+}
+
+
+.login-admin .precio-item {
+    grid-template-columns: 130px 1fr;
+}
+
+
+.login-admin .boton {
+    margin-top: 25px;
+}
+
+
+.encabezado-admin {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 30px;
+}
+
+
+.boton-salir {
+    width: auto;
+
+    min-width: 150px;
+
+    padding: 12px 18px;
+}

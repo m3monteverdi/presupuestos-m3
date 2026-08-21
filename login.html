@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Monteverdi Cúbico - Iniciar sesión</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="login-app">
+
+        <div class="login-app-caja">
+
+            <h1>Monteverdi Cúbico</h1>
+
+            <h2>Presupuestos M3</h2>
+
+            <p>
+                Ingrese con su usuario para acceder al sistema.
+            </p>
+
+
+            <label for="loginEmail">
+                Correo electrónico
+            </label>
+
+            <input
+                type="email"
+                id="loginEmail"
+                placeholder="correo@empresa.com"
+                autocomplete="email"
+            >
+
+
+            <label for="loginPassword">
+                Contraseña
+            </label>
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Contraseña"
+                autocomplete="current-password"
+            >
+
+
+            <button
+                id="botonIngresarApp"
+                type="button"
+            >
+                Ingresar
+            </button>
+
+
+            <p id="mensajeLoginApp"></p>
+
+        </div>
+
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase-config.js"></script>
+
+    <script src="login.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PresupuestosM3+IVA</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body
+    class="pagina-presupuesto"
+    data-tipo="PresupuestosM3+IVA"
+>
+
+    <div class="barra-superior">
+        <a href="index.html" class="volver">← Volver al inicio</a>
+
+        <span>PresupuestosM3+IVA</span>
+    </div>
+
+    <main class="contenedor-presupuesto">
+
+        <section class="hoja-presupuesto">
+
+            <!-- ENCABEZADO -->
+
+            <div class="encabezado-presupuesto">
+
+                <div class="marca">
+                    <div class="logo-m3">M³</div>
+                </div>
+
+                <div class="titulo-presupuesto">
+                    R 01- PRESUPUESTO
+                </div>
+
+            </div>
+
+
+            <!-- DATOS -->
+
+            <!-- DATOS -->
+
+<div class="datos-presupuesto">
+
+    <div class="campo">
+        <label>Señores:</label>
+        <input
+            type="text"
+            id="senores"
+        >
+    </div>
+
+    <div class="campo">
+        <label>CUIT:</label>
+        <input
+            type="text"
+            id="cuit"
+        >
+    </div>
+
+    <div class="campo">
+        <label>Atención:</label>
+        <input
+            type="text"
+            id="atencion"
+        >
+    </div>
+
+    <div class="campo">
+        <label>Fecha:</label>
+        <input
+            type="date"
+            id="fecha"
+        >
+    </div>
+
+    <div class="campo">
+        <label>Destino:</label>
+        <input
+            type="text"
+            id="destino"
+        >
+    </div>
+
+    <div class="campo">
+        <label>Presupuesto N°</label>
+        <input
+            type="text"
+            id="presupuestoNumero"
+        >
+    </div>
+
+</div>
+
+
+<p class="consideracion">
+    De nuestra consideración le hacemos llegar el siguiente presupuesto según pliego de :
+</p>
+
+
+            <!-- HORMIGÓN -->
+
+            <h2 class="titulo-seccion">
+                1- HORMIGÓN ELABORADO POR TIPO Y DISTANCIA
+            </h2>
+
+            <div class="tabla-formulario">
+
+                <div class="fila encabezado-tabla">
+                    <div>TIPO DE H°</div>
+                    <div>M3</div>
+                    <div>TIPO CEMENTO</div>
+                    <div>DISTANCIA</div>
+                    <div>VALOR x M3</div>
+                    <div>TOTAL</div>
+                </div>
+
+                <div class="fila">
+
+                    <div>
+                        <select id="tipoHormigon">
+                            <option value="">Seleccionar</option>
+                            <option>H8</option>
+                            <option>H13</option>
+                            <option>H17</option>
+                            <option>H21</option>
+                            <option>H25</option>
+                            <option>H30</option>
+                            <option>H40</option>
+                            <option value="otro">Otro...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <input
+                            type="number"
+                            id="cantidadHormigon"
+                            min="0"
+                            step="0.1"
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            value="CPP40 KG"
+                            readonly
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="number"
+                            id="distancia"
+                            min="0"
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            id="precioHormigon"
+                            readonly
+                            placeholder="$ 0,00"
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            id="totalHormigon"
+                            readonly
+                            placeholder="$ 0,00"
+                        >
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ADITIVOS -->
+
+            <h2 class="titulo-seccion">
+                2- VALOR ADITIVOS EXTRAS x m3
+            </h2>
+
+            <div class="tabla-formulario">
+
+                <div class="fila fila-aditivo encabezado-tabla">
+                    <div>TIPO DE H°</div>
+                    <div>KG</div>
+                    <div>TIPO ADITIVO</div>
+                    <div>VALOR x M3</div>
+                    <div>TOTAL</div>
+                </div>
+
+                <div class="fila fila-aditivo">
+
+                    <div>
+                        <input
+                            type="text"
+                            id="tipoHormigonAditivo"
+                            readonly
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            id="cantidadAditivo"
+                            readonly
+                        >
+                    </div>
+
+                    <div>
+                        <select id="tipoAditivo">
+                            <option value="">Sin aditivo</option>
+                            <option value="mr120">
+                                ADITIVO EN OBRA MR120 superfluidificante
+                            </option>
+                            <option value="macro">
+                                MACRO FIBRAS
+                            </option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            id="precioAditivo"
+                            readonly
+                            placeholder="$ 0,00"
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            id="totalAditivo"
+                            readonly
+                            placeholder="$ 0,00"
+                        >
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVICIOS -->
+
+            <h2 class="titulo-seccion">
+                3- SERVICIOS EXTRAS
+            </h2>
+
+            <h3 class="subtitulo-servicio">
+                SERVICIOS DE BOMBA
+            </h3>
+
+            <div class="tabla-formulario">
+
+                <div class="fila fila-servicio encabezado-tabla">
+                    <div>CANTIDAD</div>
+                    <div>CANTIDAD DE M3</div>
+                    <div>VALOR</div>
+                    <div>TOTAL</div>
+                </div>
+
+                <div class="fila fila-servicio">
+
+                    <div>
+                        <select id="cantidadBomba">
+                            <option value="0">0</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option value="otro">Otro...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            value="De 01 m3 a 30 m3"
+                            readonly
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            id="precioBomba"
+                            readonly
+                            placeholder="$ 0,00"
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            id="totalBomba"
+                            readonly
+                            placeholder="$ 0,00"
+                        >
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <h3 class="subtitulo-servicio">
+                VIBRADOR
+            </h3>
+
+            <div class="tabla-formulario">
+
+                <div class="fila fila-servicio encabezado-tabla">
+                    <div>CANTIDAD</div>
+                    <div>POR UNIDAD / POR HORMIGONADA</div>
+                    <div>VALOR</div>
+                    <div>TOTAL</div>
+                </div>
+
+                <div class="fila fila-servicio">
+
+                    <div>
+                        <select id="cantidadVibrador">
+                            <option value="0">0</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option value="otro">Otro...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <input
+                            type="number"
+                            value="1"
+                            readonly
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            id="precioVibrador"
+                            readonly
+                            placeholder="$ 0,00"
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            id="totalVibrador"
+                            readonly
+                            placeholder="$ 0,00"
+                        >
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTALES -->
+
+            <div class="resumen">
+
+                <div class="linea-resumen">
+                    <span>1- HORMIGÓN ELABORADO POR TIPO Y DISTANCIA</span>
+                    <strong id="resumenHormigon">$ 0,00</strong>
+                </div>
+
+                <div class="linea-resumen">
+                    <span>2- ADITIVOS EXTRAS</span>
+                    <strong id="resumenAditivo">$ 0,00</strong>
+                </div>
+
+                <div class="linea-resumen">
+                    <span>3- SERVICIOS EXTRAS</span>
+                    <strong id="resumenServicios">$ 0,00</strong>
+                </div>
+
+                <div class="linea-resumen descuento">
+                    <span>DESCUENTO</span>
+
+                    <input
+                        type="number"
+                        id="descuento"
+                        value="0"
+                    >
+                </div>
+
+                <div class="linea-resumen">
+    <span>4- SUBTOTAL SIN IVA</span>
+    <strong id="subtotalSinIVA">$ 0,00</strong>
+</div>
+
+<div class="linea-resumen">
+    <span>5- IVA 21%</span>
+    <strong id="iva21">$ 0,00</strong>
+</div>
+
+<div class="total-final">
+    <span>6- TOTAL CON IVA</span>
+    <strong id="totalConIVA">$ 0,00</strong>
+</div>
+
+            </div>
+
+
+            <!-- CONDICIONES -->
+
+            <div class="condiciones">
+
+    <h3>CONDICIONES:</h3>
+
+    <p>Valores expresados en pesos</p>
+
+    <p>Precios al 1/08/2026</p>
+
+    <p>
+        Forma de pago: Contado / Cheque propio (+ IVA) /
+        Tarjeta de credito (+ IVA) / Transferencia (+ IVA)
+    </p>
+
+    <p>
+        Cuenta: 191-116-006204/6
+    </p>
+
+    <p>
+        CBU: 1910116555011600620464
+        &nbsp;&nbsp;&nbsp;
+        CBU: 01102859-20028500610549
+    </p>
+
+    <p>
+        ALIAS:HORMIGON.M3
+        &nbsp;&nbsp;&nbsp;
+        ALIAS: METRO.CUBICO
+    </p>
+
+
+    <h3>NOTAS:</h3>
+
+    <p>
+        Validez de la oferta : 15 dias corridos
+    </p>
+
+    <p>
+        EL TIEMPO DE DESCARGA DEL HORMIGÓN NO DEBE EXEDER LOS 60 MINUTOS.
+        EL TIEMPO DE DEMORA EN OBRA SE TOMA COMO TIEMPO DE DESCARGA.
+        EN CASO DE SUPERAR ESTE TIEMPO SE COBRARÁ POR CADA HORA ADICIONAL
+        1 M3 DEL HORMIGÓN QUE SE ESTÉ TIRANDO.
+    </p>
+
+    <p>
+        LA FÓRMULA DEL HORMIGÓN NO DEBE SER ALTERADA EN OBRA.
+        EN CASO DE SER ALTERADA POR EL CLIENTE,
+        EL HORMIGÓN PIERDE LA GARANTÍA QUE AVALA LA EMPRESA.
+    </p>
+
+    <p>
+        LA FORMA DE PAGO PUEDE SER CON CHEQUE O TRANSFERENCIA
+        A 30, 60 Y 90 DÍAS DEL A FECHA DE FACTURA.
+    </p>
+
+    <p>
+        LA ACTUALIZACIÓN DEL PRECIO SE VA A REALIZAR
+        EN FORMA MENSUAL A TRAVÉS DEL CAC.
+    </p>
+
+    <p>
+        EL TIEMPO DE ENTREGA SE PUEDE COMENZAR A TIRAR EN FORMA INMEDIATA.
+        LOS PEDIDOS DEBERÁN REALIZARCE CON 5 DÍAS HÁBILES DE ANTICIPACIÓN
+        Y QUEDA SUJETO A DISPONIBILIDAD DE PLANTA.
+    </p>
+
+    <p>
+        LA CANTIDAD MÁXIMA POR DÍA PUEDE SER DE HASTA 200 M3,
+        EN CASO DE NECESITAR MÁS SOLICITAR CON ANTICIPACIÓN.
+    </p>
+
+    <p class="sin-iva">
+        El precio incluye IVA
+    </p>
+
+</div>
+
+
+           <div class="acciones-presupuesto">
+
+    <button
+        class="boton principal"
+        id="guardarPresupuesto"
+    >
+        Guardar presupuesto
+    </button>
+
+    <button
+        class="boton principal"
+        id="generarPDF"
+    >
+        Generar PDF
+    </button>
+
+</div>
+
+        </section>
+
+    </main>
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase-config.js"></script>
+
+<script src="auth.js"></script>
+
+<script src="presupuesto.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+<script src="pdf.js"></script>
+
+<script src="pdf-formulario.js"></script>
+
+</body>
+</html>

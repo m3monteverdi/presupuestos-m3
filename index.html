@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Presupuestos Monteverdi
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+    <main class="inicio">
+
+        <div class="inicio-contenedor">
+
+            <h1>
+                Monteverdi Cúbico
+            </h1>
+
+            <p class="inicio-subtitulo">
+                Sistema de Presupuestos
+            </p>
+
+
+            <div class="menu-inicio">
+
+                <!-- PRESUPUESTO SIN IVA -->
+
+                <button
+                    type="button"
+                    onclick="window.location.href='presupuesto.html'"
+                >
+                    PresupuestosM3
+                </button>
+
+
+                <!-- PRESUPUESTO CON IVA -->
+
+                <button
+                    type="button"
+                    onclick="window.location.href='presupuesto-iva.html'"
+                >
+                    PresupuestosM3+IVA
+                </button>
+
+
+                <!-- HISTORIAL -->
+
+                <button
+                    type="button"
+                    onclick="window.location.href='historial.html'"
+                >
+                    Historial
+                </button>
+
+
+                <!-- ACTUALIZAR PRECIOS -->
+
+                <button
+                    type="button"
+                    onclick="window.location.href='precios.html'"
+                >
+                    Actualizar precios
+                </button>
+
+
+                <!-- CERRAR SESIÓN -->
+
+                <button
+                    type="button"
+                    id="cerrarSesionApp"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- SUPABASE -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+
+    <!-- CONEXIÓN A SUPABASE -->
+
+    <script
+        src="supabase-config.js"
+    ></script>
+
+
+    <!-- PROTECCIÓN Y SESIÓN -->
+
+    <script
+        src="auth.js"
+    ></script>
+
+
+</body>
+
+</html>
