@@ -2,13 +2,25 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Monteverdi Cúbico - Iniciar sesión</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="style.css">
+    <title>
+        Monteverdi Cúbico - Iniciar sesión
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css?v=3"
+    >
+
 </head>
+
 
 <body>
 
@@ -16,37 +28,53 @@
 
         <div class="login-app-caja">
 
-            <h1>Monteverdi Cúbico</h1>
+            <img
+                src="assets/logo-monteverdi.png"
+                alt="Logo Monteverdi Cúbico"
+                class="logo-login"
+            >
 
-            <h2>Presupuestos M3</h2>
 
-            <p>
+            <h1>
+                Monteverdi Cúbico
+            </h1>
+
+            <h2>
+                Sistema de Presupuestos
+            </h2>
+
+
+            <p class="login-texto">
                 Ingrese con su usuario para acceder al sistema.
             </p>
 
 
-            <label for="loginEmail">
-                Correo electrónico
-            </label>
+            <div class="login-campos">
 
-            <input
-                type="email"
-                id="loginEmail"
-                placeholder="correo@empresa.com"
-                autocomplete="email"
-            >
+                <label for="loginEmail">
+                    Correo electrónico
+                </label>
+
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="correo@empresa.com"
+                    autocomplete="email"
+                >
 
 
-            <label for="loginPassword">
-                Contraseña
-            </label>
+                <label for="loginPassword">
+                    Contraseña
+                </label>
 
-            <input
-                type="password"
-                id="loginPassword"
-                placeholder="Contraseña"
-                autocomplete="current-password"
-            >
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Contraseña"
+                    autocomplete="current-password"
+                >
+
+            </div>
 
 
             <button
@@ -64,7 +92,9 @@
     </main>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
 
     <script src="supabase-config.js"></script>
 
