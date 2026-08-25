@@ -2,14 +2,7 @@
 // PRESUPUESTOS MONTEVERDI
 // =====================================
 
-
-// =====================================
-// PRECIOS
-// Se cargan desde Supabase
-// =====================================
-
 let precios = {
-
     hormigones: {
         H8: 0,
         H13: 0,
@@ -21,210 +14,289 @@ let precios = {
     },
 
     aditivos: {
-        mr120: 0,
-        macro: 0
+        mr120: {H8:0,H13:0,H17:0,H21:0,H25:0,H30:0,H40:0},
+        macro: {H8:0,H13:0,H17:0,H21:0,H25:0,H30:0,H40:0},
+        hidrofugo: {H8:0,H13:0,H17:0,H21:0,H25:0,H30:0,H40:0}
     },
 
     bomba: 0,
-
     vibrador: 0
-
 };
 
-
-// =====================================
-// VARIABLES DE TOTALES
-// =====================================
 
 let valorTotalHormigon = 0;
 let valorTotalAditivo = 0;
 let valorTotalBomba = 0;
 let valorTotalVibrador = 0;
 
-
-// =====================================
-// CANTIDADES PERSONALIZADAS
-// Para opción "otro"
-// =====================================
-
 let cantidadBombaOtro = 0;
 let cantidadVibradorOtro = 0;
 
-
-// =====================================
-// DESCUENTO MANUAL
-// =====================================
-
 let descuentoModificadoManualmente = false;
 
-
-// =====================================
-// CAMPOS DEL FORMULARIO
-// =====================================
-
-const tipoHormigon =
-    document.getElementById(
-        "tipoHormigon"
-    );
-
-const cantidadHormigon =
-    document.getElementById(
-        "cantidadHormigon"
-    );
-
-const distancia =
-    document.getElementById(
-        "distancia"
-    );
-
-const precioHormigon =
-    document.getElementById(
-        "precioHormigon"
-    );
-
-const totalHormigon =
-    document.getElementById(
-        "totalHormigon"
-    );
+let contadorHormigon = 1;
+let contadorAditivo = 1;
 
 
-const tipoHormigonAditivo =
-    document.getElementById(
-        "tipoHormigonAditivo"
-    );
-
-const cantidadAditivo =
-    document.getElementById(
-        "cantidadAditivo"
-    );
-
-const tipoAditivo =
-    document.getElementById(
-        "tipoAditivo"
-    );
-
-const precioAditivo =
-    document.getElementById(
-        "precioAditivo"
-    );
-
-const totalAditivo =
-    document.getElementById(
-        "totalAditivo"
-    );
+const $ = id =>
+    document.getElementById(id);
 
 
 const cantidadBomba =
-    document.getElementById(
-        "cantidadBomba"
-    );
+    $("cantidadBomba");
 
 const precioBomba =
-    document.getElementById(
-        "precioBomba"
-    );
+    $("precioBomba");
 
 const totalBomba =
-    document.getElementById(
-        "totalBomba"
-    );
+    $("totalBomba");
 
 
 const cantidadVibrador =
-    document.getElementById(
-        "cantidadVibrador"
-    );
+    $("cantidadVibrador");
 
 const precioVibrador =
-    document.getElementById(
-        "precioVibrador"
-    );
+    $("precioVibrador");
 
 const totalVibrador =
-    document.getElementById(
-        "totalVibrador"
-    );
+    $("totalVibrador");
 
 
 const resumenHormigon =
-    document.getElementById(
-        "resumenHormigon"
-    );
+    $("resumenHormigon");
 
 const resumenAditivo =
-    document.getElementById(
-        "resumenAditivo"
-    );
+    $("resumenAditivo");
 
 const resumenServicios =
-    document.getElementById(
-        "resumenServicios"
-    );
+    $("resumenServicios");
 
 
 const descuento =
-    document.getElementById(
-        "descuento"
-    );
+    $("descuento");
 
 
 const totalSinIVA =
-    document.getElementById(
-        "totalSinIVA"
-    );
+    $("totalSinIVA");
 
 const subtotalSinIVA =
-    document.getElementById(
-        "subtotalSinIVA"
-    );
+    $("subtotalSinIVA");
 
 const iva21 =
-    document.getElementById(
-        "iva21"
-    );
+    $("iva21");
 
 const totalConIVA =
-    document.getElementById(
-        "totalConIVA"
-    );
+    $("totalConIVA");
+
+
+const filasHormigon =
+    $("filasHormigon");
+
+const filasAditivo =
+    $("filasAditivo");
+
+
+const botonAgregarHormigon =
+    $("agregarHormigon");
+
+const botonAgregarAditivo =
+    $("agregarAditivo");
+
+
+const botonGuardarPresupuesto =
+    $("guardarPresupuesto");
 
 
 // =====================================
-// FORMATEAR PESOS
+// FORMATO PESOS
 // =====================================
 
 function formatoPesos(valor) {
 
-    return Number(valor || 0)
-        .toLocaleString(
-            "es-AR",
-            {
-                style: "currency",
-                currency: "ARS",
-                minimumFractionDigits: 2
-            }
-        );
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "es-AR",
+        {
+            style: "currency",
+            currency: "ARS",
+            minimumFractionDigits: 2
+        }
+    );
 
 }
 
 
 // =====================================
-// CARGAR PRECIOS DESDE SUPABASE
+// FECHA AUTOMÁTICA
+// =====================================
+
+function colocarFechaDeHoy() {
+
+    const campoFecha =
+        $("fecha");
+
+    if (
+        !campoFecha ||
+        campoFecha.value
+    ) {
+        return;
+    }
+
+    const hoy =
+        new Date();
+
+    const anio =
+        hoy.getFullYear();
+
+    const mes =
+        String(
+            hoy.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const dia =
+        String(
+            hoy.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+    campoFecha.value =
+        `${anio}-${mes}-${dia}`;
+
+}
+
+
+// =====================================
+// ÚLTIMO PRESUPUESTO
+// =====================================
+
+async function mostrarUltimoPresupuesto() {
+
+    const elemento =
+        $("ultimoPresupuesto");
+
+    if (!elemento) {
+        return;
+    }
+
+    const tipoPlanilla =
+        document.body.dataset.tipo;
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "presupuestos"
+            )
+            .select(
+                "presupuesto_numero"
+            )
+            .eq(
+                "tipo_planilla",
+                tipoPlanilla
+            )
+            .order(
+                "id",
+                {
+                    ascending: false
+                }
+            )
+            .limit(1);
+
+
+    if (error) {
+
+        console.error(
+            "Error al obtener último presupuesto:",
+            error
+        );
+
+        elemento.textContent =
+            "No se pudo consultar el último presupuesto";
+
+        return;
+
+    }
+
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        elemento.textContent =
+            "No hay presupuestos anteriores";
+
+        return;
+
+    }
+
+
+    elemento.textContent =
+        `Último presupuesto: ${data[0].presupuesto_numero}`;
+
+}
+
+
+// =====================================
+// NÚMERO DE PRESUPUESTO
+// A0 FIJO PARA IVA
+// =====================================
+
+function obtenerNumeroPresupuestoCompleto() {
+
+    const campo =
+        $("presupuestoNumero");
+
+    const numero =
+        campo
+            ? String(
+                campo.value
+            ).trim()
+            : "";
+
+
+    if (!numero) {
+        return "";
+    }
+
+
+    if (
+        document.body.dataset.tipo ===
+        "PresupuestosM3+IVA"
+    ) {
+
+        return `A0${numero}`;
+
+    }
+
+
+    return numero;
+
+}
+
+
+// =====================================
+// CARGAR PRECIOS SUPABASE
 // =====================================
 
 async function cargarPreciosDesdeSupabase() {
-
     try {
 
-        const { data, error } =
+        const {data,error} =
             await supabaseClient
                 .from("precios")
-                .select(
-                    "codigo, valor"
-                );
+                .select("codigo, valor");
 
-
-        if (error) {
+        if(error){
 
             console.error(
                 "Error cargando precios:",
@@ -238,80 +310,60 @@ async function cargarPreciosDesdeSupabase() {
             return;
         }
 
+        data.forEach(f => {
 
-        data.forEach(
-            fila => {
+            const codigo =
+                String(f.codigo || "");
 
-                const codigo =
-                    fila.codigo;
-
-                const valor =
-                    Number(
-                        fila.valor || 0
-                    );
+            const valor =
+                Number(f.valor || 0);
 
 
-                // HORMIGONES
-
-                if (
-                    Object.prototype
-                        .hasOwnProperty
-                        .call(
-                            precios.hormigones,
-                            codigo
-                        )
-                ) {
-
-                    precios.hormigones[
+            if(
+                Object.prototype
+                    .hasOwnProperty
+                    .call(
+                        precios.hormigones,
                         codigo
-                    ] = valor;
+                    )
+            ){
 
-                }
+                precios.hormigones[
+                    codigo
+                ] = valor;
 
-
-                // ADITIVOS
-
-                if (
-                    Object.prototype
-                        .hasOwnProperty
-                        .call(
-                            precios.aditivos,
-                            codigo
-                        )
-                ) {
-
-                    precios.aditivos[
-                        codigo
-                    ] = valor;
-
-                }
-
-
-                // BOMBA
-
-                if (
-                    codigo === "bomba"
-                ) {
-
-                    precios.bomba =
-                        valor;
-
-                }
-
-
-                // VIBRADOR
-
-                if (
-                    codigo === "vibrador"
-                ) {
-
-                    precios.vibrador =
-                        valor;
-
-                }
-
+                return;
             }
-        );
+
+
+            const coincidencia =
+                codigo.match(
+                    /^(mr120|macro|hidrofugo)_(H8|H13|H17|H21|H25|H30|H40)$/
+                );
+
+
+            if(coincidencia){
+
+                precios.aditivos[
+                    coincidencia[1]
+                ][
+                    coincidencia[2]
+                ] = valor;
+
+                return;
+            }
+
+
+            if(codigo === "bomba"){
+                precios.bomba = valor;
+            }
+
+
+            if(codigo === "vibrador"){
+                precios.vibrador = valor;
+            }
+
+        });
 
 
         console.log(
@@ -320,16 +372,10 @@ async function cargarPreciosDesdeSupabase() {
         );
 
 
-        // Recalcular todo
-
-        calcularHormigon();
-        calcularAditivo();
-        calcularBomba();
-        calcularVibrador();
-        calcularTotales();
+        recalcularTodo();
 
 
-    } catch (error) {
+    } catch(error){
 
         console.error(
             "Error inesperado cargando precios:",
@@ -337,50 +383,262 @@ async function cargarPreciosDesdeSupabase() {
         );
 
     }
+}
+
+
+// =====================================
+// HORMIGONES
+// =====================================
+
+function obtenerFilasHormigon() {
+
+    if (!filasHormigon) {
+        return [];
+    }
+
+
+    return Array.from(
+        filasHormigon
+            .querySelectorAll(
+                ".fila-hormigon-dinamica"
+            )
+    );
+
+}
+
+
+function obtenerTipoHormigonFila(
+    fila
+) {
+
+    const select =
+        fila.querySelector(
+            ".tipo-hormigon"
+        );
+
+
+    if (!select) {
+        return "";
+    }
+
+
+    if (
+        select.value ===
+        "otro"
+    ) {
+
+        return (
+            fila.dataset
+                .tipoPersonalizado ||
+            "Otro"
+        );
+
+    }
+
+
+    return select.value;
+
+}
+
+
+function obtenerPrecioHormigonFila(
+    fila
+) {
+
+    const select =
+        fila.querySelector(
+            ".tipo-hormigon"
+        );
+
+
+    if (!select) {
+        return 0;
+    }
+
+
+    if (
+        select.value ===
+        "otro"
+    ) {
+
+        return Number(
+            fila.dataset
+                .precioPersonalizado ||
+            0
+        );
+
+    }
+
+
+    return (
+        precios.hormigones[
+            select.value
+        ] || 0
+    );
 
 }
 
 
 // =====================================
-// CALCULAR HORMIGÓN
+// HORMIGÓN "OTRO"
 // =====================================
 
-function calcularHormigon() {
+function configurarHormigonOtro(
+    fila
+) {
+
+    const select =
+        fila.querySelector(
+            ".tipo-hormigon"
+        );
+
+
+    if (!select) {
+        return;
+    }
+
 
     if (
-        !tipoHormigon ||
-        !cantidadHormigon
+        select.value !==
+        "otro"
     ) {
+
+        delete fila.dataset
+            .tipoPersonalizado;
+
+        delete fila.dataset
+            .precioPersonalizado;
 
         return;
 
     }
 
 
-    const tipo =
-        tipoHormigon.value;
+    const nombre =
+        prompt(
+            "Ingrese el tipo de hormigón:"
+        );
+
+
+    if (
+        nombre === null ||
+        !nombre.trim()
+    ) {
+
+        select.value =
+            "";
+
+        return;
+
+    }
+
+
+    const precioIngresado =
+        prompt(
+            "Ingrese el valor por m3 para este hormigón:"
+        );
+
+
+    if (
+        precioIngresado ===
+        null
+    ) {
+
+        select.value =
+            "";
+
+        return;
+
+    }
+
+
+    const precio =
+        Number(
+            String(
+                precioIngresado
+            )
+                .replace(
+                    /\./g,
+                    ""
+                )
+                .replace(
+                    ",",
+                    "."
+                )
+        ) || 0;
+
+
+    fila.dataset
+        .tipoPersonalizado =
+        nombre.trim();
+
+
+    fila.dataset
+        .precioPersonalizado =
+        String(
+            precio
+        );
+
+}
+
+
+// =====================================
+// CALCULAR FILA HORMIGÓN
+// =====================================
+
+function calcularFilaHormigon(
+    fila
+) {
+
+    const cantidadInput =
+        fila.querySelector(
+            ".cantidad-hormigon"
+        );
+
+    const precioInput =
+        fila.querySelector(
+            ".precio-hormigon"
+        );
+
+    const totalInput =
+        fila.querySelector(
+            ".total-hormigon"
+        );
 
 
     const cantidad =
-        parseFloat(
-            cantidadHormigon.value
+        Number(
+            cantidadInput
+                ? cantidadInput.value
+                : 0
         ) || 0;
 
 
     const precio =
-        precios.hormigones[
-            tipo
-        ] || 0;
+        obtenerPrecioHormigonFila(
+            fila
+        );
 
 
-    valorTotalHormigon =
+    const total =
         cantidad *
         precio;
 
 
-    if (precioHormigon) {
+    fila.dataset.precio =
+        String(
+            precio
+        );
 
-        precioHormigon.value =
+    fila.dataset.total =
+        String(
+            total
+        );
+
+
+    if (precioInput) {
+
+        precioInput.value =
             formatoPesos(
                 precio
             );
@@ -388,105 +646,782 @@ function calcularHormigon() {
     }
 
 
-    if (totalHormigon) {
+    if (totalInput) {
 
-        totalHormigon.value =
+        totalInput.value =
             formatoPesos(
-                valorTotalHormigon
+                total
             );
 
     }
 
 
-    // Copiar automáticamente
-    // hormigón y cantidad al aditivo
-
-    if (
-        tipoHormigonAditivo
-    ) {
-
-        tipoHormigonAditivo.value =
-            tipo;
-
-    }
-
-
-    if (
-        cantidadAditivo
-    ) {
-
-        cantidadAditivo.value =
-            cantidad || "";
-
-    }
-
-
-    calcularAditivo();
+    return total;
 
 }
 
 
 // =====================================
-// CALCULAR ADITIVO
+// CALCULAR TODOS LOS HORMIGONES
 // =====================================
 
-function calcularAditivo() {
+function calcularHormigones() {
 
-    if (!tipoAditivo) {
+    valorTotalHormigon =
+        0;
 
-        return;
 
-    }
+    obtenerFilasHormigon()
+        .forEach(
+            fila => {
 
+                valorTotalHormigon +=
+                    calcularFilaHormigon(
+                        fila
+                    );
+
+            }
+        );
+
+
+    actualizarOpcionesHormigonAditivos();
+
+    calcularAditivos();
+
+}
+
+
+// =====================================
+// CREAR NUEVA FILA HORMIGÓN
+// =====================================
+
+function crearFilaHormigon() {
+
+    contadorHormigon +=
+        1;
+
+
+    const fila =
+        document.createElement(
+            "div"
+        );
+
+
+    fila.className =
+        "fila fila-hormigon-dinamica";
+
+
+    fila.dataset.id =
+        String(
+            contadorHormigon
+        );
+
+
+    fila.innerHTML = `
+
+        <div>
+
+            <select class="tipo-hormigon">
+
+                <option value="">
+                    Seleccionar
+                </option>
+
+                <option value="H8">
+                    H8
+                </option>
+
+                <option value="H13">
+                    H13
+                </option>
+
+                <option value="H17">
+                    H17
+                </option>
+
+                <option value="H21">
+                    H21
+                </option>
+
+                <option value="H25">
+                    H25
+                </option>
+
+                <option value="H30">
+                    H30
+                </option>
+
+                <option value="H40">
+                    H40
+                </option>
+
+                <option value="otro">
+                    Otro...
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <input
+                type="number"
+                class="cantidad-hormigon"
+                min="0"
+                step="0.1"
+            >
+
+        </div>
+
+
+        <div>
+
+            <input
+                type="text"
+                class="cemento-hormigon"
+                value="CPP40 KG"
+                readonly
+            >
+
+        </div>
+
+
+        <div>
+
+            <input
+                type="number"
+                class="distancia-hormigon"
+                min="0"
+            >
+
+        </div>
+
+
+        <div>
+
+            <input
+                type="text"
+                class="precio-hormigon"
+                readonly
+                placeholder="$ 0,00"
+            >
+
+        </div>
+
+
+        <div class="celda-total-fila">
+
+            <input
+                type="text"
+                class="total-hormigon"
+                readonly
+                placeholder="$ 0,00"
+            >
+
+            <button
+                type="button"
+                class="eliminar-fila eliminar-hormigon"
+                title="Eliminar hormigón"
+            >
+                ×
+            </button>
+
+        </div>
+
+    `;
+
+
+    return fila;
+
+}
+
+
+// =====================================
+// LIMPIAR FILA HORMIGÓN
+// =====================================
+
+function limpiarFilaHormigon(
+    fila
+) {
 
     const tipo =
-        tipoAditivo.value;
-
+        fila.querySelector(
+            ".tipo-hormigon"
+        );
 
     const cantidad =
-        parseFloat(
-            cantidadAditivo
-                ? cantidadAditivo.value
-                : 0
-        ) || 0;
+        fila.querySelector(
+            ".cantidad-hormigon"
+        );
+
+    const distancia =
+        fila.querySelector(
+            ".distancia-hormigon"
+        );
 
 
-    const precio =
-        precios.aditivos[
-            tipo
-        ] || 0;
+    if (tipo) {
+        tipo.value =
+            "";
+    }
 
 
-    valorTotalAditivo =
-        cantidad *
-        precio;
+    if (cantidad) {
+        cantidad.value =
+            "";
+    }
 
 
-    if (precioAditivo) {
+    if (distancia) {
+        distancia.value =
+            "";
+    }
 
-        precioAditivo.value =
-            tipo
-                ? formatoPesos(
-                    precio
-                )
-                : formatoPesos(0);
+
+    delete fila.dataset
+        .tipoPersonalizado;
+
+    delete fila.dataset
+        .precioPersonalizado;
+
+
+    calcularFilaHormigon(
+        fila
+    );
+
+}
+
+
+// =====================================
+// ADITIVOS
+// =====================================
+
+function obtenerFilasAditivo() {
+
+    if (!filasAditivo) {
+        return [];
+    }
+
+
+    return Array.from(
+        filasAditivo
+            .querySelectorAll(
+                ".fila-aditivo-dinamica"
+            )
+    );
+
+}
+
+
+function buscarHormigonPorId(
+    id
+) {
+
+    return (
+        obtenerFilasHormigon()
+            .find(
+                fila =>
+                    String(
+                        fila.dataset.id
+                    ) ===
+                    String(
+                        id
+                    )
+            ) ||
+        null
+    );
+
+}
+
+
+// =====================================
+// PRECIO ADITIVO POR RESISTENCIA
+// =====================================
+
+function obtenerResistenciaHormigonFila(fila) {
+
+    if (!fila) return "";
+
+    const select =
+        fila.querySelector(
+            ".tipo-hormigon"
+        );
+
+    if (!select) return "";
+
+    return Object.prototype
+        .hasOwnProperty
+        .call(
+            precios.hormigones,
+            select.value
+        )
+            ? select.value
+            : "";
+
+}
+
+
+function obtenerPrecioAditivoAutomatico(
+    tipoAditivo,
+    hormigon
+) {
+
+    const resistencia =
+        obtenerResistenciaHormigonFila(
+            hormigon
+        );
+
+
+    if (
+        !tipoAditivo ||
+        !resistencia ||
+        !precios.aditivos[tipoAditivo]
+    ) {
+
+        return 0;
 
     }
 
 
-    if (totalAditivo) {
+    return Number(
+        precios.aditivos[
+            tipoAditivo
+        ][
+            resistencia
+        ] || 0
+    );
 
-        totalAditivo.value =
-            formatoPesos(
-                valorTotalAditivo
+}
+
+
+function parsearPrecioAditivoManual(valor) {
+
+    let texto =
+        String(
+            valor ?? ""
+        )
+            .replace(/\$/g, "")
+            .replace(/\s/g, "")
+            .trim();
+
+
+    if (!texto) return 0;
+
+
+    if (texto.includes(",")) {
+
+        texto =
+            texto
+                .replace(/\./g, "")
+                .replace(",", ".");
+
+    } else if (
+        /^\d{1,3}(\.\d{3})+$/
+            .test(texto)
+    ) {
+
+        texto =
+            texto.replace(
+                /\./g,
+                ""
             );
 
     }
 
 
-    // El descuento automático
-    // inicialmente es igual al total
-    // de aditivos.
+    const numero =
+        Number(texto);
+
+
+    return Number.isFinite(numero)
+        ? numero
+        : 0;
+
+}
+
+
+function obtenerPrecioAditivoFila(fila) {
+
+    if (!fila) return 0;
+
+
+    if (
+        fila.dataset
+            .precioManual ===
+        "true"
+    ) {
+
+        return Number(
+            fila.dataset
+                .precioManualValor ||
+            0
+        ) || 0;
+
+    }
+
+
+    const selectHormigon =
+        fila.querySelector(
+            ".hormigon-aditivo"
+        );
+
+
+    const selectAditivo =
+        fila.querySelector(
+            ".tipo-aditivo"
+        );
+
+
+    const hormigon =
+        selectHormigon
+            ? buscarHormigonPorId(
+                selectHormigon.value
+            )
+            : null;
+
+
+    const tipoAditivo =
+        selectAditivo
+            ? selectAditivo.value
+            : "";
+
+
+    return obtenerPrecioAditivoAutomatico(
+        tipoAditivo,
+        hormigon
+    );
+
+}
+
+
+function restablecerPrecioAutomaticoFilaAditivo(
+    fila
+) {
+
+    if (!fila) return;
+
+    delete fila.dataset
+        .precioManual;
+
+    delete fila.dataset
+        .precioManualValor;
+
+}
+
+
+function restablecerPreciosAditivosVinculados(
+    hormigonId
+) {
+
+    obtenerFilasAditivo()
+        .forEach(fila => {
+
+            const select =
+                fila.querySelector(
+                    ".hormigon-aditivo"
+                );
+
+
+            if (
+                select &&
+                String(select.value) ===
+                String(hormigonId)
+            ) {
+
+                restablecerPrecioAutomaticoFilaAditivo(
+                    fila
+                );
+
+            }
+
+        });
+
+}
+
+
+function prepararFilaAditivoEditable(fila) {
+
+    if (!fila) return;
+
+    const input =
+        fila.querySelector(
+            ".precio-aditivo"
+        );
+
+    if (!input) return;
+
+
+    input.readOnly =
+        false;
+
+    input.inputMode =
+        "decimal";
+
+    input.autocomplete =
+        "off";
+
+}
+
+
+// =====================================
+
+// =====================================
+// ACTUALIZAR HORMIGONES DISPONIBLES
+// EN LOS ADITIVOS
+// =====================================
+
+function actualizarOpcionesHormigonAditivos() {
+
+    const hormigones =
+        obtenerFilasHormigon();
+
+
+    obtenerFilasAditivo()
+        .forEach(
+            filaAditivo => {
+
+                const select =
+                    filaAditivo
+                        .querySelector(
+                            ".hormigon-aditivo"
+                        );
+
+
+                if (!select) {
+                    return;
+                }
+
+
+                const seleccionado =
+                    select.value;
+
+
+                select.innerHTML =
+                    `
+                    <option value="">
+                        Seleccionar H°
+                    </option>
+                    `;
+
+
+                hormigones.forEach(
+                    filaHormigon => {
+
+                        const tipo =
+                            obtenerTipoHormigonFila(
+                                filaHormigon
+                            );
+
+
+                        const cantidadInput =
+                            filaHormigon
+                                .querySelector(
+                                    ".cantidad-hormigon"
+                                );
+
+
+                        const cantidad =
+                            Number(
+                                cantidadInput
+                                    ? cantidadInput.value
+                                    : 0
+                            ) || 0;
+
+
+                        if (
+                            !tipo ||
+                            cantidad <= 0
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        option.value =
+                            String(
+                                filaHormigon
+                                    .dataset.id
+                            );
+
+
+                        option.textContent =
+                            `${tipo} - ${cantidad} m3`;
+
+
+                        select.appendChild(
+                            option
+                        );
+
+                    }
+                );
+
+
+                const existe =
+                    Array.from(
+                        select.options
+                    )
+                        .some(
+                            option =>
+                                option.value ===
+                                seleccionado
+                        );
+
+
+                if (existe) {
+
+                    select.value =
+                        seleccionado;
+
+                }
+
+            }
+        );
+
+}
+
+
+// =====================================
+// CALCULAR FILA ADITIVO
+// =====================================
+
+function calcularFilaAditivo(
+    fila
+) {
+
+    const selectHormigon =
+        fila.querySelector(
+            ".hormigon-aditivo"
+        );
+
+    const cantidadInput =
+        fila.querySelector(
+            ".cantidad-aditivo"
+        );
+
+    const precioInput =
+        fila.querySelector(
+            ".precio-aditivo"
+        );
+
+    const totalInput =
+        fila.querySelector(
+            ".total-aditivo"
+        );
+
+
+    const hormigon =
+        selectHormigon
+            ? buscarHormigonPorId(
+                selectHormigon.value
+            )
+            : null;
+
+
+    const cantidadHormigonInput =
+        hormigon
+            ? hormigon.querySelector(
+                ".cantidad-hormigon"
+            )
+            : null;
+
+
+    const cantidad =
+        Number(
+            cantidadHormigonInput
+                ? cantidadHormigonInput.value
+                : 0
+        ) || 0;
+
+
+    const precio =
+        obtenerPrecioAditivoFila(
+            fila
+        );
+
+
+    const total =
+        cantidad *
+        precio;
+
+
+    if (cantidadInput) {
+
+        cantidadInput.value =
+            cantidad || "";
+
+    }
+
+
+    if (
+        precioInput &&
+        document.activeElement !==
+        precioInput
+    ) {
+
+        precioInput.value =
+            formatoPesos(
+                precio
+            );
+
+    }
+
+
+    if (totalInput) {
+
+        totalInput.value =
+            formatoPesos(
+                total
+            );
+
+    }
+
+
+    fila.dataset.cantidad =
+        String(cantidad);
+
+    fila.dataset.precio =
+        String(precio);
+
+    fila.dataset.total =
+        String(total);
+
+
+    return total;
+
+}
+
+
+// =====================================
+// CALCULAR TODOS LOS ADITIVOS
+// =====================================
+
+function calcularAditivos() {
+
+    valorTotalAditivo =
+        0;
+
+
+    obtenerFilasAditivo()
+        .forEach(
+            fila => {
+
+                valorTotalAditivo +=
+                    calcularFilaAditivo(
+                        fila
+                    );
+
+            }
+        );
+
 
     if (
         descuento &&
@@ -494,7 +1429,10 @@ function calcularAditivo() {
     ) {
 
         descuento.value =
-            valorTotalAditivo.toFixed(2);
+            valorTotalAditivo
+                .toFixed(
+                    2
+                );
 
     }
 
@@ -505,15 +1443,177 @@ function calcularAditivo() {
 
 
 // =====================================
-// OBTENER CANTIDAD DE BOMBA
+// CREAR FILA ADITIVO
+// =====================================
+
+function crearFilaAditivo() {
+
+    contadorAditivo +=
+        1;
+
+
+    const fila =
+        document.createElement(
+            "div"
+        );
+
+
+    fila.className =
+        "fila fila-aditivo fila-aditivo-dinamica";
+
+
+    fila.dataset.id =
+        String(
+            contadorAditivo
+        );
+
+
+    fila.innerHTML = `
+
+        <div>
+
+            <select class="hormigon-aditivo">
+
+                <option value="">
+                    Seleccionar H°
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <input
+                type="text"
+                class="cantidad-aditivo"
+                readonly
+            >
+
+        </div>
+
+
+        <div>
+
+            <select class="tipo-aditivo">
+
+                <option value="">
+                    Sin aditivo
+                </option>
+
+                <option value="mr120">
+                    ADITIVO EN OBRA MR120 superfluidificante
+                </option>
+
+                <option value="macro">
+                    MACROFIBRA / MICROFIBRA
+                </option>
+
+                <option value="hidrofugo">
+                    HIDROFUGO - IDROCRET HP
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <input
+                type="text"
+                class="precio-aditivo"
+                inputmode="decimal"
+                autocomplete="off"
+                placeholder="$ 0,00"
+            >
+
+        </div>
+
+
+        <div class="celda-total-fila">
+
+            <input
+                type="text"
+                class="total-aditivo"
+                readonly
+                placeholder="$ 0,00"
+            >
+
+            <button
+                type="button"
+                class="eliminar-fila eliminar-aditivo"
+                title="Eliminar aditivo"
+            >
+                ×
+            </button>
+
+        </div>
+
+    `;
+
+
+    return fila;
+
+}
+
+
+// =====================================
+// LIMPIAR FILA ADITIVO
+// =====================================
+
+function limpiarFilaAditivo(
+    fila
+) {
+
+    const hormigon =
+        fila.querySelector(
+            ".hormigon-aditivo"
+        );
+
+    const tipo =
+        fila.querySelector(
+            ".tipo-aditivo"
+        );
+
+
+    if (hormigon) {
+
+        hormigon.value =
+            "";
+
+    }
+
+
+    if (tipo) {
+
+        tipo.value =
+            "";
+
+    }
+
+
+    restablecerPrecioAutomaticoFilaAditivo(
+        fila
+    );
+
+
+    calcularFilaAditivo(
+        fila
+    );
+
+}
+
+
+// =====================================
+// BOMBA
 // =====================================
 
 function obtenerCantidadBomba() {
 
     if (!cantidadBomba) {
-
         return 0;
-
     }
 
 
@@ -536,18 +1636,7 @@ function obtenerCantidadBomba() {
 }
 
 
-// =====================================
-// CALCULAR BOMBA
-// =====================================
-
 function calcularBomba() {
-
-    if (!cantidadBomba) {
-
-        return;
-
-    }
-
 
     const cantidad =
         obtenerCantidadBomba();
@@ -584,15 +1673,13 @@ function calcularBomba() {
 
 
 // =====================================
-// OBTENER CANTIDAD VIBRADOR
+// VIBRADOR
 // =====================================
 
 function obtenerCantidadVibrador() {
 
     if (!cantidadVibrador) {
-
         return 0;
-
     }
 
 
@@ -615,18 +1702,7 @@ function obtenerCantidadVibrador() {
 }
 
 
-// =====================================
-// CALCULAR VIBRADOR
-// =====================================
-
 function calcularVibrador() {
-
-    if (!cantidadVibrador) {
-
-        return;
-
-    }
-
 
     const cantidad =
         obtenerCantidadVibrador();
@@ -663,7 +1739,7 @@ function calcularVibrador() {
 
 
 // =====================================
-// CALCULAR TOTALES GENERALES
+// TOTALES
 // =====================================
 
 function calcularTotales() {
@@ -687,10 +1763,6 @@ function calcularTotales() {
         servicios -
         valorDescuento;
 
-
-    // =====================================
-    // RESUMEN
-    // =====================================
 
     if (resumenHormigon) {
 
@@ -722,10 +1794,6 @@ function calcularTotales() {
     }
 
 
-    // =====================================
-    // PLANILLA SIN IVA
-    // =====================================
-
     if (totalSinIVA) {
 
         totalSinIVA.textContent =
@@ -735,10 +1803,6 @@ function calcularTotales() {
 
     }
 
-
-    // =====================================
-    // PLANILLA CON IVA
-    // =====================================
 
     if (subtotalSinIVA) {
 
@@ -779,34 +1843,134 @@ function calcularTotales() {
 
 
 // =====================================
+// RECALCULAR TODO
+// =====================================
+
+function recalcularTodo() {
+
+    calcularHormigones();
+
+    calcularBomba();
+
+    calcularVibrador();
+
+    calcularTotales();
+
+}
+
+
+// =====================================
 // EVENTOS HORMIGÓN
 // =====================================
 
-if (tipoHormigon) {
+if (filasHormigon) {
 
-    tipoHormigon.addEventListener(
+    filasHormigon.addEventListener(
         "change",
-        calcularHormigon
+        function (event) {
+
+            const fila =
+                event.target.closest(
+                    ".fila-hormigon-dinamica"
+                );
+
+
+            if (!fila) {
+                return;
+            }
+
+
+            if (
+                event.target
+                    .classList
+                    .contains(
+                        "tipo-hormigon"
+                    )
+            ) {
+
+                configurarHormigonOtro(
+                    fila
+                );
+
+
+                restablecerPreciosAditivosVinculados(
+                    fila.dataset.id
+                );
+
+            }
+
+
+            calcularHormigones();
+
+        }
     );
 
-}
 
-
-if (cantidadHormigon) {
-
-    cantidadHormigon.addEventListener(
+    filasHormigon.addEventListener(
         "input",
-        calcularHormigon
+        function (event) {
+
+            const fila =
+                event.target.closest(
+                    ".fila-hormigon-dinamica"
+                );
+
+
+            if (!fila) {
+                return;
+            }
+
+
+            calcularHormigones();
+
+        }
     );
 
-}
+
+    filasHormigon.addEventListener(
+        "click",
+        function (event) {
+
+            const boton =
+                event.target.closest(
+                    ".eliminar-hormigon"
+                );
 
 
-if (distancia) {
+            if (!boton) {
+                return;
+            }
 
-    distancia.addEventListener(
-        "input",
-        calcularHormigon
+
+            const fila =
+                boton.closest(
+                    ".fila-hormigon-dinamica"
+                );
+
+
+            const filas =
+                obtenerFilasHormigon();
+
+
+            if (
+                filas.length <=
+                1
+            ) {
+
+                limpiarFilaHormigon(
+                    fila
+                );
+
+            } else {
+
+                fila.remove();
+
+            }
+
+
+            calcularHormigones();
+
+        }
     );
 
 }
@@ -816,17 +1980,212 @@ if (distancia) {
 // EVENTOS ADITIVOS
 // =====================================
 
-if (tipoAditivo) {
+if (filasAditivo) {
 
-    tipoAditivo.addEventListener(
+    filasAditivo.addEventListener(
         "change",
-        function () {
+        function (event) {
+
+            const fila =
+                event.target.closest(
+                    ".fila-aditivo-dinamica"
+                );
+
+
+            if (!fila) return;
+
+
+            if (
+                event.target.classList
+                    .contains(
+                        "hormigon-aditivo"
+                    ) ||
+                event.target.classList
+                    .contains(
+                        "tipo-aditivo"
+                    )
+            ) {
+
+                restablecerPrecioAutomaticoFilaAditivo(
+                    fila
+                );
+
+
+                descuentoModificadoManualmente =
+                    false;
+
+
+                calcularAditivos();
+
+            }
+
+        }
+    );
+
+
+    filasAditivo.addEventListener(
+        "input",
+        function (event) {
+
+            if (
+                !event.target.classList
+                    .contains(
+                        "precio-aditivo"
+                    )
+            ) {
+
+                return;
+
+            }
+
+
+            const fila =
+                event.target.closest(
+                    ".fila-aditivo-dinamica"
+                );
+
+
+            if (!fila) return;
+
+
+            fila.dataset.precioManual =
+                "true";
+
+
+            fila.dataset.precioManualValor =
+                String(
+                    parsearPrecioAditivoManual(
+                        event.target.value
+                    )
+                );
+
+
+            calcularAditivos();
+
+        }
+    );
+
+
+    filasAditivo.addEventListener(
+        "focusin",
+        function (event) {
+
+            if (
+                !event.target.classList
+                    .contains(
+                        "precio-aditivo"
+                    )
+            ) {
+
+                return;
+
+            }
+
+
+            const fila =
+                event.target.closest(
+                    ".fila-aditivo-dinamica"
+                );
+
+
+            if (!fila) return;
+
+
+            const precio =
+                obtenerPrecioAditivoFila(
+                    fila
+                );
+
+
+            event.target.value =
+                precio
+                    ? String(precio)
+                    : "";
+
+        }
+    );
+
+
+    filasAditivo.addEventListener(
+        "focusout",
+        function (event) {
+
+            if (
+                !event.target.classList
+                    .contains(
+                        "precio-aditivo"
+                    )
+            ) {
+
+                return;
+
+            }
+
+
+            const fila =
+                event.target.closest(
+                    ".fila-aditivo-dinamica"
+                );
+
+
+            if (!fila) return;
+
+
+            event.target.value =
+                formatoPesos(
+                    obtenerPrecioAditivoFila(
+                        fila
+                    )
+                );
+
+        }
+    );
+
+
+    filasAditivo.addEventListener(
+        "click",
+        function (event) {
+
+            const boton =
+                event.target.closest(
+                    ".eliminar-aditivo"
+                );
+
+
+            if (!boton) return;
+
+
+            const fila =
+                boton.closest(
+                    ".fila-aditivo-dinamica"
+                );
+
+
+            const filas =
+                obtenerFilasAditivo();
+
+
+            if (
+                filas.length <=
+                1
+            ) {
+
+                limpiarFilaAditivo(
+                    fila
+                );
+
+            } else {
+
+                fila.remove();
+
+            }
+
 
             descuentoModificadoManualmente =
                 false;
 
 
-            calcularAditivo();
+            calcularAditivos();
 
         }
     );
@@ -834,11 +2193,57 @@ if (tipoAditivo) {
 }
 
 
-if (cantidadAditivo) {
+// =====================================
+// BOTÓN AGREGAR HORMIGÓN
+// =====================================
 
-    cantidadAditivo.addEventListener(
-        "input",
-        calcularAditivo
+if (botonAgregarHormigon) {
+
+    botonAgregarHormigon.addEventListener(
+        "click",
+        function () {
+
+            filasHormigon
+                .appendChild(
+                    crearFilaHormigon()
+                );
+
+
+            actualizarOpcionesHormigonAditivos();
+
+        }
+    );
+
+}
+
+
+// =====================================
+// BOTÓN AGREGAR ADITIVO
+// =====================================
+
+if (botonAgregarAditivo) {
+
+    botonAgregarAditivo.addEventListener(
+        "click",
+        function () {
+
+            const nuevaFila =
+                crearFilaAditivo();
+
+
+            prepararFilaAditivoEditable(
+                nuevaFila
+            );
+
+
+            filasAditivo.appendChild(
+                nuevaFila
+            );
+
+
+            actualizarOpcionesHormigonAditivos();
+
+        }
     );
 
 }
@@ -866,7 +2271,8 @@ if (cantidadBomba) {
 
 
                 if (
-                    respuesta === null
+                    respuesta ===
+                    null
                 ) {
 
                     cantidadBomba.value =
@@ -879,7 +2285,9 @@ if (cantidadBomba) {
 
                     cantidadBombaOtro =
                         Number(
-                            respuesta
+                            String(
+                                respuesta
+                            )
                                 .replace(
                                     ",",
                                     "."
@@ -926,7 +2334,8 @@ if (cantidadVibrador) {
 
 
                 if (
-                    respuesta === null
+                    respuesta ===
+                    null
                 ) {
 
                     cantidadVibrador.value =
@@ -939,7 +2348,9 @@ if (cantidadVibrador) {
 
                     cantidadVibradorOtro =
                         Number(
-                            respuesta
+                            String(
+                                respuesta
+                            )
                                 .replace(
                                     ",",
                                     "."
@@ -987,21 +2398,249 @@ if (descuento) {
 
 
 // =====================================
-// GUARDAR PRESUPUESTO EN SUPABASE
+// DATOS HORMIGONES PARA GUARDAR
 // =====================================
 
-const botonGuardarPresupuesto =
-    document.getElementById(
-        "guardarPresupuesto"
-    );
+function obtenerHormigonesParaGuardar() {
 
+    return obtenerFilasHormigon()
+        .map(
+            fila => {
+
+                const tipoSelect =
+                    fila.querySelector(
+                        ".tipo-hormigon"
+                    );
+
+
+                const cantidadInput =
+                    fila.querySelector(
+                        ".cantidad-hormigon"
+                    );
+
+
+                const cementoInput =
+                    fila.querySelector(
+                        ".cemento-hormigon"
+                    );
+
+
+                const distanciaInput =
+                    fila.querySelector(
+                        ".distancia-hormigon"
+                    );
+
+
+                const tipo =
+                    obtenerTipoHormigonFila(
+                        fila
+                    );
+
+
+                const cantidad =
+                    Number(
+                        cantidadInput
+                            ? cantidadInput.value
+                            : 0
+                    ) || 0;
+
+
+                const precioM3 =
+                    obtenerPrecioHormigonFila(
+                        fila
+                    );
+
+
+                return {
+
+                    id:
+                        String(
+                            fila.dataset.id
+                        ),
+
+                    tipo:
+                        tipo,
+
+                    codigo:
+                        tipoSelect
+                            ? tipoSelect.value
+                            : "",
+
+                    cantidad:
+                        cantidad,
+
+                    cemento:
+                        cementoInput
+                            ? cementoInput.value
+                            : "CPP40 KG",
+
+                    distancia:
+                        Number(
+                            distanciaInput
+                                ? distanciaInput.value
+                                : 0
+                        ) || 0,
+
+                    precioM3:
+                        precioM3,
+
+                    total:
+                        cantidad *
+                        precioM3
+
+                };
+
+            }
+        )
+        .filter(
+            item =>
+                item.tipo &&
+                item.cantidad > 0
+        );
+
+}
+
+
+// =====================================
+// DATOS ADITIVOS PARA GUARDAR
+// =====================================
+
+function obtenerAditivosParaGuardar() {
+
+    return obtenerFilasAditivo()
+        .map(
+            fila => {
+
+                const selectHormigon =
+                    fila.querySelector(
+                        ".hormigon-aditivo"
+                    );
+
+
+                const selectAditivo =
+                    fila.querySelector(
+                        ".tipo-aditivo"
+                    );
+
+
+                const hormigonId =
+                    selectHormigon
+                        ? selectHormigon.value
+                        : "";
+
+
+                const hormigon =
+                    buscarHormigonPorId(
+                        hormigonId
+                    );
+
+
+                const cantidadInput =
+                    hormigon
+                        ? hormigon.querySelector(
+                            ".cantidad-hormigon"
+                        )
+                        : null;
+
+
+                const cantidad =
+                    Number(
+                        cantidadInput
+                            ? cantidadInput.value
+                            : 0
+                    ) || 0;
+
+
+                const tipoAditivo =
+                    selectAditivo
+                        ? selectAditivo.value
+                        : "";
+
+
+                const resistencia =
+                    obtenerResistenciaHormigonFila(
+                        hormigon
+                    );
+
+
+                const precioM3 =
+                    obtenerPrecioAditivoFila(
+                        fila
+                    );
+
+
+                return {
+
+                    id:
+                        String(
+                            fila.dataset.id
+                        ),
+
+                    hormigonId:
+                        String(
+                            hormigonId
+                        ),
+
+                    hormigonTipo:
+                        hormigon
+                            ? obtenerTipoHormigonFila(
+                                hormigon
+                            )
+                            : "",
+
+                    tipo:
+                        tipoAditivo,
+
+                    resistencia:
+                        resistencia,
+
+                    codigoPrecio:
+                        (
+                            tipoAditivo &&
+                            resistencia
+                        )
+                            ? `${tipoAditivo}_${resistencia}`
+                            : "",
+
+                    precioManual:
+                        fila.dataset
+                            .precioManual ===
+                        "true",
+
+                    cantidad:
+                        cantidad,
+
+                    precioM3:
+                        precioM3,
+
+                    total:
+                        cantidad *
+                        precioM3
+
+                };
+
+            }
+        )
+        .filter(
+            item =>
+                item.tipo &&
+                item.hormigonId &&
+                item.cantidad > 0
+        );
+
+}
+
+
+// =====================================
+// GUARDAR PRESUPUESTO
+// =====================================
 
 async function guardarPresupuesto() {
 
-    if (!botonGuardarPresupuesto) {
-
+    if (
+        !botonGuardarPresupuesto
+    ) {
         return;
-
     }
 
 
@@ -1016,7 +2655,7 @@ async function guardarPresupuesto() {
     try {
 
         // =====================================
-        // COMPROBAR SESIÓN
+        // SESIÓN
         // =====================================
 
         const {
@@ -1045,7 +2684,9 @@ async function guardarPresupuesto() {
         }
 
 
-        if (!sesionData.session) {
+        if (
+            !sesionData.session
+        ) {
 
             alert(
                 "Debe iniciar sesión antes de guardar un presupuesto."
@@ -1061,58 +2702,41 @@ async function guardarPresupuesto() {
         // =====================================
 
         const senores =
-            document
-                .getElementById(
-                    "senores"
-                )
+            $("senores")
                 .value
                 .trim();
 
 
         const atencion =
-            document
-                .getElementById(
-                    "atencion"
-                )
+            $("atencion")
                 .value
                 .trim();
 
 
         const destino =
-            document
-                .getElementById(
-                    "destino"
-                )
+            $("destino")
                 .value
                 .trim();
 
 
         const fecha =
-            document
-                .getElementById(
-                    "fecha"
-                )
+            $("fecha")
                 .value;
 
 
         const presupuestoNumero =
-            document
-                .getElementById(
-                    "presupuestoNumero"
-                )
-                .value
-                .trim();
+            obtenerNumeroPresupuestoCompleto();
 
 
         const campoCUIT =
-            document.getElementById(
-                "cuit"
-            );
+            $("cuit");
 
 
         const cuit =
             campoCUIT
-                ? campoCUIT.value.trim()
+                ? campoCUIT
+                    .value
+                    .trim()
                 : "";
 
 
@@ -1146,13 +2770,17 @@ async function guardarPresupuesto() {
         }
 
 
+        const hormigonesGuardados =
+            obtenerHormigonesParaGuardar();
+
+
         if (
-            !tipoHormigon ||
-            !tipoHormigon.value
+            hormigonesGuardados.length ===
+            0
         ) {
 
             alert(
-                "Debe seleccionar un TIPO DE H°."
+                "Debe agregar al menos un hormigón con cantidad mayor a 0."
             );
 
             return;
@@ -1160,24 +2788,12 @@ async function guardarPresupuesto() {
         }
 
 
-        if (
-            !cantidadHormigon.value ||
-            Number(
-                cantidadHormigon.value
-            ) <= 0
-        ) {
-
-            alert(
-                "Debe ingresar una cantidad de M3."
-            );
-
-            return;
-
-        }
+        const aditivosGuardados =
+            obtenerAditivosParaGuardar();
 
 
         // =====================================
-        // NOMBRE DEL PRESUPUESTO
+        // NOMBRE
         // =====================================
 
         const nombrePresupuesto =
@@ -1185,22 +2801,8 @@ async function guardarPresupuesto() {
 
 
         // =====================================
-        // CANTIDADES
+        // SERVICIOS
         // =====================================
-
-        const cantidadHormigonGuardada =
-            parseFloat(
-                cantidadHormigon.value
-            ) || 0;
-
-
-        const cantidadAditivoGuardada =
-            parseFloat(
-                cantidadAditivo
-                    ? cantidadAditivo.value
-                    : 0
-            ) || 0;
-
 
         const cantidadBombaGuardada =
             obtenerCantidadBomba();
@@ -1233,7 +2835,8 @@ async function guardarPresupuesto() {
         const valorIVA =
             tipoPlanilla ===
             "PresupuestosM3+IVA"
-                ? subtotal * 0.21
+                ? subtotal *
+                    0.21
                 : 0;
 
 
@@ -1246,10 +2849,25 @@ async function guardarPresupuesto() {
 
 
         // =====================================
-        // DATOS COMPLETOS
+        // SNAPSHOT DE CONFIGURACIÓN
+        // Conserva los datos administrativos usados
+        // al momento de guardar el presupuesto.
+        // =====================================
+
+        const configuracionPresupuesto =
+            await cargarConfiguracionMonteverdi({
+                forzar: true
+            });
+
+
+        // =====================================
+        // JSON COMPLETO
         // =====================================
 
         const datosCompletos = {
+
+            configuracion:
+                { ...configuracionPresupuesto },
 
             atencion:
                 atencion,
@@ -1261,59 +2879,51 @@ async function guardarPresupuesto() {
                 cuit,
 
 
-            hormigon: {
-
-                tipo:
-                    tipoHormigon.value,
-
-                cantidad:
-                    cantidadHormigonGuardada,
-
-                cemento:
-                    "CPP40 KG",
-
-                distancia:
-                    parseFloat(
-                        distancia
-                            ? distancia.value
-                            : 0
-                    ) || 0,
-
-                precioM3:
-                    precios.hormigones[
-                        tipoHormigon.value
-                    ] || 0,
-
-                total:
-                    valorTotalHormigon
-
-            },
+            // NUEVO FORMATO
+            // VARIOS HORMIGONES
+            hormigones:
+                hormigonesGuardados,
 
 
-            aditivo: {
+            // NUEVO FORMATO
+            // VARIOS ADITIVOS
+            aditivos:
+                aditivosGuardados,
 
-                tipo:
-                    tipoAditivo
-                        ? tipoAditivo.value
-                        : "",
 
-                cantidad:
-                    cantidadAditivoGuardada,
+            // =================================
+            // COMPATIBILIDAD CON LO ANTERIOR
+            // =================================
 
-                precioM3:
-                    tipoAditivo
-                        ? (
-                            precios.aditivos[
-                                tipoAditivo.value
-                            ] || 0
-                        )
-                        : 0,
+            hormigon:
+                hormigonesGuardados[
+                    0
+                ] || null,
 
-                total:
-                    valorTotalAditivo
 
-            },
+            aditivo:
+                aditivosGuardados[
+                    0
+                ] || {
 
+                    tipo:
+                        "",
+
+                    cantidad:
+                        0,
+
+                    precioM3:
+                        0,
+
+                    total:
+                        0
+
+                },
+
+
+            // =================================
+            // SERVICIOS
+            // =================================
 
             servicios: {
 
@@ -1356,11 +2966,14 @@ async function guardarPresupuesto() {
             descuento:
                 valorDescuento,
 
+
             subtotalSinIVA:
                 subtotal,
 
+
             iva21:
                 valorIVA,
+
 
             totalFinal:
                 totalFinal
@@ -1369,7 +2982,7 @@ async function guardarPresupuesto() {
 
 
         // =====================================
-        // INSERTAR EN SUPABASE
+        // INSERTAR SUPABASE
         // =====================================
 
         const {
@@ -1435,6 +3048,9 @@ async function guardarPresupuesto() {
         );
 
 
+        await mostrarUltimoPresupuesto();
+
+
     } catch (error) {
 
         console.error(
@@ -1463,15 +3079,18 @@ async function guardarPresupuesto() {
 
 
 // =====================================
-// ACTIVAR BOTÓN GUARDAR
+// BOTÓN GUARDAR
 // =====================================
 
-if (botonGuardarPresupuesto) {
+if (
+    botonGuardarPresupuesto
+) {
 
-    botonGuardarPresupuesto.addEventListener(
-        "click",
-        guardarPresupuesto
-    );
+    botonGuardarPresupuesto
+        .addEventListener(
+            "click",
+            guardarPresupuesto
+        );
 
 }
 
@@ -1480,4 +3099,101 @@ if (botonGuardarPresupuesto) {
 // INICIO
 // =====================================
 
-cargarPreciosDesdeSupabase();
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        colocarFechaDeHoy();
+
+
+        // =====================================
+        // IDs HORMIGONES INICIALES
+        // =====================================
+
+        obtenerFilasHormigon()
+            .forEach(
+                (
+                    fila,
+                    indice
+                ) => {
+
+                    if (
+                        !fila.dataset.id
+                    ) {
+
+                        fila.dataset.id =
+                            String(
+                                indice +
+                                1
+                            );
+
+                    }
+
+
+                    contadorHormigon =
+                        Math.max(
+                            contadorHormigon,
+                            Number(
+                                fila.dataset.id
+                            ) || 1
+                        );
+
+                }
+            );
+
+
+        // =====================================
+        // IDs ADITIVOS INICIALES
+        // =====================================
+
+        obtenerFilasAditivo()
+            .forEach(
+                (
+                    fila,
+                    indice
+                ) => {
+
+                    if (
+                        !fila.dataset.id
+                    ) {
+
+                        fila.dataset.id =
+                            String(
+                                indice +
+                                1
+                            );
+
+                    }
+
+
+                    contadorAditivo =
+                        Math.max(
+                            contadorAditivo,
+                            Number(
+                                fila.dataset.id
+                            ) || 1
+                        );
+
+                }
+            );
+
+
+        obtenerFilasAditivo()
+            .forEach(
+                fila =>
+                    prepararFilaAditivoEditable(
+                        fila
+                    )
+            );
+
+
+        actualizarOpcionesHormigonAditivos();
+
+
+        mostrarUltimoPresupuesto();
+
+
+        cargarPreciosDesdeSupabase();
+
+    }
+);

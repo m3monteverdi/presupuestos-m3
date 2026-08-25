@@ -1,5 +1,6 @@
 // =====================================
-// PDF MONTEVERDI - PLANTILLA ORIGINAL
+// PDF MONTEVERDI
+// VARIOS HORMIGONES + VARIOS ADITIVOS
 // =====================================
 
 const {
@@ -22,10 +23,21 @@ const BLANCO =
 
 function textoSeguro(valor) {
 
-    return String(valor ?? "")
-        .replace(/\u2013|\u2014/g, "-")
-        .replace(/\u2018|\u2019/g, "'")
-        .replace(/\u201C|\u201D/g, '"')
+    return String(
+        valor ?? ""
+    )
+        .replace(
+            /\u2013|\u2014/g,
+            "-"
+        )
+        .replace(
+            /\u2018|\u2019/g,
+            "'"
+        )
+        .replace(
+            /\u201C|\u201D/g,
+            '"'
+        )
         .trim();
 
 }
@@ -34,20 +46,26 @@ function textoSeguro(valor) {
 function numeroAR(valor) {
 
     const numero =
-        Number(valor || 0);
+        Number(
+            valor || 0
+        );
 
 
-    return numero.toLocaleString(
-        "es-AR",
-        {
-            minimumFractionDigits:
-                Number.isInteger(numero)
-                    ? 0
-                    : 1,
+    return numero
+        .toLocaleString(
+            "es-AR",
+            {
+                minimumFractionDigits:
+                    Number.isInteger(
+                        numero
+                    )
+                        ? 0
+                        : 1,
 
-            maximumFractionDigits: 2
-        }
-    );
+                maximumFractionDigits:
+                    2
+            }
+        );
 
 }
 
@@ -55,23 +73,32 @@ function numeroAR(valor) {
 function dineroNumero(valor) {
 
     const numero =
-        Number(valor || 0);
+        Number(
+            valor || 0
+        );
 
 
-    if (numero === 0) {
+    if (
+        numero ===
+        0
+    ) {
 
         return "-";
 
     }
 
 
-    return numero.toLocaleString(
-        "es-AR",
-        {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }
-    );
+    return numero
+        .toLocaleString(
+            "es-AR",
+            {
+                minimumFractionDigits:
+                    2,
+
+                maximumFractionDigits:
+                    2
+            }
+        );
 
 }
 
@@ -79,20 +106,18 @@ function dineroNumero(valor) {
 function dineroCompleto(valor) {
 
     const numero =
-        Number(valor || 0);
+        Number(
+            valor || 0
+        );
 
 
-    if (numero === 0) {
-
-        return "$ -";
-
-    }
-
-
-    return (
-        "$ " +
-        dineroNumero(numero)
-    );
+    return numero ===
+        0
+        ? "$ -"
+        : "$ " +
+            dineroNumero(
+                numero
+            );
 
 }
 
@@ -107,29 +132,45 @@ function fechaAR(fecha) {
 
 
     const partes =
-        String(fecha).split("-");
+        String(
+            fecha
+        )
+            .split("-");
 
 
-    if (partes.length !== 3) {
+    if (
+        partes.length !==
+        3
+    ) {
 
-        return String(fecha);
+        return String(
+            fecha
+        );
 
     }
 
 
     return (
-        `${Number(partes[2])}/` +
-        `${Number(partes[1])}/` +
+        `${Number(
+            partes[2]
+        )}/` +
+        `${Number(
+            partes[1]
+        )}/` +
         `${partes[0]}`
     );
 
 }
 
 
-function tipoHormigonPDF(tipo) {
+function tipoHormigonPDF(
+    tipo
+) {
 
     const texto =
-        textoSeguro(tipo)
+        textoSeguro(
+            tipo
+        )
             .toUpperCase();
 
 
@@ -139,7 +180,9 @@ function tipoHormigonPDF(tipo) {
         );
 
 
-    if (coincidencia) {
+    if (
+        coincidencia
+    ) {
 
         return (
             `H ${coincidencia[1]}`
@@ -159,107 +202,132 @@ function nombreAditivoPDF(
 ) {
 
     const codigo =
-        textoSeguro(tipo)
+        textoSeguro(
+            tipo
+        )
             .toLowerCase();
 
 
-    if (codigo === "mr120") {
+    if (
+        codigo ===
+        "mr120"
+    ) {
 
-        if (conIVA) {
-
-            return (
-                "ADITIVO EN OBRA   " +
+        return conIVA
+            ? (
+                "ADITIVO EN OBRA " +
+                "MR120 superfluidificante"
+            )
+            : (
                 "MR120 superfluidificante"
             );
 
-        }
+    }
 
+
+    if (
+        codigo ===
+        "macro"
+    ) {
 
         return (
-            "MR120 superfluidificante"
+            "MACROFIBRA / MICROFIBRA"
         );
 
     }
 
 
-    if (codigo === "macro") {
+    if (
+        codigo ===
+        "hidrofugo"
+    ) {
 
-        return "MACRO FIBRAS";
-
-    }
-
-
-    if (codigo) {
-
-        return textoSeguro(tipo);
+        return (
+            "HIDROFUGO - IDROCRET HP"
+        );
 
     }
 
 
-    return "";
+    return codigo
+        ? textoSeguro(
+            tipo
+        )
+        : "";
 
 }
 
 
-// =====================================
-// CANTIDADES DE PRESUPUESTOS ANTIGUOS
-// =====================================
-
 function cantidadInferida(
-    cantidadGuardada,
+    cantidad,
     total,
     precio,
     alternativa = 0
 ) {
 
     if (
-        cantidadGuardada !== undefined &&
-        cantidadGuardada !== null &&
-        cantidadGuardada !== ""
+        cantidad !==
+            undefined &&
+        cantidad !==
+            null &&
+        cantidad !==
+            ""
     ) {
 
         return (
-            Number(cantidadGuardada) || 0
+            Number(
+                cantidad
+            ) || 0
         );
 
     }
 
 
-    const valorPrecio =
-        Number(precio || 0);
+    const p =
+        Number(
+            precio || 0
+        );
 
 
-    const valorTotal =
-        Number(total || 0);
+    const t =
+        Number(
+            total || 0
+        );
 
 
     if (
-        valorPrecio > 0 &&
-        valorTotal > 0
+        p > 0 &&
+        t > 0
     ) {
 
         return (
-            valorTotal /
-            valorPrecio
+            t /
+            p
         );
 
     }
 
 
     return (
-        Number(alternativa || 0)
+        Number(
+            alternativa || 0
+        )
     );
 
 }
 
 
 // =====================================
-// NOMBRE DEL ARCHIVO
+// ARCHIVO
 // =====================================
 
-function limpiarNombreArchivo(texto) {
+function limpiarNombreArchivo(
+    texto
+) {
 
-    return String(texto || "")
+    return String(
+        texto || ""
+    )
         .replace(
             /[\\/:*?"<>|]/g,
             ""
@@ -269,10 +337,6 @@ function limpiarNombreArchivo(texto) {
 }
 
 
-// =====================================
-// DESCARGAR PDF
-// =====================================
-
 function descargarBytes(
     bytes,
     nombreArchivo
@@ -280,7 +344,9 @@ function descargarBytes(
 
     const blob =
         new Blob(
-            [bytes],
+            [
+                bytes
+            ],
             {
                 type:
                     "application/pdf"
@@ -295,9 +361,10 @@ function descargarBytes(
 
 
     const enlace =
-        document.createElement(
-            "a"
-        );
+        document
+            .createElement(
+                "a"
+            );
 
 
     enlace.href =
@@ -308,9 +375,10 @@ function descargarBytes(
         nombreArchivo;
 
 
-    document.body.appendChild(
-        enlace
-    );
+    document.body
+        .appendChild(
+            enlace
+        );
 
 
     enlace.click();
@@ -334,7 +402,7 @@ function descargarBytes(
 
 
 // =====================================
-// OBTENER PRESUPUESTO DESDE SUPABASE
+// PRESUPUESTO DESDE SUPABASE
 // =====================================
 
 async function obtenerPresupuestoPDF() {
@@ -346,7 +414,9 @@ async function obtenerPresupuestoPDF() {
 
 
     const id =
-        parametros.get("id");
+        parametros.get(
+            "id"
+        );
 
 
     if (!id) {
@@ -358,9 +428,14 @@ async function obtenerPresupuestoPDF() {
     }
 
 
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient
-            .from("presupuestos")
+            .from(
+                "presupuestos"
+            )
             .select("*")
             .eq(
                 "id",
@@ -382,7 +457,7 @@ async function obtenerPresupuestoPDF() {
 
 
 // =====================================
-// FUNCIONES PARA ESCRIBIR
+// FUNCIONES DE DIBUJO
 // =====================================
 
 function dibujarTexto(
@@ -396,7 +471,9 @@ function dibujarTexto(
 ) {
 
     const valor =
-        textoSeguro(texto);
+        textoSeguro(
+            texto
+        );
 
 
     if (!valor) {
@@ -409,12 +486,74 @@ function dibujarTexto(
     page.drawText(
         valor,
         {
-            x: x,
-            y: y,
-            size: size,
-            font: font,
-            color: color
+            x:
+                x,
+
+            y:
+                y,
+
+            size:
+                size,
+
+            font:
+                font,
+
+            color:
+                color
         }
+    );
+
+}
+
+
+function tamanoAjustado(
+    font,
+    texto,
+    size,
+    anchoMaximo,
+    minimo = 4.2
+) {
+
+    const valor =
+        textoSeguro(
+            texto
+        );
+
+
+    if (
+        !valor ||
+        !anchoMaximo
+    ) {
+
+        return size;
+
+    }
+
+
+    let resultado =
+        size;
+
+
+    while (
+        resultado >
+            minimo &&
+        font
+            .widthOfTextAtSize(
+                valor,
+                resultado
+            ) >
+            anchoMaximo
+    ) {
+
+        resultado -=
+            0.2;
+
+    }
+
+
+    return Math.max(
+        resultado,
+        minimo
     );
 
 }
@@ -427,11 +566,14 @@ function dibujarCentrado(
     centroX,
     y,
     size = 7,
-    color = NEGRO
+    color = NEGRO,
+    anchoMaximo = null
 ) {
 
     const valor =
-        textoSeguro(texto);
+        textoSeguro(
+            texto
+        );
 
 
     if (!valor) {
@@ -441,11 +583,21 @@ function dibujarCentrado(
     }
 
 
-    const ancho =
-        font.widthOfTextAtSize(
+    const sizeFinal =
+        tamanoAjustado(
+            font,
             valor,
-            size
+            size,
+            anchoMaximo
         );
+
+
+    const ancho =
+        font
+            .widthOfTextAtSize(
+                valor,
+                sizeFinal
+            );
 
 
     page.drawText(
@@ -453,15 +605,20 @@ function dibujarCentrado(
         {
             x:
                 centroX -
-                ancho / 2,
+                ancho /
+                2,
 
-            y: y,
+            y:
+                y,
 
-            size: size,
+            size:
+                sizeFinal,
 
-            font: font,
+            font:
+                font,
 
-            color: color
+            color:
+                color
         }
     );
 
@@ -475,11 +632,14 @@ function dibujarDerecha(
     derechaX,
     y,
     size = 7,
-    color = NEGRO
+    color = NEGRO,
+    anchoMaximo = null
 ) {
 
     const valor =
-        textoSeguro(texto);
+        textoSeguro(
+            texto
+        );
 
 
     if (!valor) {
@@ -489,11 +649,21 @@ function dibujarDerecha(
     }
 
 
-    const ancho =
-        font.widthOfTextAtSize(
+    const sizeFinal =
+        tamanoAjustado(
+            font,
             valor,
-            size
+            size,
+            anchoMaximo
         );
+
+
+    const ancho =
+        font
+            .widthOfTextAtSize(
+                valor,
+                sizeFinal
+            );
 
 
     page.drawText(
@@ -503,22 +673,22 @@ function dibujarDerecha(
                 derechaX -
                 ancho,
 
-            y: y,
+            y:
+                y,
 
-            size: size,
+            size:
+                sizeFinal,
 
-            font: font,
+            font:
+                font,
 
-            color: color
+            color:
+                color
         }
     );
 
 }
 
-
-// =====================================
-// DIBUJAR $ Y VALOR SEPARADOS
-// =====================================
 
 function dibujarDineroSeparado(
     page,
@@ -532,7 +702,9 @@ function dibujarDineroSeparado(
 ) {
 
     const numero =
-        Number(valor || 0);
+        Number(
+            valor || 0
+        );
 
 
     dibujarTexto(
@@ -549,15 +721,86 @@ function dibujarDineroSeparado(
     dibujarDerecha(
         page,
         font,
-        numero === 0
+        numero ===
+            0
             ? "-"
-            : dineroNumero(numero),
-
+            : dineroNumero(
+                numero
+            ),
         derechaNumero,
         y,
         size,
         color
     );
+
+}
+
+
+// =====================================
+// ESPACIADO DE VARIAS FILAS
+// =====================================
+
+function parametrosFilas(
+    cantidad,
+    yInicial,
+    yMinimo,
+    sizeBase
+) {
+
+    if (
+        cantidad <=
+        1
+    ) {
+
+        return {
+
+            paso:
+                0,
+
+            size:
+                sizeBase
+
+        };
+
+    }
+
+
+    const espacio =
+        yInicial -
+        yMinimo;
+
+
+    const paso =
+        Math.min(
+            11,
+            espacio /
+            (
+                cantidad -
+                1
+            )
+        );
+
+
+    const size =
+        Math.min(
+            sizeBase,
+            Math.max(
+                4.2,
+                paso *
+                0.68
+            )
+        );
+
+
+    return {
+
+        paso:
+            paso,
+
+        size:
+            size
+
+    };
 
 }
 
@@ -571,85 +814,254 @@ function datosNormalizados(
 ) {
 
     const datos =
-        presupuesto.datos || {};
-
-
-    const hormigon =
-        datos.hormigon || {};
-
-
-    const aditivo =
-        datos.aditivo || {};
+        presupuesto.datos ||
+        {};
 
 
     const servicios =
-        datos.servicios || {};
+        datos.servicios ||
+        {};
 
 
     const bomba =
-        servicios.bomba || {};
+        servicios.bomba ||
+        {};
 
 
     const vibrador =
-        servicios.vibrador || {};
+        servicios.vibrador ||
+        {};
 
 
-    const cantidadHormigon =
-        Number(
-            hormigon.cantidad || 0
+    let hormigones =
+        [];
+
+
+    if (
+        Array.isArray(
+            datos.hormigones
+        ) &&
+        datos.hormigones
+            .length
+    ) {
+
+        hormigones =
+            datos.hormigones;
+
+    } else if (
+        datos.hormigon &&
+        datos.hormigon.tipo
+    ) {
+
+        hormigones = [
+            datos.hormigon
+        ];
+
+    }
+
+
+    hormigones =
+        hormigones.map(
+            h => ({
+
+                ...h,
+
+                cantidad:
+                    Number(
+                        h.cantidad ||
+                        0
+                    ),
+
+                distancia:
+                    Number(
+                        h.distancia ||
+                        0
+                    ),
+
+                precioM3:
+                    Number(
+                        h.precioM3 ||
+                        0
+                    ),
+
+                total:
+                    Number(
+                        h.total ||
+                        0
+                    )
+
+            })
         );
 
 
-    const cantidadAditivo =
-        cantidadInferida(
-            aditivo.cantidad,
-            aditivo.total,
-            aditivo.precioM3,
-            aditivo.tipo
-                ? cantidadHormigon
-                : 0
+    let aditivos =
+        [];
+
+
+    if (
+        Array.isArray(
+            datos.aditivos
+        )
+    ) {
+
+        aditivos =
+            datos.aditivos;
+
+    } else if (
+        datos.aditivo &&
+        datos.aditivo.tipo
+    ) {
+
+        aditivos = [
+
+            {
+
+                ...datos.aditivo,
+
+                hormigonTipo:
+
+                    datos.aditivo
+                        .hormigonTipo ||
+
+                    (
+                        hormigones[0]
+                            ? hormigones[0]
+                                .tipo
+                            : ""
+                    )
+
+            }
+
+        ];
+
+    }
+
+
+    const cantidadPrimerHormigon =
+
+        hormigones[0]
+
+            ? Number(
+                hormigones[0]
+                    .cantidad ||
+                0
+            )
+
+            : 0;
+
+
+    aditivos =
+        aditivos.map(
+            a => ({
+
+                ...a,
+
+                cantidad:
+                    cantidadInferida(
+
+                        a.cantidad,
+
+                        a.total,
+
+                        a.precioM3,
+
+                        a.tipo
+                            ? cantidadPrimerHormigon
+                            : 0
+
+                    ),
+
+                precioM3:
+                    Number(
+                        a.precioM3 ||
+                        0
+                    ),
+
+                total:
+                    Number(
+                        a.total ||
+                        0
+                    )
+
+            })
         );
 
 
     const cantidadBomba =
         cantidadInferida(
+
             bomba.cantidad,
+
             bomba.total,
+
             bomba.precio,
+
             0
+
         );
 
 
     const cantidadVibrador =
         cantidadInferida(
+
             vibrador.cantidad,
+
             vibrador.total,
+
             vibrador.precio,
+
             0
+
         );
 
 
     const totalHormigon =
-        Number(
-            hormigon.total || 0
+        hormigones.reduce(
+
+            (
+                suma,
+                h
+            ) =>
+                suma +
+                Number(
+                    h.total ||
+                    0
+                ),
+
+            0
+
         );
 
 
     const totalAditivo =
-        Number(
-            aditivo.total || 0
+        aditivos.reduce(
+
+            (
+                suma,
+                a
+            ) =>
+                suma +
+                Number(
+                    a.total ||
+                    0
+                ),
+
+            0
+
         );
 
 
     const totalBomba =
         Number(
-            bomba.total || 0
+            bomba.total ||
+            0
         );
 
 
     const totalVibrador =
         Number(
-            vibrador.total || 0
+            vibrador.total ||
+            0
         );
 
 
@@ -660,58 +1072,64 @@ function datosNormalizados(
 
     const descuento =
         Number(
-            datos.descuento || 0
+            datos.descuento ||
+            0
         );
 
 
     const totalFinal =
         Number(
-            presupuesto.total_final ||
+
+            presupuesto
+                .total_final ||
+
             datos.totalFinal ||
+
             0
+
         );
 
 
     let subtotal =
         Number(
-            datos.subtotalSinIVA || 0
+            datos.subtotalSinIVA ||
+            0
         );
 
 
     if (!subtotal) {
 
-        if (
-            presupuesto.tipo_planilla ===
+        subtotal =
+
+            presupuesto
+                .tipo_planilla ===
             "PresupuestosM3+IVA"
-        ) {
 
-            subtotal =
-                totalFinal / 1.21;
+                ? totalFinal /
+                    1.21
 
-        } else {
-
-            subtotal =
-                totalFinal;
-
-        }
+                : totalFinal;
 
     }
 
 
     let iva =
         Number(
-            datos.iva21 || 0
+            datos.iva21 ||
+            0
         );
 
 
     if (
         !iva &&
-        presupuesto.tipo_planilla ===
+        presupuesto
+            .tipo_planilla ===
         "PresupuestosM3+IVA"
     ) {
 
         iva =
-            subtotal * 0.21;
+            subtotal *
+            0.21;
 
     }
 
@@ -721,23 +1139,17 @@ function datosNormalizados(
         datos:
             datos,
 
-        hormigon:
-            hormigon,
+        hormigones:
+            hormigones,
 
-        aditivo:
-            aditivo,
+        aditivos:
+            aditivos,
 
         bomba:
             bomba,
 
         vibrador:
             vibrador,
-
-        cantidadHormigon:
-            cantidadHormigon,
-
-        cantidadAditivo:
-            cantidadAditivo,
 
         cantidadBomba:
             cantidadBomba,
@@ -778,19 +1190,31 @@ function datosNormalizados(
 
 
 // =====================================
-// ABRIR PLANTILLA
+// CARGAR PLANTILLA
 // =====================================
 
-async function cargarPlantilla(ruta) {
+async function cargarPlantilla(
+    ruta
+) {
 
-    const respuesta = await fetch(
-        ruta + "?v=" + Date.now(),
-        {
-            cache: "no-store"
-        }
-    );
+    const respuesta =
+        await fetch(
 
-    if (!respuesta.ok) {
+            ruta +
+            "?v=" +
+            Date.now(),
+
+            {
+                cache:
+                    "no-store"
+            }
+
+        );
+
+
+    if (
+        !respuesta.ok
+    ) {
 
         throw new Error(
             `No se pudo abrir la plantilla: ${ruta}`
@@ -798,501 +1222,1046 @@ async function cargarPlantilla(ruta) {
 
     }
 
-    return await respuesta.arrayBuffer();
+
+    return await respuesta
+        .arrayBuffer();
+
 }
 
 
 // =====================================
-// GENERAR PRESUPUESTO M3 SIN IVA
+// CONFIGURACIÓN M3
 // =====================================
 
-async function generarM3(
-    presupuesto
-) {
+const CONFIG_M3 = {
 
-    const plantilla =
-        await cargarPlantilla(
-            "assets/plantilla-m3.pdf"
-        );
+    conIVA:
+        false,
 
-
-    const pdfDoc =
-        await PDFDocument.load(
-            plantilla
-        );
+    plantilla:
+        "assets/plantilla-m3.pdf",
 
 
-    const page =
-        pdfDoc.getPages()[0];
+    general: {
+
+        senores:
+            [
+                89.1,
+                687.4,
+                6.8
+            ],
+
+        atencion:
+            [
+                89.1,
+                672.5,
+                6.8
+            ],
+
+        destino:
+            [
+                89.1,
+                658.7,
+                6.8
+            ],
+
+        fecha:
+            [
+                542.6,
+                687.4,
+                6.8
+            ],
+
+        numero:
+            [
+                542.6,
+                672.5,
+                6.8
+            ]
+
+    },
 
 
-    const normal =
-        await pdfDoc.embedFont(
-            StandardFonts.Helvetica
-        );
+    totalHormigon:
+        [
+            480.9,
+            540.3,
+            623.9,
+            6.8
+        ],
 
 
-    const negrita =
-        await pdfDoc.embedFont(
-            StandardFonts.HelveticaBold
-        );
+    totalAditivo:
+        [
+            480.9,
+            540.3,
+            551.2,
+            6.8
+        ],
 
 
-    const d =
-        datosNormalizados(
-            presupuesto
-        );
+    totalServicios:
+        [
+            480.9,
+            540.3,
+            478.5,
+            6.8
+        ],
 
 
-    // =====================================
-    // DATOS GENERALES
-    // =====================================
+    hormigon: {
 
-    dibujarTexto(
-        page,
-        normal,
-        presupuesto.senores,
-        89.1,
-        687.4,
-        6.8
-    );
+        y:
+            604.4,
 
+        yMin:
+            560.0,
 
-    dibujarTexto(
-        page,
-        normal,
-        d.datos.atencion || "",
-        89.1,
-        672.5,
-        6.8
-    );
+        size:
+            6.8,
 
+        tipo:
+            [
+                114.4,
+                55
+            ],
 
-    dibujarTexto(
-        page,
-        normal,
-        d.datos.destino || "",
-        89.1,
-        658.7,
-        6.8
-    );
-
-
-    dibujarDerecha(
-        page,
-        normal,
-        fechaAR(
-            presupuesto.fecha
-        ),
-        542.6,
-        687.4,
-        6.8
-    );
-
-
-    dibujarDerecha(
-        page,
-        normal,
-        presupuesto.presupuesto_numero,
-        542.6,
-        672.5,
-        6.8
-    );
-
-
-    // =====================================
-    // TOTAL BARRA HORMIGÓN
-    // =====================================
-
-    dibujarDineroSeparado(
-        page,
-        negrita,
-        d.totalHormigon,
-        480.9,
-        540.3,
-        623.9,
-        6.8,
-        BLANCO
-    );
-
-
-    // =====================================
-    // FILA HORMIGÓN
-    // =====================================
-
-    dibujarCentrado(
-        page,
-        normal,
-        tipoHormigonPDF(
-            d.hormigon.tipo
-        ),
-        114.4,
-        604.4,
-        6.8
-    );
-
-
-    dibujarCentrado(
-        page,
-        normal,
-        numeroAR(
-            d.cantidadHormigon
-        ),
-        163.8,
-        604.4,
-        6.8
-    );
-
-
-    dibujarCentrado(
-        page,
-        normal,
-        d.hormigon.cemento ||
-        "CPP40 KG",
-        211.7,
-        604.4,
-        6.8
-    );
-
-
-    dibujarCentrado(
-        page,
-        normal,
-        `${numeroAR(
-            d.hormigon.distancia
-        )} KM`,
-        257.8,
-        604.4,
-        6.8
-    );
-
-
-    dibujarDerecha(
-        page,
-        normal,
-        dineroCompleto(
-            d.hormigon.precioM3
-        ),
-        322.9,
-        604.4,
-        6.8
-    );
-
-
-    dibujarDineroSeparado(
-        page,
-        normal,
-        d.totalHormigon,
-        336.0,
-        388.8,
-        604.4,
-        6.8
-    );
-
-
-    // =====================================
-    // TOTAL BARRA ADITIVO
-    // =====================================
-
-    dibujarDineroSeparado(
-        page,
-        negrita,
-        d.totalAditivo,
-        480.9,
-        540.3,
-        551.2,
-        6.8,
-        BLANCO
-    );
-
-
-    // =====================================
-    // FILA ADITIVO
-    // =====================================
-
-    dibujarCentrado(
-        page,
-        normal,
-        tipoHormigonPDF(
-            d.hormigon.tipo
-        ),
-        114.4,
-        531.8,
-        6.8
-    );
-
-
-    if (d.aditivo.tipo) {
-
-        dibujarCentrado(
-            page,
-            normal,
-            numeroAR(
-                d.cantidadAditivo
-            ),
+        cantidad:
             163.8,
+
+        cemento:
+            [
+                211.7,
+                61
+            ],
+
+        distancia:
+            [
+                257.8,
+                45
+            ],
+
+        precio:
+            [
+                322.9,
+                61
+            ],
+
+        total:
+            [
+                336.0,
+                388.8
+            ]
+
+    },
+
+
+    aditivo: {
+
+        y:
             531.8,
-            6.8
-        );
+
+        yMin:
+            488.5,
+
+        size:
+            6.8,
+
+        tipoHormigon:
+            [
+                114.4,
+                55
+            ],
+
+        cantidad:
+            163.8,
+
+        nombre:
+            [
+                232.0,
+                108
+            ],
+
+        precio:
+            [
+                319.1,
+                60
+            ],
+
+        total:
+            [
+                336.0,
+                388.8
+            ]
+
+    },
 
 
-        dibujarCentrado(
-            page,
-            normal,
-            nombreAditivoPDF(
-                d.aditivo.tipo,
-                false
-            ),
-            232.0,
-            532.5,
-            5.45
-        );
+    bomba: {
 
-
-        dibujarDerecha(
-            page,
-            normal,
-            dineroCompleto(
-                d.aditivo.precioM3
-            ),
-            319.1,
-            531.8,
-            6.8
-        );
-
-    }
-
-
-    dibujarDineroSeparado(
-        page,
-        normal,
-        d.totalAditivo,
-        336.0,
-        388.8,
-        531.8,
-        6.8
-    );
-
-
-    // =====================================
-    // TOTAL BARRA SERVICIOS
-    // =====================================
-
-    dibujarDineroSeparado(
-        page,
-        negrita,
-        d.totalServicios,
-        480.9,
-        540.3,
-        478.5,
-        6.8,
-        BLANCO
-    );
-
-
-    // =====================================
-    // BOMBA
-    // =====================================
-
-    if (
-        d.cantidadBomba > 0
-    ) {
-
-        dibujarCentrado(
-            page,
-            normal,
-            numeroAR(
-                d.cantidadBomba
-            ),
-            114.4,
+        y:
             441.7,
-            6.8
-        );
 
+        cantidad:
+            114.4,
 
-        dibujarCentrado(
-            page,
-            normal,
-            "De 01 m3 a 30 m3",
+        rango:
             210.0,
-            441.7,
+
+        precio:
+            [
+                282.3,
+                327.9
+            ],
+
+        total:
+            [
+                336.0,
+                388.8
+            ],
+
+        size:
             6.8
-        );
+
+    },
 
 
-        dibujarDineroSeparado(
-            page,
-            normal,
-            d.bomba.precio,
-            282.3,
-            327.9,
-            441.7,
-            6.8
-        );
+    vibrador: {
 
-    } else {
+        y:
+            394.1,
 
-        dibujarDineroSeparado(
-            page,
-            normal,
-            0,
-            282.3,
-            327.9,
-            441.7,
-            6.8
-        );
-
-    }
-
-
-    dibujarDineroSeparado(
-        page,
-        normal,
-        d.totalBomba,
-        336.0,
-        388.8,
-        441.7,
-        6.8
-    );
-
-
-    // =====================================
-    // VIBRADOR
-    // =====================================
-
-    if (
-        d.cantidadVibrador > 0
-    ) {
-
-        dibujarCentrado(
-            page,
-            normal,
-            numeroAR(
-                d.cantidadVibrador
-            ),
+        cantidad:
             114.4,
-            394.1,
-            6.8
-        );
 
-
-        dibujarCentrado(
-            page,
-            normal,
-            "1",
+        unidad:
             209.9,
-            394.1,
+
+        precio:
+            [
+                282.3,
+                327.9
+            ],
+
+        total:
+            [
+                336.0,
+                388.8
+            ],
+
+        size:
             6.8
+
+    },
+
+
+    descuento:
+        [
+            481.1,
+            540.1,
+            379.6,
+            7.5
+        ],
+
+
+    totalFinal:
+        [
+            481.1,
+            540.1,
+            364.7,
+            7.5
+        ]
+
+};
+
+
+// =====================================
+// CONFIGURACIÓN IVA
+// =====================================
+
+const CONFIG_IVA = {
+
+    conIVA:
+        true,
+
+    plantilla:
+        "assets/plantilla-m3-iva.pdf",
+
+
+    general: {
+
+        senores:
+            [
+                60.6,
+                696.9,
+                7.08
+            ],
+
+        cuit:
+            [
+                330.0,
+                696.9,
+                7.08
+            ],
+
+        atencion:
+            [
+                60.6,
+                681.5,
+                7.08
+            ],
+
+        destino:
+            [
+                60.6,
+                666.6,
+                7.08
+            ],
+
+        fecha:
+            [
+                526.4,
+                696.9,
+                7.08
+            ],
+
+        numero:
+            [
+                526.4,
+                681.5,
+                7.08
+            ]
+
+    },
+
+
+    totalHormigon:
+        [
+            462.3,
+            524.0,
+            633.7,
+            7.08
+        ],
+
+
+    totalAditivo:
+        [
+            462.3,
+            524.0,
+            572.1,
+            7.08
+        ],
+
+
+    totalServicios:
+        [
+            462.3,
+            524.0,
+            496.7,
+            7.08
+        ],
+
+
+    hormigon: {
+
+        y:
+            613.5,
+
+        yMin:
+            580.5,
+
+        size:
+            7.08,
+
+        tipo:
+            [
+                79.2,
+                48
+            ],
+
+        cantidad:
+            120.0,
+
+        cemento:
+            [
+                173.7,
+                64
+            ],
+
+        distancia:
+            [
+                232.9,
+                51
+            ],
+
+        precio:
+            [
+                308.5,
+                69
+            ],
+
+        total:
+            [
+                325.3,
+                383.8
+            ]
+
+    },
+
+
+    aditivo: {
+
+        y:
+            551.9,
+
+        yMin:
+            506.0,
+
+        size:
+            7.08,
+
+        tipoHormigon:
+            [
+                79.2,
+                48
+            ],
+
+        cantidad:
+            120.0,
+
+        nombre:
+            [
+                199.7,
+                128
+            ],
+
+        precio:
+            [
+                304.6,
+                69
+            ],
+
+        total:
+            [
+                325.3,
+                383.8
+            ]
+
+    },
+
+
+    bomba: {
+
+        y:
+            458.4,
+
+        cantidad:
+            79.2,
+
+        rango:
+            179.2,
+
+        precio:
+            [
+                263.2,
+                316.9
+            ],
+
+        total:
+            [
+                325.3,
+                383.8
+            ],
+
+        size:
+            7.08
+
+    },
+
+
+    vibrador: {
+
+        y:
+            409.0,
+
+        cantidad:
+            79.2,
+
+        unidad:
+            179.2,
+
+        precio:
+            [
+                263.2,
+                316.9
+            ],
+
+        total:
+            [
+                325.3,
+                383.8
+            ],
+
+        size:
+            7.08
+
+    },
+
+
+    descuento:
+        [
+            462.6,
+            523.8,
+            394.0,
+            7.79
+        ],
+
+
+    subtotal:
+        [
+            462.6,
+            523.8,
+            378.6,
+            7.79
+        ],
+
+
+    iva:
+        [
+            462.6,
+            523.8,
+            362.3,
+            7.79
+        ],
+
+
+    totalFinal:
+        [
+            462.6,
+            523.8,
+            345.7,
+            7.79
+        ]
+
+};
+
+
+// =====================================
+// DIBUJAR HORMIGONES
+// =====================================
+
+function dibujarHormigones(
+    page,
+    normal,
+    d,
+    config
+) {
+
+    const c =
+        config.hormigon;
+
+
+    const filas =
+        parametrosFilas(
+
+            d.hormigones
+                .length,
+
+            c.y,
+
+            c.yMin,
+
+            c.size
+
         );
 
 
-        dibujarDineroSeparado(
-            page,
-            normal,
-            d.vibrador.precio,
-            282.3,
-            327.9,
-            394.1,
-            6.8
+    d.hormigones
+        .forEach(
+            (
+                h,
+                indice
+            ) => {
+
+                const y =
+                    c.y -
+                    indice *
+                    filas.paso;
+
+
+                const size =
+                    filas.size;
+
+
+                dibujarCentrado(
+
+                    page,
+
+                    normal,
+
+                    tipoHormigonPDF(
+                        h.tipo
+                    ),
+
+                    c.tipo[0],
+
+                    y,
+
+                    size,
+
+                    NEGRO,
+
+                    c.tipo[1]
+
+                );
+
+
+                dibujarCentrado(
+
+                    page,
+
+                    normal,
+
+                    numeroAR(
+                        h.cantidad
+                    ),
+
+                    c.cantidad,
+
+                    y,
+
+                    size
+
+                );
+
+
+                dibujarCentrado(
+
+                    page,
+
+                    normal,
+
+                    h.cemento ||
+                    "CPP40 KG",
+
+                    c.cemento[0],
+
+                    y,
+
+                    size,
+
+                    NEGRO,
+
+                    c.cemento[1]
+
+                );
+
+
+                dibujarCentrado(
+
+                    page,
+
+                    normal,
+
+                    `${numeroAR(
+                        h.distancia
+                    )} KM`,
+
+                    c.distancia[0],
+
+                    y,
+
+                    size,
+
+                    NEGRO,
+
+                    c.distancia[1]
+
+                );
+
+
+                dibujarDerecha(
+
+                    page,
+
+                    normal,
+
+                    dineroCompleto(
+                        h.precioM3
+                    ),
+
+                    c.precio[0],
+
+                    y,
+
+                    size,
+
+                    NEGRO,
+
+                    c.precio[1]
+
+                );
+
+
+                dibujarDineroSeparado(
+
+                    page,
+
+                    normal,
+
+                    h.total,
+
+                    c.total[0],
+
+                    c.total[1],
+
+                    y,
+
+                    size
+
+                );
+
+            }
         );
-
-    } else {
-
-        dibujarDineroSeparado(
-            page,
-            normal,
-            0,
-            282.3,
-            327.9,
-            394.1,
-            6.8
-        );
-
-    }
-
-
-    dibujarDineroSeparado(
-        page,
-        normal,
-        d.totalVibrador,
-        336.0,
-        388.8,
-        394.1,
-        6.8
-    );
-
-
-    // =====================================
-    // DESCUENTO
-    // =====================================
-
-    dibujarDineroSeparado(
-        page,
-        negrita,
-        d.descuento,
-        481.1,
-        540.1,
-        379.6,
-        7.5,
-        BLANCO
-    );
-
-
-    // =====================================
-    // TOTAL SIN IVA
-    // =====================================
-
-    dibujarDineroSeparado(
-        page,
-        negrita,
-        d.totalFinal,
-        481.1,
-        540.1,
-        364.7,
-        7.5,
-        BLANCO
-    );
-
-
-    return await pdfDoc.save();
 
 }
 
 
 // =====================================
-// GENERAR PRESUPUESTO M3 + IVA
+// DIBUJAR ADITIVOS
 // =====================================
 
-async function generarM3IVA(
-    presupuesto
+function dibujarAditivos(
+    page,
+    normal,
+    d,
+    config
+) {
+
+    const c =
+        config.aditivo;
+
+
+    const filas =
+        parametrosFilas(
+
+            d.aditivos
+                .length,
+
+            c.y,
+
+            c.yMin,
+
+            c.size
+
+        );
+
+
+    d.aditivos
+        .forEach(
+            (
+                a,
+                indice
+            ) => {
+
+                const y =
+                    c.y -
+                    indice *
+                    filas.paso;
+
+
+                const size =
+                    filas.size;
+
+
+                dibujarCentrado(
+
+                    page,
+
+                    normal,
+
+                    tipoHormigonPDF(
+                        a.hormigonTipo
+                    ),
+
+                    c.tipoHormigon[0],
+
+                    y,
+
+                    size,
+
+                    NEGRO,
+
+                    c.tipoHormigon[1]
+
+                );
+
+
+                dibujarCentrado(
+
+                    page,
+
+                    normal,
+
+                    numeroAR(
+                        a.cantidad
+                    ),
+
+                    c.cantidad,
+
+                    y,
+
+                    size
+
+                );
+
+
+                dibujarCentrado(
+
+                    page,
+
+                    normal,
+
+                    nombreAditivoPDF(
+                        a.tipo,
+                        config.conIVA
+                    ),
+
+                    c.nombre[0],
+
+                    y,
+
+                    size,
+
+                    NEGRO,
+
+                    c.nombre[1]
+
+                );
+
+
+                dibujarDerecha(
+
+                    page,
+
+                    normal,
+
+                    dineroCompleto(
+                        a.precioM3
+                    ),
+
+                    c.precio[0],
+
+                    y,
+
+                    size,
+
+                    NEGRO,
+
+                    c.precio[1]
+
+                );
+
+
+                dibujarDineroSeparado(
+
+                    page,
+
+                    normal,
+
+                    a.total,
+
+                    c.total[0],
+
+                    c.total[1],
+
+                    y,
+
+                    size
+
+                );
+
+            }
+        );
+
+}
+
+
+// =====================================
+// DIBUJAR SERVICIO
+// =====================================
+
+function dibujarServicio(
+    page,
+    normal,
+    servicio,
+    cantidad,
+    config,
+    esBomba
+) {
+
+    const y =
+        config.y;
+
+
+    const size =
+        config.size;
+
+
+    if (
+        cantidad >
+        0
+    ) {
+
+        dibujarCentrado(
+
+            page,
+
+            normal,
+
+            numeroAR(
+                cantidad
+            ),
+
+            config.cantidad,
+
+            y,
+
+            size
+
+        );
+
+
+        dibujarCentrado(
+
+            page,
+
+            normal,
+
+            esBomba
+
+                ? "De 01 m3 a 30 m3"
+
+                : "1",
+
+            esBomba
+
+                ? config.rango
+
+                : config.unidad,
+
+            y,
+
+            size
+
+        );
+
+
+        dibujarDineroSeparado(
+
+            page,
+
+            normal,
+
+            servicio.precio,
+
+            config.precio[0],
+
+            config.precio[1],
+
+            y,
+
+            size
+
+        );
+
+
+    } else {
+
+
+        dibujarDineroSeparado(
+
+            page,
+
+            normal,
+
+            0,
+
+            config.precio[0],
+
+            config.precio[1],
+
+            y,
+
+            size
+
+        );
+
+    }
+
+
+    dibujarDineroSeparado(
+
+        page,
+
+        normal,
+
+        servicio.total,
+
+        config.total[0],
+
+        config.total[1],
+
+        y,
+
+        size
+
+    );
+
+}
+
+
+// =====================================
+// GENERADOR PRINCIPAL
+// =====================================
+
+async function generarConConfig(
+    presupuesto,
+    config
 ) {
 
     const plantilla =
         await cargarPlantilla(
-            "assets/plantilla-m3-iva.pdf"
+            config.plantilla
         );
 
 
     const pdfDoc =
-        await PDFDocument.load(
-            plantilla
-        );
+        await PDFDocument
+            .load(
+                plantilla
+            );
 
 
     const page =
-        pdfDoc.getPages()[0];
+        pdfDoc
+            .getPages()[0];
 
 
     const normal =
-        await pdfDoc.embedFont(
-            StandardFonts.Helvetica
-        );
+        await pdfDoc
+            .embedFont(
+                StandardFonts
+                    .Helvetica
+            );
 
 
     const negrita =
-        await pdfDoc.embedFont(
-            StandardFonts.HelveticaBold
-        );
+        await pdfDoc
+            .embedFont(
+                StandardFonts
+                    .HelveticaBold
+            );
 
 
     const d =
@@ -1301,391 +2270,272 @@ async function generarM3IVA(
         );
 
 
+    const g =
+        config.general;
+
+
     // =====================================
     // DATOS GENERALES
     // =====================================
 
     dibujarTexto(
+
         page,
+
         normal,
+
         presupuesto.senores,
-        60.6,
-        696.9,
-        7.08
+
+        g.senores[0],
+
+        g.senores[1],
+
+        g.senores[2]
+
+    );
+
+
+    if (
+        config.conIVA
+    ) {
+
+        dibujarTexto(
+
+            page,
+
+            normal,
+
+            d.datos.cuit ||
+            "",
+
+            g.cuit[0],
+
+            g.cuit[1],
+
+            g.cuit[2]
+
+        );
+
+    }
+
+
+    dibujarTexto(
+
+        page,
+
+        normal,
+
+        d.datos.atencion ||
+        "",
+
+        g.atencion[0],
+
+        g.atencion[1],
+
+        g.atencion[2]
+
     );
 
 
     dibujarTexto(
+
         page,
+
         normal,
-        d.datos.cuit || "",
-        330.0,
-        696.9,
-        7.08
-    );
 
+        d.datos.destino ||
+        "",
 
-    dibujarTexto(
-        page,
-        normal,
-        d.datos.atencion || "",
-        60.6,
-        681.5,
-        7.08
-    );
+        g.destino[0],
 
+        g.destino[1],
 
-    dibujarTexto(
-        page,
-        normal,
-        d.datos.destino || "",
-        60.6,
-        666.6,
-        7.08
+        g.destino[2]
+
     );
 
 
     dibujarDerecha(
+
         page,
+
         normal,
+
         fechaAR(
             presupuesto.fecha
         ),
-        526.4,
-        696.9,
-        7.08
+
+        g.fecha[0],
+
+        g.fecha[1],
+
+        g.fecha[2]
+
     );
 
 
     dibujarDerecha(
+
         page,
+
         normal,
-        presupuesto.presupuesto_numero,
-        526.4,
-        681.5,
-        7.08
+
+        presupuesto
+            .presupuesto_numero,
+
+        g.numero[0],
+
+        g.numero[1],
+
+        g.numero[2]
+
     );
 
 
     // =====================================
-    // TOTAL BARRA HORMIGÓN
+    // HORMIGÓN
     // =====================================
 
     dibujarDineroSeparado(
+
         page,
+
         negrita,
+
         d.totalHormigon,
-        462.3,
-        524.0,
-        633.7,
-        7.08,
+
+        config
+            .totalHormigon[0],
+
+        config
+            .totalHormigon[1],
+
+        config
+            .totalHormigon[2],
+
+        config
+            .totalHormigon[3],
+
         BLANCO
+
+    );
+
+
+    dibujarHormigones(
+
+        page,
+
+        normal,
+
+        d,
+
+        config
+
     );
 
 
     // =====================================
-    // FILA HORMIGÓN
-    // =====================================
-
-    dibujarCentrado(
-        page,
-        normal,
-        tipoHormigonPDF(
-            d.hormigon.tipo
-        ),
-        79.2,
-        613.5,
-        7.08
-    );
-
-
-    dibujarCentrado(
-        page,
-        normal,
-        numeroAR(
-            d.cantidadHormigon
-        ),
-        120.0,
-        613.5,
-        7.08
-    );
-
-
-    dibujarCentrado(
-        page,
-        normal,
-        d.hormigon.cemento ||
-        "CPP40 KG",
-        173.7,
-        613.5,
-        7.08
-    );
-
-
-    dibujarCentrado(
-        page,
-        normal,
-        `${numeroAR(
-            d.hormigon.distancia
-        )} KM`,
-        232.9,
-        613.5,
-        7.08
-    );
-
-
-    dibujarDerecha(
-        page,
-        normal,
-        dineroCompleto(
-            d.hormigon.precioM3
-        ),
-        308.5,
-        613.5,
-        7.08
-    );
-
-
-    dibujarDineroSeparado(
-        page,
-        normal,
-        d.totalHormigon,
-        325.3,
-        383.8,
-        613.5,
-        7.08
-    );
-
-
-    // =====================================
-    // TOTAL BARRA ADITIVO
+    // ADITIVOS
     // =====================================
 
     dibujarDineroSeparado(
+
         page,
+
         negrita,
+
         d.totalAditivo,
-        462.3,
-        524.0,
-        572.1,
-        7.08,
+
+        config
+            .totalAditivo[0],
+
+        config
+            .totalAditivo[1],
+
+        config
+            .totalAditivo[2],
+
+        config
+            .totalAditivo[3],
+
         BLANCO
+
     );
 
 
-    // =====================================
-    // FILA ADITIVO
-    // =====================================
+    dibujarAditivos(
 
-    dibujarCentrado(
         page,
+
         normal,
-        tipoHormigonPDF(
-            d.hormigon.tipo
-        ),
-        79.2,
-        551.9,
-        7.08
-    );
 
+        d,
 
-    if (d.aditivo.tipo) {
+        config
 
-        dibujarCentrado(
-            page,
-            normal,
-            numeroAR(
-                d.cantidadAditivo
-            ),
-            120.0,
-            551.9,
-            7.08
-        );
-
-
-        dibujarCentrado(
-            page,
-            normal,
-            nombreAditivoPDF(
-                d.aditivo.tipo,
-                true
-            ),
-            199.7,
-            552.7,
-            5.65
-        );
-
-
-        dibujarDerecha(
-            page,
-            normal,
-            dineroCompleto(
-                d.aditivo.precioM3
-            ),
-            304.6,
-            551.9,
-            7.08
-        );
-
-    }
-
-
-    dibujarDineroSeparado(
-        page,
-        normal,
-        d.totalAditivo,
-        325.3,
-        383.8,
-        551.9,
-        7.08
     );
 
 
     // =====================================
-    // TOTAL BARRA SERVICIOS
+    // SERVICIOS
     // =====================================
 
     dibujarDineroSeparado(
+
         page,
+
         negrita,
+
         d.totalServicios,
-        462.3,
-        524.0,
-        496.7,
-        7.08,
+
+        config
+            .totalServicios[0],
+
+        config
+            .totalServicios[1],
+
+        config
+            .totalServicios[2],
+
+        config
+            .totalServicios[3],
+
         BLANCO
+
     );
 
 
-    // =====================================
-    // BOMBA
-    // =====================================
+    dibujarServicio(
 
-    if (
-        d.cantidadBomba > 0
-    ) {
-
-        dibujarCentrado(
-            page,
-            normal,
-            numeroAR(
-                d.cantidadBomba
-            ),
-            79.2,
-            458.4,
-            7.08
-        );
-
-
-        dibujarCentrado(
-            page,
-            normal,
-            "De 01 m3 a 30 m3",
-            179.2,
-            458.4,
-            7.08
-        );
-
-
-        dibujarDineroSeparado(
-            page,
-            normal,
-            d.bomba.precio,
-            263.2,
-            316.9,
-            458.4,
-            7.08
-        );
-
-    } else {
-
-        dibujarDineroSeparado(
-            page,
-            normal,
-            0,
-            263.2,
-            316.9,
-            458.4,
-            7.08
-        );
-
-    }
-
-
-    dibujarDineroSeparado(
         page,
+
         normal,
-        d.totalBomba,
-        325.3,
-        383.8,
-        458.4,
-        7.08
+
+        d.bomba,
+
+        d.cantidadBomba,
+
+        config.bomba,
+
+        true
+
     );
 
 
-    // =====================================
-    // VIBRADOR
-    // =====================================
+    dibujarServicio(
 
-    if (
-        d.cantidadVibrador > 0
-    ) {
-
-        dibujarCentrado(
-            page,
-            normal,
-            numeroAR(
-                d.cantidadVibrador
-            ),
-            79.2,
-            409.0,
-            7.08
-        );
-
-
-        dibujarCentrado(
-            page,
-            normal,
-            "1",
-            179.2,
-            409.0,
-            7.08
-        );
-
-
-        dibujarDineroSeparado(
-            page,
-            normal,
-            d.vibrador.precio,
-            263.2,
-            316.9,
-            409.0,
-            7.08
-        );
-
-    } else {
-
-        dibujarDineroSeparado(
-            page,
-            normal,
-            0,
-            263.2,
-            316.9,
-            409.0,
-            7.08
-        );
-
-    }
-
-
-    dibujarDineroSeparado(
         page,
+
         normal,
-        d.totalVibrador,
-        325.3,
-        383.8,
-        409.0,
-        7.08
+
+        d.vibrador,
+
+        d.cantidadVibrador,
+
+        config.vibrador,
+
+        false
+
     );
 
 
@@ -1694,30 +2544,27 @@ async function generarM3IVA(
     // =====================================
 
     dibujarDineroSeparado(
+
         page,
+
         negrita,
+
         d.descuento,
-        462.6,
-        523.8,
-        394.0,
-        7.79,
+
+        config
+            .descuento[0],
+
+        config
+            .descuento[1],
+
+        config
+            .descuento[2],
+
+        config
+            .descuento[3],
+
         BLANCO
-    );
 
-
-    // =====================================
-    // SUBTOTAL SIN IVA
-    // =====================================
-
-    dibujarDineroSeparado(
-        page,
-        negrita,
-        d.subtotal,
-        462.6,
-        523.8,
-        378.6,
-        7.79,
-        BLANCO
     );
 
 
@@ -1725,41 +2572,133 @@ async function generarM3IVA(
     // IVA
     // =====================================
 
-    dibujarDineroSeparado(
-        page,
-        negrita,
-        d.iva,
-        462.6,
-        523.8,
-        362.3,
-        7.79,
-        BLANCO
-    );
+    if (
+        config.conIVA
+    ) {
+
+        dibujarDineroSeparado(
+
+            page,
+
+            negrita,
+
+            d.subtotal,
+
+            config
+                .subtotal[0],
+
+            config
+                .subtotal[1],
+
+            config
+                .subtotal[2],
+
+            config
+                .subtotal[3],
+
+            BLANCO
+
+        );
+
+
+        dibujarDineroSeparado(
+
+            page,
+
+            negrita,
+
+            d.iva,
+
+            config
+                .iva[0],
+
+            config
+                .iva[1],
+
+            config
+                .iva[2],
+
+            config
+                .iva[3],
+
+            BLANCO
+
+        );
+
+    }
 
 
     // =====================================
-    // TOTAL CON IVA
+    // TOTAL FINAL
     // =====================================
 
     dibujarDineroSeparado(
+
         page,
+
         negrita,
+
         d.totalFinal,
-        462.6,
-        523.8,
-        345.7,
-        7.79,
+
+        config
+            .totalFinal[0],
+
+        config
+            .totalFinal[1],
+
+        config
+            .totalFinal[2],
+
+        config
+            .totalFinal[3],
+
         BLANCO
+
     );
 
 
-    return await pdfDoc.save();
+    return await pdfDoc
+        .save();
 
 }
 
 
 // =====================================
-// GENERAR PDF
+// FUNCIONES QUE YA USA LA APP
+// =====================================
+
+async function generarM3(
+    presupuesto
+) {
+
+    return await generarConConfig(
+
+        presupuesto,
+
+        CONFIG_M3
+
+    );
+
+}
+
+
+async function generarM3IVA(
+    presupuesto
+) {
+
+    return await generarConConfig(
+
+        presupuesto,
+
+        CONFIG_IVA
+
+    );
+
+}
+
+
+// =====================================
+// GENERAR PDF DESDE HISTORIAL
 // =====================================
 
 async function generarPDFMonteverdi(
@@ -1780,13 +2719,14 @@ async function generarPDFMonteverdi(
 
     try {
 
-        // =====================================
-        // COMPROBAR SESIÓN
-        // =====================================
-
         const {
-            data: sesionData,
-            error: sesionError
+
+            data:
+                sesionData,
+
+            error:
+                sesionError
+
         } =
             await supabaseClient
                 .auth
@@ -1807,46 +2747,29 @@ async function generarPDFMonteverdi(
         }
 
 
-        // =====================================
-        // CARGAR PRESUPUESTO
-        // =====================================
-
         const presupuesto =
             await obtenerPresupuestoPDF();
 
 
         const conIVA =
-            presupuesto.tipo_planilla ===
+
+            presupuesto
+                .tipo_planilla ===
             "PresupuestosM3+IVA";
 
 
-        // =====================================
-        // ELEGIR PLANTILLA
-        // =====================================
+        const bytes =
 
-        let bytes;
+            conIVA
 
+                ? await generarM3IVA(
+                    presupuesto
+                )
 
-        if (conIVA) {
-
-            bytes =
-                await generarM3IVA(
+                : await generarM3(
                     presupuesto
                 );
 
-        } else {
-
-            bytes =
-                await generarM3(
-                    presupuesto
-                );
-
-        }
-
-
-        // =====================================
-        // NOMBRE
-        // =====================================
 
         const nombreArchivo =
             limpiarNombreArchivo(
@@ -1858,13 +2781,12 @@ async function generarPDFMonteverdi(
             );
 
 
-        // =====================================
-        // DESCARGAR
-        // =====================================
-
         descargarBytes(
+
             bytes,
+
             nombreArchivo
+
         );
 
 
@@ -1896,17 +2818,20 @@ async function generarPDFMonteverdi(
 
 
 // =====================================
-// BOTÓN GENERAR PDF
+// BOTÓN PDF DEL HISTORIAL
 // =====================================
 
 document.addEventListener(
     "click",
-    function (evento) {
+    function (
+        evento
+    ) {
 
         const boton =
-            evento.target.closest(
-                "#generarPDFHistorial"
-            );
+            evento.target
+                .closest(
+                    "#generarPDFHistorial"
+                );
 
 
         if (!boton) {

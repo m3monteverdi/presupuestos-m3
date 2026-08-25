@@ -2,61 +2,33 @@
 // GENERAR PDF DESDE EL FORMULARIO
 // =====================================
 
-
-// =====================================
-// ARMAR PRESUPUESTO ACTUAL
-// =====================================
-
 function construirPresupuestoActual() {
 
     const senores =
-        document
-            .getElementById("senores")
-            .value
-            .trim();
-
+        document.getElementById("senores").value.trim();
 
     const atencion =
-        document
-            .getElementById("atencion")
-            .value
-            .trim();
-
+        document.getElementById("atencion").value.trim();
 
     const destino =
-        document
-            .getElementById("destino")
-            .value
-            .trim();
-
+        document.getElementById("destino").value.trim();
 
     const fecha =
-        document
-            .getElementById("fecha")
-            .value;
-
-
-    const presupuestoNumero =
-        document
-            .getElementById(
-                "presupuestoNumero"
-            )
-            .value
-            .trim();
-
+        document.getElementById("fecha").value;
 
     const campoCUIT =
         document.getElementById("cuit");
-
 
     const cuit =
         campoCUIT
             ? campoCUIT.value.trim()
             : "";
 
-
     const tipoPlanilla =
         document.body.dataset.tipo;
+
+    const presupuestoNumero =
+        obtenerNumeroPresupuestoCompleto();
 
 
     // =====================================
@@ -64,72 +36,46 @@ function construirPresupuestoActual() {
     // =====================================
 
     if (!senores) {
-
-        alert(
-            "Debe completar Señores."
-        );
-
+        alert("Debe completar Señores.");
         return null;
-
     }
-
 
     if (!presupuestoNumero) {
-
-        alert(
-            "Debe completar Presupuesto N°."
-        );
-
+        alert("Debe completar Presupuesto N°.");
         return null;
-
-    }
-
-
-    if (!tipoHormigon.value) {
-
-        alert(
-            "Debe seleccionar un TIPO DE H°."
-        );
-
-        return null;
-
-    }
-
-
-    const cantidadHormigonActual =
-        parseFloat(
-            cantidadHormigon.value
-        ) || 0;
-
-
-    if (
-        cantidadHormigonActual <= 0
-    ) {
-
-        alert(
-            "Debe ingresar una cantidad de M3."
-        );
-
-        return null;
-
     }
 
 
     // =====================================
-    // CANTIDADES
+    // VARIOS HORMIGONES
     // =====================================
 
-    const cantidadAditivoActual =
-        parseFloat(
-            cantidadAditivo
-                ? cantidadAditivo.value
-                : 0
-        ) || 0;
+    const hormigones =
+        obtenerHormigonesParaGuardar();
 
+    if (hormigones.length === 0) {
+        alert(
+            "Debe agregar al menos un hormigón con cantidad mayor a 0."
+        );
+
+        return null;
+    }
+
+
+    // =====================================
+    // VARIOS ADITIVOS
+    // =====================================
+
+    const aditivos =
+        obtenerAditivosParaGuardar();
+
+
+    // =====================================
+    // SERVICIOS
+    // =====================================
 
     const cantidadBombaActual =
         obtenerCantidadBomba();
-
 
     const cantidadVibradorActual =
         obtenerCantidadVibrador();
@@ -156,21 +102,19 @@ function construirPresupuestoActual() {
 
 
     const valorIVA =
-        tipoPlanilla ===
-        "PresupuestosM3+IVA"
+        tipoPlanilla === "PresupuestosM3+IVA"
             ? subtotal * 0.21
             : 0;
 
 
     const totalFinal =
-        tipoPlanilla ===
-        "PresupuestosM3+IVA"
+        tipoPlanilla === "PresupuestosM3+IVA"
             ? subtotal + valorIVA
             : subtotal;
 
 
     // =====================================
-    // OBJETO COMPATIBLE CON pdf.js
+    // OBJETO PARA PDF
     // =====================================
 
     return {
@@ -203,56 +147,27 @@ function construirPresupuestoActual() {
                 cuit,
 
 
-            hormigon: {
+            // NUEVO FORMATO
 
-                tipo:
-                    tipoHormigon.value,
+            hormigones:
+                hormigones,
 
-                cantidad:
-                    cantidadHormigonActual,
-
-                cemento:
-                    "CPP40 KG",
-
-                distancia:
-                    parseFloat(
-                        distancia.value
-                    ) || 0,
-
-                precioM3:
-                    precios.hormigones[
-                        tipoHormigon.value
-                    ] || 0,
-
-                total:
-                    valorTotalHormigon
-
-            },
+            aditivos:
+                aditivos,
 
 
-            aditivo: {
+            // COMPATIBILIDAD
 
-                tipo:
-                    tipoAditivo
-                        ? tipoAditivo.value
-                        : "",
+            hormigon:
+                hormigones[0] || null,
 
-                cantidad:
-                    cantidadAditivoActual,
-
-                precioM3:
-                    tipoAditivo
-                        ? (
-                            precios.aditivos[
-                                tipoAditivo.value
-                            ] || 0
-                        )
-                        : 0,
-
-                total:
-                    valorTotalAditivo
-
-            },
+            aditivo:
+                aditivos[0] || {
+                    tipo: "",
+                    cantidad: 0,
+                    precioM3: 0,
+                    total: 0
+                },
 
 
             servicios: {
@@ -270,7 +185,6 @@ function construirPresupuestoActual() {
 
                     total:
                         valorTotalBomba
-
                 },
 
 
@@ -287,9 +201,7 @@ function construirPresupuestoActual() {
 
                     total:
                         valorTotalVibrador
-
                 }
-
             },
 
 
@@ -304,29 +216,22 @@ function construirPresupuestoActual() {
 
             totalFinal:
                 totalFinal
-
         }
-
     };
-
 }
 
 
 // =====================================
-// GENERAR PDF ACTUAL
+// GENERAR PDF
 // =====================================
 
-async function generarPDFFormulario(
-    boton
-) {
+async function generarPDFFormulario(boton) {
 
     const textoOriginal =
         boton.textContent;
 
-
     boton.disabled =
         true;
-
 
     boton.textContent =
         "Generando PDF...";
@@ -339,9 +244,7 @@ async function generarPDFFormulario(
 
 
         if (!presupuesto) {
-
             return;
-
         }
 
 
@@ -372,11 +275,7 @@ async function generarPDFFormulario(
 
         const nombreArchivo =
             limpiarNombreArchivo(
-
-                `${presupuesto.senores} - ` +
-                `Presupuesto ` +
-                `${presupuesto.presupuesto_numero}.pdf`
-
+                `${presupuesto.senores} - Presupuesto ${presupuesto.presupuesto_numero}.pdf`
             );
 
 
@@ -393,7 +292,6 @@ async function generarPDFFormulario(
             error
         );
 
-
         alert(
             "No se pudo generar el PDF."
         );
@@ -404,12 +302,9 @@ async function generarPDFFormulario(
         boton.disabled =
             false;
 
-
         boton.textContent =
             textoOriginal;
-
     }
-
 }
 
 
@@ -432,8 +327,6 @@ if (botonGenerarPDF) {
             generarPDFFormulario(
                 botonGenerarPDF
             );
-
         }
     );
-
 }

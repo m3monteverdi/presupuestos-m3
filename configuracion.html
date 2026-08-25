@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración</title>
+    <link rel="stylesheet" href="style.css?v=3">
+</head>
+
+<body class="pagina-presupuesto">
+    <div class="barra-superior">
+        <a href="index.html" class="volver">← Volver al inicio</a>
+        <span>Configuración</span>
+    </div>
+
+    <main class="contenedor-presupuesto">
+        <section class="hoja-presupuesto">
+            <div class="encabezado-admin">
+                <div>
+                    <h1>Configuración de presupuestos</h1>
+                    <p class="subtitulo-historial">
+                        Estos datos se guardan en Supabase y se aplican automáticamente
+                        a los nuevos presupuestos y PDFs.
+                    </p>
+                </div>
+            </div>
+
+            <h2 class="titulo-seccion">PRESUPUESTO SIN IVA</h2>
+            <div class="panel-configuracion">
+                <div class="config-item">
+                    <label for="forma_pago_sin_iva">Forma de pago</label>
+                    <textarea id="forma_pago_sin_iva" rows="2"></textarea>
+                </div>
+                <div class="config-item">
+                    <label for="validez_sin_iva">Validez de la oferta</label>
+                    <input type="text" id="validez_sin_iva">
+                </div>
+            </div>
+
+            <h2 class="titulo-seccion">PRESUPUESTO CON IVA</h2>
+            <div class="panel-configuracion">
+                <div class="config-item">
+                    <label for="fecha_precios_iva">Fecha de precios</label>
+                    <input type="text" id="fecha_precios_iva" placeholder="dd/mm/aaaa">
+                </div>
+                <div class="config-item">
+                    <label for="forma_pago_iva">Forma de pago</label>
+                    <textarea id="forma_pago_iva" rows="3"></textarea>
+                </div>
+                <div class="config-item">
+                    <label for="validez_iva">Validez de la oferta</label>
+                    <input type="text" id="validez_iva">
+                </div>
+            </div>
+
+            <h2 class="titulo-seccion">BANCO CREDICOOP</h2>
+            <div class="panel-configuracion">
+                <div class="config-item">
+                    <label for="banco_credicoop_cuenta">Cuenta</label>
+                    <input type="text" id="banco_credicoop_cuenta">
+                </div>
+                <div class="config-item">
+                    <label for="banco_credicoop_cbu">CBU</label>
+                    <input type="text" id="banco_credicoop_cbu">
+                </div>
+                <div class="config-item">
+                    <label for="banco_credicoop_alias">Alias</label>
+                    <input type="text" id="banco_credicoop_alias">
+                </div>
+            </div>
+
+            <h2 class="titulo-seccion">BANCO NACIÓN</h2>
+            <div class="panel-configuracion">
+                <div class="config-item">
+                    <label for="banco_nacion_cbu">CBU</label>
+                    <input type="text" id="banco_nacion_cbu">
+                </div>
+                <div class="config-item">
+                    <label for="banco_nacion_alias">Alias</label>
+                    <input type="text" id="banco_nacion_alias">
+                </div>
+            </div>
+
+            <div class="acciones-presupuesto acciones-configuracion">
+                <button class="boton principal" id="guardarConfiguracion">
+                    Guardar configuración
+                </button>
+            </div>
+
+            <p id="mensajeConfiguracion" class="mensaje-precios"></p>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js?v=2"></script>
+    <script src="auth.js?v=2"></script>
+    <script src="configuracion-comun.js?v=1"></script>
+    <script src="configuracion-admin.js?v=1"></script>
+</body>
+</html>

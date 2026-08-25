@@ -1,5 +1,5 @@
 // =====================================
-// ELEMENTOS
+// ACTUALIZAR PRECIOS
 // =====================================
 
 const seccionLogin =
@@ -26,41 +26,121 @@ const mensajeLogin =
 const mensajePrecios =
     document.getElementById("mensajePrecios");
 
+const botonGuardarPrecios =
+    document.getElementById("guardarPrecios");
 
-// CAMPOS DE PRECIOS
 
-const precioH8 =
-    document.getElementById("precioH8");
+// =====================================
+// MAPA CÓDIGO SUPABASE → INPUT
+// =====================================
 
-const precioH13 =
-    document.getElementById("precioH13");
+const camposPrecios = {
 
-const precioH17 =
-    document.getElementById("precioH17");
+    // HORMIGONES
 
-const precioH21 =
-    document.getElementById("precioH21");
+    H8:
+        "precioH8",
 
-const precioH25 =
-    document.getElementById("precioH25");
+    H13:
+        "precioH13",
 
-const precioH30 =
-    document.getElementById("precioH30");
+    H17:
+        "precioH17",
 
-const precioH40 =
-    document.getElementById("precioH40");
+    H21:
+        "precioH21",
 
-const precioMR120 =
-    document.getElementById("precioMR120");
+    H25:
+        "precioH25",
 
-const precioMacro =
-    document.getElementById("precioMacro");
+    H30:
+        "precioH30",
 
-const precioBombaAdmin =
-    document.getElementById("precioBombaAdmin");
+    H40:
+        "precioH40",
 
-const precioVibradorAdmin =
-    document.getElementById("precioVibradorAdmin");
+
+    // MR120
+
+    mr120_H8:
+        "precioMr120H8",
+
+    mr120_H13:
+        "precioMr120H13",
+
+    mr120_H17:
+        "precioMr120H17",
+
+    mr120_H21:
+        "precioMr120H21",
+
+    mr120_H25:
+        "precioMr120H25",
+
+    mr120_H30:
+        "precioMr120H30",
+
+    mr120_H40:
+        "precioMr120H40",
+
+
+    // MACROFIBRA / MICROFIBRA
+
+    macro_H8:
+        "precioMacroH8",
+
+    macro_H13:
+        "precioMacroH13",
+
+    macro_H17:
+        "precioMacroH17",
+
+    macro_H21:
+        "precioMacroH21",
+
+    macro_H25:
+        "precioMacroH25",
+
+    macro_H30:
+        "precioMacroH30",
+
+    macro_H40:
+        "precioMacroH40",
+
+
+    // HIDROFUGO
+
+    hidrofugo_H8:
+        "precioHidrofugoH8",
+
+    hidrofugo_H13:
+        "precioHidrofugoH13",
+
+    hidrofugo_H17:
+        "precioHidrofugoH17",
+
+    hidrofugo_H21:
+        "precioHidrofugoH21",
+
+    hidrofugo_H25:
+        "precioHidrofugoH25",
+
+    hidrofugo_H30:
+        "precioHidrofugoH30",
+
+    hidrofugo_H40:
+        "precioHidrofugoH40",
+
+
+    // SERVICIOS
+
+    bomba:
+        "precioBombaAdmin",
+
+    vibrador:
+        "precioVibradorAdmin"
+
+};
 
 
 // =====================================
@@ -79,10 +159,10 @@ function mostrarLogin() {
 
 
 // =====================================
-// MOSTRAR ADMINISTRACIÓN
+// MOSTRAR PRECIOS
 // =====================================
 
-function mostrarPrecios() {
+function mostrarPanelPrecios() {
 
     seccionLogin.style.display =
         "none";
@@ -94,7 +174,7 @@ function mostrarPrecios() {
 
 
 // =====================================
-// INICIAR SESIÓN
+// LOGIN
 // =====================================
 
 async function iniciarSesion() {
@@ -106,7 +186,10 @@ async function iniciarSesion() {
         passwordAdmin.value;
 
 
-    if (!email || !password) {
+    if (
+        !email ||
+        !password
+    ) {
 
         mensajeLogin.textContent =
             "Complete email y contraseña.";
@@ -120,22 +203,30 @@ async function iniciarSesion() {
         "Ingresando...";
 
 
-    const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .signInWithPassword({
 
-            email: email,
+                email:
+                    email,
 
-            password: password
+                password:
+                    password
 
-        });
+            });
 
 
     if (error) {
 
         console.error(
-            "Error al iniciar sesión:",
+            "Error iniciando sesión:",
             error
         );
+
 
         mensajeLogin.textContent =
             "Email o contraseña incorrectos.";
@@ -145,17 +236,18 @@ async function iniciarSesion() {
     }
 
 
-    console.log(
-        "Usuario autenticado:",
-        data.user.email
-    );
-
-
     mensajeLogin.textContent =
         "";
 
 
-    mostrarPrecios();
+    console.log(
+        "Administrador autenticado:",
+        data.user.email
+    );
+
+
+    mostrarPanelPrecios();
+
 
     await cargarPreciosSupabase();
 
@@ -168,14 +260,18 @@ async function iniciarSesion() {
 
 async function cerrarSesion() {
 
-    const { error } =
-        await supabaseClient.auth.signOut();
+    const {
+        error
+    } =
+        await supabaseClient
+            .auth
+            .signOut();
 
 
     if (error) {
 
         console.error(
-            "Error al cerrar sesión:",
+            "Error cerrando sesión:",
             error
         );
 
@@ -184,20 +280,13 @@ async function cerrarSesion() {
     }
 
 
-    emailAdmin.value =
-        "";
-
-    passwordAdmin.value =
-        "";
-
-
     mostrarLogin();
 
 }
 
 
 // =====================================
-// CARGAR PRECIOS DESDE SUPABASE
+// CARGAR PRECIOS
 // =====================================
 
 async function cargarPreciosSupabase() {
@@ -206,10 +295,15 @@ async function cargarPreciosSupabase() {
         "Cargando precios...";
 
 
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient
             .from("precios")
-            .select("codigo, valor");
+            .select(
+                "codigo, valor"
+            );
 
 
     if (error) {
@@ -219,6 +313,7 @@ async function cargarPreciosSupabase() {
             error
         );
 
+
         mensajePrecios.textContent =
             "No se pudieron cargar los precios.";
 
@@ -227,59 +322,40 @@ async function cargarPreciosSupabase() {
     }
 
 
-    console.log(
-        "Precios cargados:",
-        data
-    );
-
-
-    const precios = {};
-
-
     data.forEach(
         fila => {
 
-            precios[fila.codigo] =
-                Number(fila.valor);
+            const idInput =
+                camposPrecios[
+                    fila.codigo
+                ];
+
+
+            if (!idInput) {
+
+                return;
+
+            }
+
+
+            const input =
+                document.getElementById(
+                    idInput
+                );
+
+
+            if (input) {
+
+                input.value =
+                    Number(
+                        fila.valor ||
+                        0
+                    );
+
+            }
 
         }
     );
-
-
-    precioH8.value =
-        precios.H8 ?? 0;
-
-    precioH13.value =
-        precios.H13 ?? 0;
-
-    precioH17.value =
-        precios.H17 ?? 0;
-
-    precioH21.value =
-        precios.H21 ?? 0;
-
-    precioH25.value =
-        precios.H25 ?? 0;
-
-    precioH30.value =
-        precios.H30 ?? 0;
-
-    precioH40.value =
-        precios.H40 ?? 0;
-
-
-    precioMR120.value =
-        precios.mr120 ?? 0;
-
-    precioMacro.value =
-        precios.macro ?? 0;
-
-
-    precioBombaAdmin.value =
-        precios.bomba ?? 0;
-
-    precioVibradorAdmin.value =
-        precios.vibrador ?? 0;
 
 
     mensajePrecios.textContent =
@@ -289,100 +365,39 @@ async function cargarPreciosSupabase() {
 
 
 // =====================================
-// COMPROBAR SI YA HAY SESIÓN
+// ACTUALIZAR PRECIO
 // =====================================
 
-async function comprobarSesion() {
+async function actualizarPrecio(
+    codigo,
+    valor
+) {
 
-    const { data, error } =
-        await supabaseClient.auth.getSession();
-
-
-    if (error) {
-
-        console.error(
-            "Error comprobando sesión:",
-            error
-        );
-
-        mostrarLogin();
-
-        return;
-
-    }
-
-
-    if (data.session) {
-
-        mostrarPrecios();
-
-        await cargarPreciosSupabase();
-
-    } else {
-
-        mostrarLogin();
-
-    }
-
-}
-
-
-// =====================================
-// EVENTOS
-// =====================================
-
-botonLogin.addEventListener(
-    "click",
-    iniciarSesion
-);
-
-
-botonCerrarSesion.addEventListener(
-    "click",
-    cerrarSesion
-);
-
-
-// Permitir ENTER para iniciar sesión
-
-passwordAdmin.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (event.key === "Enter") {
-
-            iniciarSesion();
-
-        }
-
-    }
-);
-
-
-// =====================================
-// INICIO
-// =====================================
-
-comprobarSesion();
-// =====================================
-// GUARDAR PRECIOS EN SUPABASE
-// =====================================
-
-const botonGuardarPrecios =
-    document.getElementById("guardarPrecios");
-
-
-async function actualizarPrecio(codigo, valor) {
-
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient
             .from("precios")
             .update({
-                valor: Number(valor) || 0,
-                actualizado_en: new Date().toISOString()
+
+                valor:
+                    Number(
+                        valor
+                    ) || 0,
+
+                actualizado_en:
+                    new Date()
+                        .toISOString()
+
             })
-            .eq("codigo", codigo)
-            .select("codigo, valor");
+            .eq(
+                "codigo",
+                codigo
+            )
+            .select(
+                "codigo"
+            );
 
 
     if (error) {
@@ -397,7 +412,11 @@ async function actualizarPrecio(codigo, valor) {
     }
 
 
-    if (!data || data.length === 0) {
+    if (
+        !data ||
+        data.length ===
+        0
+    ) {
 
         throw new Error(
             `No se pudo actualizar ${codigo}`
@@ -414,79 +433,60 @@ async function actualizarPrecio(codigo, valor) {
 
 async function guardarPreciosSupabase() {
 
-    mensajePrecios.textContent =
-        "Guardando precios...";
-
-
     botonGuardarPrecios.disabled =
         true;
 
 
+    mensajePrecios.textContent =
+        "Guardando precios...";
+
+
     try {
 
-        await actualizarPrecio(
-            "H8",
-            precioH8.value
-        );
+        const codigos =
+            Object.keys(
+                camposPrecios
+            );
 
-        await actualizarPrecio(
-            "H13",
-            precioH13.value
-        );
 
-        await actualizarPrecio(
-            "H17",
-            precioH17.value
-        );
+        for (
+            const codigo
+            of codigos
+        ) {
 
-        await actualizarPrecio(
-            "H21",
-            precioH21.value
-        );
+            const idInput =
+                camposPrecios[
+                    codigo
+                ];
 
-        await actualizarPrecio(
-            "H25",
-            precioH25.value
-        );
 
-        await actualizarPrecio(
-            "H30",
-            precioH30.value
-        );
+            const input =
+                document.getElementById(
+                    idInput
+                );
 
-        await actualizarPrecio(
-            "H40",
-            precioH40.value
-        );
 
-        await actualizarPrecio(
-            "mr120",
-            precioMR120.value
-        );
+            if (!input) {
 
-        await actualizarPrecio(
-            "macro",
-            precioMacro.value
-        );
+                continue;
 
-        await actualizarPrecio(
-            "bomba",
-            precioBombaAdmin.value
-        );
+            }
 
-        await actualizarPrecio(
-            "vibrador",
-            precioVibradorAdmin.value
-        );
+
+            await actualizarPrecio(
+
+                codigo,
+
+                input.value
+
+            );
+
+        }
 
 
         mensajePrecios.textContent =
             "Precios actualizados correctamente.";
 
-
-        console.log(
-            "Todos los precios fueron actualizados en Supabase."
-        );
 
     } catch (error) {
 
@@ -499,6 +499,7 @@ async function guardarPreciosSupabase() {
         mensajePrecios.textContent =
             "No se pudieron guardar los precios.";
 
+
     } finally {
 
         botonGuardarPrecios.disabled =
@@ -510,10 +511,97 @@ async function guardarPreciosSupabase() {
 
 
 // =====================================
-// EVENTO BOTÓN GUARDAR
+// SESIÓN ACTUAL
 // =====================================
 
-botonGuardarPrecios.addEventListener(
-    "click",
-    guardarPreciosSupabase
-);
+async function comprobarSesion() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if (
+        error ||
+        !data.session
+    ) {
+
+        mostrarLogin();
+
+        return;
+
+    }
+
+
+    mostrarPanelPrecios();
+
+
+    await cargarPreciosSupabase();
+
+}
+
+
+// =====================================
+// EVENTOS
+// =====================================
+
+if (botonLogin) {
+
+    botonLogin.addEventListener(
+        "click",
+        iniciarSesion
+    );
+
+}
+
+
+if (botonCerrarSesion) {
+
+    botonCerrarSesion.addEventListener(
+        "click",
+        cerrarSesion
+    );
+
+}
+
+
+if (botonGuardarPrecios) {
+
+    botonGuardarPrecios.addEventListener(
+        "click",
+        guardarPreciosSupabase
+    );
+
+}
+
+
+if (passwordAdmin) {
+
+    passwordAdmin.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                iniciarSesion();
+
+            }
+
+        }
+    );
+
+}
+
+
+// =====================================
+// INICIO
+// =====================================
+
+comprobarSesion();

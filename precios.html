@@ -7,7 +7,7 @@
 
     <title>Actualizar precios</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body class="pagina-presupuesto">
@@ -25,9 +25,7 @@
 
     <main class="contenedor-presupuesto">
 
-        <!-- =====================================
-             LOGIN ADMINISTRADOR
-        ====================================== -->
+        <!-- LOGIN -->
 
         <section
             class="hoja-presupuesto"
@@ -87,14 +85,12 @@
         </section>
 
 
-        <!-- =====================================
-             PANEL DE PRECIOS
-        ====================================== -->
+        <!-- PANEL -->
 
         <section
             class="hoja-presupuesto"
             id="seccionPrecios"
-            style="display: none;"
+            style="display:none;"
         >
 
             <div class="encabezado-admin">
@@ -105,7 +101,7 @@
 
                     <p class="subtitulo-historial">
                         Los valores guardados serán utilizados
-                        en los nuevos presupuestos.
+                        automáticamente en los nuevos presupuestos.
                     </p>
 
                 </div>
@@ -121,10 +117,11 @@
             </div>
 
 
+            <!-- HORMIGONES -->
+
             <h2 class="titulo-seccion">
                 HORMIGONES
             </h2>
-
 
             <div class="panel-precios">
 
@@ -166,41 +163,177 @@
             </div>
 
 
-            <h2 class="titulo-seccion">
-                ADITIVOS
-            </h2>
+            <!-- MR120 -->
 
+            <h2 class="titulo-seccion">
+                ADITIVO EN OBRA MR120 SUPERFLUIDIFICANTE
+            </h2>
 
             <div class="panel-precios">
 
                 <div class="precio-item">
-                    <label>MR120 superfluidificante</label>
-                    <input type="number" id="precioMR120">
+                    <label>H8</label>
+                    <input type="number" id="precioMr120H8">
                 </div>
 
                 <div class="precio-item">
-                    <label>MACRO FIBRAS</label>
-                    <input type="number" id="precioMacro">
+                    <label>H13</label>
+                    <input type="number" id="precioMr120H13">
+                </div>
+
+                <div class="precio-item">
+                    <label>H17</label>
+                    <input type="number" id="precioMr120H17">
+                </div>
+
+                <div class="precio-item">
+                    <label>H21</label>
+                    <input type="number" id="precioMr120H21">
+                </div>
+
+                <div class="precio-item">
+                    <label>H25</label>
+                    <input type="number" id="precioMr120H25">
+                </div>
+
+                <div class="precio-item">
+                    <label>H30</label>
+                    <input type="number" id="precioMr120H30">
+                </div>
+
+                <div class="precio-item">
+                    <label>H40</label>
+                    <input type="number" id="precioMr120H40">
                 </div>
 
             </div>
 
 
-            <h2 class="titulo-seccion">
-                SERVICIOS EXTRAS
-            </h2>
+            <!-- MACRO / MICRO -->
 
+            <h2 class="titulo-seccion">
+                MACROFIBRA / MICROFIBRA
+            </h2>
 
             <div class="panel-precios">
 
                 <div class="precio-item">
-                    <label>Servicio de bomba</label>
-                    <input type="number" id="precioBombaAdmin">
+                    <label>H8</label>
+                    <input type="number" id="precioMacroH8">
                 </div>
 
                 <div class="precio-item">
-                    <label>Vibrador</label>
-                    <input type="number" id="precioVibradorAdmin">
+                    <label>H13</label>
+                    <input type="number" id="precioMacroH13">
+                </div>
+
+                <div class="precio-item">
+                    <label>H17</label>
+                    <input type="number" id="precioMacroH17">
+                </div>
+
+                <div class="precio-item">
+                    <label>H21</label>
+                    <input type="number" id="precioMacroH21">
+                </div>
+
+                <div class="precio-item">
+                    <label>H25</label>
+                    <input type="number" id="precioMacroH25">
+                </div>
+
+                <div class="precio-item">
+                    <label>H30</label>
+                    <input type="number" id="precioMacroH30">
+                </div>
+
+                <div class="precio-item">
+                    <label>H40</label>
+                    <input type="number" id="precioMacroH40">
+                </div>
+
+            </div>
+
+
+            <!-- HIDROFUGO -->
+
+            <h2 class="titulo-seccion">
+                HIDROFUGO - IDROCRET HP
+            </h2>
+
+            <div class="panel-precios">
+
+                <div class="precio-item">
+                    <label>H8</label>
+                    <input type="number" id="precioHidrofugoH8">
+                </div>
+
+                <div class="precio-item">
+                    <label>H13</label>
+                    <input type="number" id="precioHidrofugoH13">
+                </div>
+
+                <div class="precio-item">
+                    <label>H17</label>
+                    <input type="number" id="precioHidrofugoH17">
+                </div>
+
+                <div class="precio-item">
+                    <label>H21</label>
+                    <input type="number" id="precioHidrofugoH21">
+                </div>
+
+                <div class="precio-item">
+                    <label>H25</label>
+                    <input type="number" id="precioHidrofugoH25">
+                </div>
+
+                <div class="precio-item">
+                    <label>H30</label>
+                    <input type="number" id="precioHidrofugoH30">
+                </div>
+
+                <div class="precio-item">
+                    <label>H40</label>
+                    <input type="number" id="precioHidrofugoH40">
+                </div>
+
+            </div>
+
+
+            <!-- SERVICIOS -->
+
+            <h2 class="titulo-seccion">
+                SERVICIOS EXTRAS
+            </h2>
+
+            <div class="panel-precios">
+
+                <div class="precio-item">
+
+                    <label>
+                        Servicio de bomba
+                    </label>
+
+                    <input
+                        type="number"
+                        id="precioBombaAdmin"
+                    >
+
+                </div>
+
+
+                <div class="precio-item">
+
+                    <label>
+                        Vibrador
+                    </label>
+
+                    <input
+                        type="number"
+                        id="precioVibradorAdmin"
+                    >
+
                 </div>
 
             </div>
@@ -228,20 +361,11 @@
     </main>
 
 
-    <!-- LIBRERÍA DE SUPABASE -->
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <script src="supabase-config.js?v=2"></script>
 
-    <!-- CONEXIÓN A NUESTRO PROYECTO -->
-
-    <script src="supabase-config.js"></script>
-
-
-    <!-- LÓGICA DE PRECIOS -->
-
-    <script src="precios.js"></script>
-
+    <script src="precios.js?v=5"></script>
 
 </body>
 

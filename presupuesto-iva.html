@@ -7,7 +7,7 @@
 
     <title>PresupuestosM3+IVA</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body
@@ -24,6 +24,7 @@
     <main class="contenedor-presupuesto">
 
         <section class="hoja-presupuesto">
+            
 
             <!-- ENCABEZADO -->
 
@@ -87,12 +88,24 @@
     </div>
 
     <div class="campo">
-        <label>Presupuesto N°</label>
+    <label>Presupuesto N°</label>
+
+    <div class="numero-presupuesto-iva">
+        <span class="prefijo-presupuesto">A0</span>
+
         <input
-            type="text"
+            type="number"
             id="presupuestoNumero"
+            min="0"
+            step="1"
         >
     </div>
+
+    <small
+        id="ultimoPresupuesto"
+        class="ultimo-presupuesto"
+    ></small>
+</div>
 
 </div>
 
@@ -104,152 +117,237 @@
 
             <!-- HORMIGÓN -->
 
-            <h2 class="titulo-seccion">
-                1- HORMIGÓN ELABORADO POR TIPO Y DISTANCIA
-            </h2>
+          <!-- =====================================
+     HORMIGÓN
+====================================== -->
 
-            <div class="tabla-formulario">
+<h2 class="titulo-seccion">
+    1- HORMIGÓN ELABORADO POR TIPO Y DISTANCIA
+</h2>
 
-                <div class="fila encabezado-tabla">
-                    <div>TIPO DE H°</div>
-                    <div>M3</div>
-                    <div>TIPO CEMENTO</div>
-                    <div>DISTANCIA</div>
-                    <div>VALOR x M3</div>
-                    <div>TOTAL</div>
-                </div>
+<div class="tabla-formulario">
 
-                <div class="fila">
+    <div class="fila encabezado-tabla">
+        <div>TIPO DE H°</div>
+        <div>M3</div>
+        <div>TIPO CEMENTO</div>
+        <div>DISTANCIA</div>
+        <div>VALOR x M3</div>
+        <div>TOTAL</div>
+    </div>
 
-                    <div>
-                        <select id="tipoHormigon">
-                            <option value="">Seleccionar</option>
-                            <option>H8</option>
-                            <option>H13</option>
-                            <option>H17</option>
-                            <option>H21</option>
-                            <option>H25</option>
-                            <option>H30</option>
-                            <option>H40</option>
-                            <option value="otro">Otro...</option>
-                        </select>
-                    </div>
+    <div id="filasHormigon">
 
-                    <div>
-                        <input
-                            type="number"
-                            id="cantidadHormigon"
-                            min="0"
-                            step="0.1"
-                        >
-                    </div>
+        <div
+            class="fila fila-hormigon-dinamica"
+            data-id="1"
+        >
 
-                    <div>
-                        <input
-                            type="text"
-                            value="CPP40 KG"
-                            readonly
-                        >
-                    </div>
+            <div>
+                <select class="tipo-hormigon">
+                    <option value="">Seleccionar</option>
+                    <option value="H8">H8</option>
+                    <option value="H13">H13</option>
+                    <option value="H17">H17</option>
+                    <option value="H21">H21</option>
+                    <option value="H25">H25</option>
+                    <option value="H30">H30</option>
+                    <option value="H40">H40</option>
+                    <option value="otro">Otro...</option>
+                </select>
+            </div>
 
-                    <div>
-                        <input
-                            type="number"
-                            id="distancia"
-                            min="0"
-                        >
-                    </div>
+            <div>
+                <input
+                    type="number"
+                    class="cantidad-hormigon"
+                    min="0"
+                    step="0.1"
+                >
+            </div>
 
-                    <div>
-                        <input
-                            type="text"
-                            id="precioHormigon"
-                            readonly
-                            placeholder="$ 0,00"
-                        >
-                    </div>
+            <div>
+                <input
+                    type="text"
+                    class="cemento-hormigon"
+                    value="CPP40 KG"
+                    readonly
+                >
+            </div>
 
-                    <div>
-                        <input
-                            type="text"
-                            id="totalHormigon"
-                            readonly
-                            placeholder="$ 0,00"
-                        >
-                    </div>
+            <div>
+                <input
+                    type="number"
+                    class="distancia-hormigon"
+                    min="0"
+                >
+            </div>
 
-                </div>
+            <div>
+                <input
+                    type="text"
+                    class="precio-hormigon"
+                    readonly
+                    placeholder="$ 0,00"
+                >
+            </div>
+
+            <div class="celda-total-fila">
+
+                <input
+                    type="text"
+                    class="total-hormigon"
+                    readonly
+                    placeholder="$ 0,00"
+                >
+
+                <button
+                    type="button"
+                    class="eliminar-fila eliminar-hormigon"
+                    title="Eliminar hormigón"
+                >
+                    ×
+                </button>
 
             </div>
 
+        </div>
 
-            <!-- ADITIVOS -->
+    </div>
 
-            <h2 class="titulo-seccion">
-                2- VALOR ADITIVOS EXTRAS x m3
-            </h2>
+</div>
 
-            <div class="tabla-formulario">
 
-                <div class="fila fila-aditivo encabezado-tabla">
-                    <div>TIPO DE H°</div>
-                    <div>KG</div>
-                    <div>TIPO ADITIVO</div>
-                    <div>VALOR x M3</div>
-                    <div>TOTAL</div>
-                </div>
+<div class="acciones-filas">
 
-                <div class="fila fila-aditivo">
+    <button
+        type="button"
+        class="boton-agregar-fila"
+        id="agregarHormigon"
+    >
+        + Agregar hormigón
+    </button>
 
-                    <div>
-                        <input
-                            type="text"
-                            id="tipoHormigonAditivo"
-                            readonly
-                        >
-                    </div>
+</div>
 
-                    <div>
-                        <input
-                            type="text"
-                            id="cantidadAditivo"
-                            readonly
-                        >
-                    </div>
 
-                    <div>
-                        <select id="tipoAditivo">
-                            <option value="">Sin aditivo</option>
-                            <option value="mr120">
-                                ADITIVO EN OBRA MR120 superfluidificante
-                            </option>
-                            <option value="macro">
-                                MACRO FIBRAS
-                            </option>
-                        </select>
-                    </div>
+<!-- =====================================
+     ADITIVOS
+====================================== -->
 
-                    <div>
-                        <input
-                            type="text"
-                            id="precioAditivo"
-                            readonly
-                            placeholder="$ 0,00"
-                        >
-                    </div>
+<h2 class="titulo-seccion">
+    2- VALOR ADITIVOS EXTRAS x m3
+</h2>
 
-                    <div>
-                        <input
-                            type="text"
-                            id="totalAditivo"
-                            readonly
-                            placeholder="$ 0,00"
-                        >
-                    </div>
+<div class="tabla-formulario">
 
-                </div>
+    <div class="fila fila-aditivo encabezado-tabla">
+        <div>TIPO DE H°</div>
+        <div>KG</div>
+        <div>TIPO ADITIVO</div>
+        <div>VALOR x M3</div>
+        <div>TOTAL</div>
+    </div>
+
+    <div id="filasAditivo">
+
+        <div
+            class="fila fila-aditivo fila-aditivo-dinamica"
+            data-id="1"
+        >
+
+            <div>
+
+                <select class="hormigon-aditivo">
+                    <option value="">
+                        Seleccionar H°
+                    </option>
+                </select>
 
             </div>
+
+            <div>
+
+                <input
+                    type="text"
+                    class="cantidad-aditivo"
+                    readonly
+                >
+
+            </div>
+
+            <div>
+
+                <select class="tipo-aditivo">
+
+                    <option value="">
+                        Sin aditivo
+                    </option>
+
+                    <option value="mr120">
+                        ADITIVO EN OBRA MR120 superfluidificante
+                    </option>
+
+                    <option value="macro">
+                        MACROFIBRA / MICROFIBRA
+                    </option>
+
+                    <option value="hidrofugo">
+                        HIDROFUGO - IDROCRET HP
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div>
+
+                <input
+                    type="text"
+                    class="precio-aditivo"
+                    readonly
+                    placeholder="$ 0,00"
+                >
+
+            </div>
+
+            <div class="celda-total-fila">
+
+                <input
+                    type="text"
+                    class="total-aditivo"
+                    readonly
+                    placeholder="$ 0,00"
+                >
+
+                <button
+                    type="button"
+                    class="eliminar-fila eliminar-aditivo"
+                    title="Eliminar aditivo"
+                >
+                    ×
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="acciones-filas">
+
+    <button
+        type="button"
+        class="boton-agregar-fila"
+        id="agregarAditivo"
+    >
+        + Agregar aditivo
+    </button>
+
+</div>
 
 
             <!-- SERVICIOS -->
@@ -427,35 +525,30 @@
 
     <p>Valores expresados en pesos</p>
 
-    <p>Precios al 1/08/2026</p>
+    <p data-config-clave="fecha_precios_iva" data-config-prefijo="Precios al ">Precios al ...</p>
 
-    <p>
-        Forma de pago: Contado / Cheque propio (+ IVA) /
-        Tarjeta de credito (+ IVA) / Transferencia (+ IVA)
+    <p data-config-clave="forma_pago_iva" data-config-prefijo="Forma de pago: ">
+        Forma de pago: Contado / Cheque propio (+ IVA) / Tarjeta de credito (+ IVA) / Transferencia (+ IVA)
     </p>
 
-    <p>
-        Cuenta: 191-116-006204/6
-    </p>
+    <p data-config-clave="banco_credicoop_cuenta" data-config-prefijo="Cuenta: ">Cuenta: ...</p>
 
     <p>
-        CBU: 1910116555011600620464
+        <span data-config-clave="banco_credicoop_cbu" data-config-prefijo="CBU: ">CBU: ...</span>
         &nbsp;&nbsp;&nbsp;
-        CBU: 01102859-20028500610549
+        <span data-config-clave="banco_nacion_cbu" data-config-prefijo="CBU: ">CBU: ...</span>
     </p>
 
     <p>
-        ALIAS:HORMIGON.M3
+        <span data-config-clave="banco_credicoop_alias" data-config-prefijo="ALIAS:">ALIAS:...</span>
         &nbsp;&nbsp;&nbsp;
-        ALIAS: METRO.CUBICO
+        <span data-config-clave="banco_nacion_alias" data-config-prefijo="ALIAS: ">ALIAS: ...</span>
     </p>
 
 
     <h3>NOTAS:</h3>
 
-    <p>
-        Validez de la oferta : 15 dias corridos
-    </p>
+    <p data-config-clave="validez_iva" data-config-prefijo="Validez de la oferta : ">Validez de la oferta : 15 dias corridos</p>
 
     <p>
         EL TIEMPO DE DESCARGA DEL HORMIGÓN NO DEBE EXEDER LOS 60 MINUTOS.
@@ -519,21 +612,17 @@
         </section>
 
     </main>
-<!-- SUPABASE -->
+<!-- SCRIPTS -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="supabase-config.js"></script>
-
-<script src="auth.js"></script>
-
-<script src="presupuesto.js"></script>
-
+<script src="supabase-config.js?v=2"></script>
+<script src="auth.js?v=2"></script>
+<script src="configuracion-comun.js?v=1"></script>
+<script src="presupuesto.js?v=7"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-
-<script src="pdf.js"></script>
-
-<script src="pdf-formulario.js"></script>
+<script src="pdf.js?v=5"></script>
+<script src="pdf-configuracion.js?v=2"></script>
+<script src="pdf-formulario.js?v=4"></script>
 
 </body>
 </html>

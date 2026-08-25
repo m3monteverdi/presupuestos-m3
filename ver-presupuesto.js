@@ -8,10 +8,6 @@ const contenedor =
     );
 
 
-// =====================================
-// OBTENER ID DE LA URL
-// =====================================
-
 const parametros =
     new URLSearchParams(
         window.location.search
@@ -25,12 +21,14 @@ const idPresupuesto =
 
 
 // =====================================
-// FORMATO DE PESOS
+// FORMATO PESOS
 // =====================================
 
 function formatoPesos(valor) {
 
-    return Number(valor || 0).toLocaleString(
+    return Number(
+        valor || 0
+    ).toLocaleString(
         "es-AR",
         {
             style: "currency",
@@ -43,7 +41,7 @@ function formatoPesos(valor) {
 
 
 // =====================================
-// FORMATO DE FECHA
+// FORMATO FECHA
 // =====================================
 
 function formatoFecha(fecha) {
@@ -56,10 +54,14 @@ function formatoFecha(fecha) {
 
 
     const partes =
-        fecha.split("-");
+        String(fecha)
+            .split("-");
 
 
-    if (partes.length !== 3) {
+    if (
+        partes.length !==
+        3
+    ) {
 
         return fecha;
 
@@ -78,38 +80,190 @@ function formatoFecha(fecha) {
 
 
 // =====================================
-// NOMBRE DEL ADITIVO
+// TEXTO SEGURO
 // =====================================
 
-function obtenerNombreAditivo(tipo) {
+function textoHTML(valor) {
 
-    if (tipo === "mr120") {
-
-        return "ADITIVO EN OBRA MR120 superfluidificante";
-
-    }
-
-
-    if (tipo === "macro") {
-
-        return "MACRO FIBRAS";
-
-    }
-
-
-    return "Sin aditivo";
+    return String(
+        valor ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
 
 // =====================================
-// COMPROBAR SESIÓN
+// NOMBRE ADITIVO
+// =====================================
+
+function obtenerNombreAditivo(tipo) {
+
+    if (
+        tipo ===
+        "mr120"
+    ) {
+
+        return (
+            "ADITIVO EN OBRA " +
+            "MR120 superfluidificante"
+        );
+
+    }
+
+
+    if (
+        tipo ===
+        "macro"
+    ) {
+
+        return (
+            "MACROFIBRA / MICROFIBRA"
+        );
+
+    }
+
+
+    if (
+        tipo ===
+        "hidrofugo"
+    ) {
+
+        return (
+            "HIDROFUGO - IDROCRET HP"
+        );
+
+    }
+
+
+    return tipo
+        ? String(tipo)
+        : "Sin aditivo";
+
+}
+
+
+// =====================================
+// NORMALIZAR HORMIGONES
+// =====================================
+
+function normalizarHormigones(
+    datos
+) {
+
+    if (
+        Array.isArray(
+            datos.hormigones
+        ) &&
+        datos.hormigones.length >
+        0
+    ) {
+
+        return datos.hormigones;
+
+    }
+
+
+    if (
+        datos.hormigon &&
+        datos.hormigon.tipo
+    ) {
+
+        return [
+            datos.hormigon
+        ];
+
+    }
+
+
+    return [];
+
+}
+
+
+// =====================================
+// NORMALIZAR ADITIVOS
+// =====================================
+
+function normalizarAditivos(
+    datos,
+    hormigones
+) {
+
+    if (
+        Array.isArray(
+            datos.aditivos
+        )
+    ) {
+
+        return datos.aditivos;
+
+    }
+
+
+    if (
+        datos.aditivo &&
+        datos.aditivo.tipo
+    ) {
+
+        return [
+
+            {
+                ...datos.aditivo,
+
+                hormigonTipo:
+                    datos.aditivo
+                        .hormigonTipo ||
+                    (
+                        hormigones[0]
+                            ? hormigones[0]
+                                .tipo
+                            : ""
+                    )
+            }
+
+        ];
+
+    }
+
+
+    return [];
+
+}
+
+
+// =====================================
+// SESIÓN
 // =====================================
 
 async function comprobarSesion() {
 
-    const { data, error } =
-        await supabaseClient.auth.getSession();
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
 
 
     if (error) {
@@ -171,9 +325,14 @@ async function cargarPresupuesto() {
     }
 
 
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient
-            .from("presupuestos")
+            .from(
+                "presupuestos"
+            )
             .select("*")
             .eq(
                 "id",
@@ -211,7 +370,7 @@ async function cargarPresupuesto() {
 
 
 // =====================================
-// PRESUPUESTO NO ENCONTRADO
+// NO ENCONTRADO
 // =====================================
 
 function mostrarNoEncontrado() {
@@ -233,6 +392,272 @@ function mostrarNoEncontrado() {
 
 
 // =====================================
+// BLOQUE HORMIGONES
+// =====================================
+
+function crearBloqueHormigones(
+    hormigones
+) {
+
+    if (
+        hormigones.length ===
+        0
+    ) {
+
+        return `
+            <p>
+                No hay hormigones cargados.
+            </p>
+        `;
+
+    }
+
+
+    return hormigones
+        .map(
+            hormigon => `
+
+                <div
+                    class="detalle-grid"
+                    style="margin-bottom: 12px;"
+                >
+
+                    <div class="detalle-item">
+
+                        <span>
+                            TIPO DE H°
+                        </span>
+
+                        <strong>
+                            ${textoHTML(
+                                hormigon.tipo ||
+                                "-"
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-item">
+
+                        <span>
+                            M3
+                        </span>
+
+                        <strong>
+                            ${textoHTML(
+                                hormigon.cantidad ||
+                                0
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-item">
+
+                        <span>
+                            TIPO CEMENTO
+                        </span>
+
+                        <strong>
+                            ${textoHTML(
+                                hormigon.cemento ||
+                                "CPP40 KG"
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-item">
+
+                        <span>
+                            DISTANCIA
+                        </span>
+
+                        <strong>
+                            ${textoHTML(
+                                hormigon.distancia ||
+                                0
+                            )} KM
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-item">
+
+                        <span>
+                            VALOR x M3
+                        </span>
+
+                        <strong>
+                            ${formatoPesos(
+                                hormigon.precioM3
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-item">
+
+                        <span>
+                            TOTAL
+                        </span>
+
+                        <strong>
+                            ${formatoPesos(
+                                hormigon.total
+                            )}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+// =====================================
+// BLOQUE ADITIVOS
+// =====================================
+
+function crearBloqueAditivos(
+    aditivos
+) {
+
+    if (
+        aditivos.length ===
+        0
+    ) {
+
+        return `
+
+            <div class="detalle-grid">
+
+                <div class="detalle-item">
+
+                    <span>
+                        TIPO ADITIVO
+                    </span>
+
+                    <strong>
+                        Sin aditivos
+                    </strong>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    return aditivos
+        .map(
+            aditivo => `
+
+                <div
+                    class="detalle-grid"
+                    style="margin-bottom: 12px;"
+                >
+
+                    <div class="detalle-item">
+
+                        <span>
+                            TIPO DE H°
+                        </span>
+
+                        <strong>
+                            ${textoHTML(
+                                aditivo
+                                    .hormigonTipo ||
+                                "-"
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-item">
+
+                        <span>
+                            KG
+                        </span>
+
+                        <strong>
+                            ${textoHTML(
+                                aditivo.cantidad ||
+                                0
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-item">
+
+                        <span>
+                            TIPO ADITIVO
+                        </span>
+
+                        <strong>
+                            ${textoHTML(
+                                obtenerNombreAditivo(
+                                    aditivo.tipo
+                                )
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-item">
+
+                        <span>
+                            VALOR x M3
+                        </span>
+
+                        <strong>
+                            ${formatoPesos(
+                                aditivo.precioM3
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-item">
+
+                        <span>
+                            TOTAL
+                        </span>
+
+                        <strong>
+                            ${formatoPesos(
+                                aditivo.total
+                            )}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+// =====================================
 // MOSTRAR PRESUPUESTO
 // =====================================
 
@@ -241,41 +666,44 @@ function mostrarPresupuesto(
 ) {
 
     const datos =
-        presupuesto.datos || {};
+        presupuesto.datos ||
+        {};
 
 
-    const hormigon =
-        datos.hormigon || {};
+    const hormigones =
+        normalizarHormigones(
+            datos
+        );
 
 
-    const aditivo =
-        datos.aditivo || {};
+    const aditivos =
+        normalizarAditivos(
+            datos,
+            hormigones
+        );
 
 
     const servicios =
-        datos.servicios || {};
+        datos.servicios ||
+        {};
 
 
     const bomba =
-        servicios.bomba || {};
+        servicios.bomba ||
+        {};
 
 
     const vibrador =
-        servicios.vibrador || {};
-
-
-    const nombreAditivo =
-        obtenerNombreAditivo(
-            aditivo.tipo
-        );
+        servicios.vibrador ||
+        {};
 
 
     // =====================================
     // CUIT
-    // Solo aparece en PresupuestosM3+IVA
     // =====================================
 
-    let bloqueCUIT = "";
+    let bloqueCUIT =
+        "";
 
 
     if (
@@ -287,10 +715,15 @@ function mostrarPresupuesto(
 
             <div class="detalle-item">
 
-                <span>CUIT:</span>
+                <span>
+                    CUIT:
+                </span>
 
                 <strong>
-                    ${datos.cuit || "-"}
+                    ${textoHTML(
+                        datos.cuit ||
+                        "-"
+                    )}
                 </strong>
 
             </div>
@@ -301,10 +734,11 @@ function mostrarPresupuesto(
 
 
     // =====================================
-    // TOTALES SEGÚN PLANILLA
+    // TOTALES
     // =====================================
 
-    let bloqueTotales = "";
+    let bloqueTotales =
+        "";
 
 
     if (
@@ -354,7 +788,8 @@ function mostrarPresupuesto(
 
                     <strong>
                         ${formatoPesos(
-                            presupuesto.total_final
+                            presupuesto
+                                .total_final
                         )}
                     </strong>
 
@@ -378,7 +813,8 @@ function mostrarPresupuesto(
 
                     <strong>
                         ${formatoPesos(
-                            presupuesto.total_final
+                            presupuesto
+                                .total_final
                         )}
                     </strong>
 
@@ -400,20 +836,30 @@ function mostrarPresupuesto(
         <div class="detalle-encabezado">
 
             <p class="detalle-tipo">
-                ${presupuesto.tipo_planilla}
+
+                ${textoHTML(
+                    presupuesto
+                        .tipo_planilla
+                )}
+
             </p>
 
+
             <h1>
-                ${presupuesto.nombre}
+
+                ${textoHTML(
+                    presupuesto.nombre
+                )}
+
             </h1>
 
         </div>
 
 
-        <!-- DATOS GENERALES -->
-
         <h2 class="titulo-seccion">
+
             DATOS DEL PRESUPUESTO
+
         </h2>
 
 
@@ -421,10 +867,14 @@ function mostrarPresupuesto(
 
             <div class="detalle-item">
 
-                <span>Señores:</span>
+                <span>
+                    Señores:
+                </span>
 
                 <strong>
-                    ${presupuesto.senores}
+                    ${textoHTML(
+                        presupuesto.senores
+                    )}
                 </strong>
 
             </div>
@@ -435,10 +885,15 @@ function mostrarPresupuesto(
 
             <div class="detalle-item">
 
-                <span>Atención:</span>
+                <span>
+                    Atención:
+                </span>
 
                 <strong>
-                    ${datos.atencion || "-"}
+                    ${textoHTML(
+                        datos.atencion ||
+                        "-"
+                    )}
                 </strong>
 
             </div>
@@ -446,10 +901,15 @@ function mostrarPresupuesto(
 
             <div class="detalle-item">
 
-                <span>Destino:</span>
+                <span>
+                    Destino:
+                </span>
 
                 <strong>
-                    ${datos.destino || "-"}
+                    ${textoHTML(
+                        datos.destino ||
+                        "-"
+                    )}
                 </strong>
 
             </div>
@@ -457,7 +917,9 @@ function mostrarPresupuesto(
 
             <div class="detalle-item">
 
-                <span>Fecha:</span>
+                <span>
+                    Fecha:
+                </span>
 
                 <strong>
                     ${formatoFecha(
@@ -470,10 +932,15 @@ function mostrarPresupuesto(
 
             <div class="detalle-item">
 
-                <span>Presupuesto N°</span>
+                <span>
+                    Presupuesto N°
+                </span>
 
                 <strong>
-                    ${presupuesto.presupuesto_numero}
+                    ${textoHTML(
+                        presupuesto
+                            .presupuesto_numero
+                    )}
                 </strong>
 
             </div>
@@ -489,8 +956,6 @@ function mostrarPresupuesto(
         </p>
 
 
-        <!-- HORMIGÓN -->
-
         <h2 class="titulo-seccion">
 
             1- HORMIGÓN ELABORADO POR TIPO Y DISTANCIA
@@ -498,81 +963,10 @@ function mostrarPresupuesto(
         </h2>
 
 
-        <div class="detalle-grid">
+        ${crearBloqueHormigones(
+            hormigones
+        )}
 
-            <div class="detalle-item">
-
-                <span>TIPO DE H°</span>
-
-                <strong>
-                    ${hormigon.tipo || "-"}
-                </strong>
-
-            </div>
-
-
-            <div class="detalle-item">
-
-                <span>M3</span>
-
-                <strong>
-                    ${hormigon.cantidad || 0}
-                </strong>
-
-            </div>
-
-
-            <div class="detalle-item">
-
-                <span>TIPO CEMENTO</span>
-
-                <strong>
-                    ${hormigon.cemento || "CPP40 KG"}
-                </strong>
-
-            </div>
-
-
-            <div class="detalle-item">
-
-                <span>DISTANCIA</span>
-
-                <strong>
-                    ${hormigon.distancia || 0} KM
-                </strong>
-
-            </div>
-
-
-            <div class="detalle-item">
-
-                <span>VALOR x M3</span>
-
-                <strong>
-                    ${formatoPesos(
-                        hormigon.precioM3
-                    )}
-                </strong>
-
-            </div>
-
-
-            <div class="detalle-item">
-
-                <span>TOTAL</span>
-
-                <strong>
-                    ${formatoPesos(
-                        hormigon.total
-                    )}
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <!-- ADITIVOS -->
 
         <h2 class="titulo-seccion">
 
@@ -581,70 +975,10 @@ function mostrarPresupuesto(
         </h2>
 
 
-        <div class="detalle-grid">
+        ${crearBloqueAditivos(
+            aditivos
+        )}
 
-            <div class="detalle-item">
-
-                <span>TIPO DE H°</span>
-
-                <strong>
-                    ${hormigon.tipo || "-"}
-                </strong>
-
-            </div>
-
-
-            <div class="detalle-item">
-
-                <span>M3</span>
-
-                <strong>
-                    ${hormigon.cantidad || 0}
-                </strong>
-
-            </div>
-
-
-            <div class="detalle-item">
-
-                <span>TIPO ADITIVO</span>
-
-                <strong>
-                    ${nombreAditivo}
-                </strong>
-
-            </div>
-
-
-            <div class="detalle-item">
-
-                <span>VALOR x M3</span>
-
-                <strong>
-                    ${formatoPesos(
-                        aditivo.precioM3
-                    )}
-                </strong>
-
-            </div>
-
-
-            <div class="detalle-item">
-
-                <span>TOTAL</span>
-
-                <strong>
-                    ${formatoPesos(
-                        aditivo.total
-                    )}
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <!-- SERVICIOS -->
 
         <h2 class="titulo-seccion">
 
@@ -705,15 +1039,15 @@ function mostrarPresupuesto(
         ${bloqueTotales}
 
 
-        <!-- ACCIONES -->
-
         <div class="acciones-presupuesto">
 
             <button
                 class="boton principal"
                 id="generarPDFHistorial"
             >
+
                 Generar PDF
+
             </button>
 
         </div>

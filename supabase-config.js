@@ -5,46 +5,13 @@
 const SUPABASE_URL =
     "https://qdpwabxmmvsxcamifgpn.supabase.co";
 
+// La publishable key es pública por diseño.
+// Nunca colocar aquí una service_role key.
 const SUPABASE_PUBLISHABLE_KEY =
     "sb_publishable_HipukRARrC36PyP79pZPzQ_EIYmqhut";
-
 
 const supabaseClient =
     window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_PUBLISHABLE_KEY
     );
-
-
-console.log(
-    "Supabase conectado correctamente"
-);
-async function probarSupabase() {
-
-    const { data, error } =
-        await supabaseClient
-            .from("precios")
-            .select("*");
-
-
-    if (error) {
-
-        console.error(
-            "Error leyendo precios:",
-            error
-        );
-
-        return;
-
-    }
-
-
-    console.log(
-        "Precios recibidos desde Supabase:",
-        data
-    );
-
-}
-
-
-probarSupabase();

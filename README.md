@@ -1,48 +1,97 @@
-# Presupuestos M3 - Monteverdi Cúbico
+# Presupuestos Monteverdi Cúbico
 
-Sistema web interno para la confección y gestión de presupuestos de hormigón elaborado.
+Aplicación web interna para generar, guardar y consultar presupuestos de hormigón elaborado.
 
-## Acceso a la aplicación
+## Arquitectura
 
-https://m3monteverdi.github.io/presupuestos-m3/
+- Frontend estático: HTML, CSS y JavaScript.
+- Hosting: GitHub Pages.
+- Base de datos y autenticación: Supabase.
+- PDFs: PDF-Lib sobre plantillas en `assets/`.
 
 ## Funciones principales
 
-- Presupuestos M3 sin IVA
-- Presupuestos M3 + IVA
-- Cálculo automático de importes
-- Generación de PDF
-- Historial de presupuestos
-- Actualización de precios
-- Inicio de sesión
-- Almacenamiento de datos en Supabase
+- Presupuesto M3 sin IVA.
+- Presupuesto M3 + IVA.
+- Numeración independiente; en IVA se utiliza el prefijo fijo `A0`.
+- Fecha actual automática y editable.
+- Visualización del último número de presupuesto guardado.
+- Varios hormigones en un mismo presupuesto.
+- Varios aditivos vinculados a cada hormigón.
+- Aditivos con precio distinto según resistencia H8, H13, H17, H21, H25, H30 y H40.
+- Precio de aditivo automático desde Supabase y posibilidad de sobrescribirlo manualmente en un presupuesto.
+- Bomba y vibrador.
+- Descuento editable.
+- Guardado e historial en Supabase.
+- PDF desde el formulario y desde el historial.
+- Panel de actualización de precios.
+- Panel de configuración administrativa sin modificar código.
 
-## Estructura
+## Configuración editable
 
-La aplicación está publicada mediante GitHub Pages.
+La pantalla `Configuración` permite actualizar datos de la tabla `configuracion`:
 
-Los datos variables se almacenan en Supabase:
-- usuarios
-- precios
-- presupuestos
-- historial
+- Forma de pago sin IVA.
+- Validez sin IVA.
+- Fecha de precios con IVA.
+- Forma de pago con IVA.
+- Validez con IVA.
+- Cuenta, CBU y alias de Banco Credicoop.
+- CBU y alias de Banco Nación.
 
-Las plantillas PDF se encuentran en la carpeta:
+Los nuevos PDFs toman esos valores automáticamente.
 
-assets/
+Al guardar un presupuesto se guarda también un **snapshot de configuración** dentro de `datos.configuracion`. Esto permite que un presupuesto histórico conserve los datos administrativos que tenía al momento de ser creado, aunque la configuración general cambie posteriormente.
 
-## Actualización del sistema
+Los presupuestos antiguos que no poseen snapshot utilizan la configuración actual de Supabase.
 
-Los cambios de código se realizan en este repositorio.
+## Precios
 
-Luego de modificar y guardar un archivo en la rama `main`, GitHub Pages publica automáticamente la nueva versión.
+La tabla `precios` utiliza estos códigos:
 
-## Importante
+### Hormigones
+`H8`, `H13`, `H17`, `H21`, `H25`, `H30`, `H40`.
 
-No eliminar:
-- supabase-config.js
-- carpeta assets
-- plantillas PDF
-- tablas de Supabase
+### Aditivos por resistencia
 
-Las contraseñas de usuarios y accesos administrativos no deben almacenarse en este repositorio.
+- `mr120_H8` ... `mr120_H40`
+- `macro_H8` ... `macro_H40`
+- `hidrofugo_H8` ... `hidrofugo_H40`
+
+### Servicios
+`bomba`, `vibrador`.
+
+Las filas antiguas `mr120`, `macro` e `hidrofugo` pueden permanecer en Supabase; la versión actual de la aplicación usa la matriz por resistencia.
+
+## Configuración local
+
+Desde la carpeta del proyecto:
+
+```bash
+python -m http.server 8002
+```
+
+Abrir:
+
+`http://localhost:8002/`
+
+## Publicación
+
+El proyecto se publica desde el repositorio de GitHub Pages de Monteverdi. Antes de subir una versión nueva se recomienda probar localmente:
+
+1. Login.
+2. Actualización de precios.
+3. Configuración administrativa.
+4. Presupuesto M3.
+5. Presupuesto M3+IVA.
+6. Precio automático y manual de aditivos.
+7. Guardado en historial.
+8. Vista desde historial.
+9. PDF desde formulario.
+10. PDF desde historial.
+
+## Seguridad
+
+La clave incluida en `supabase-config.js` es una **publishable key** y puede estar en un frontend público. Nunca debe colocarse una `service_role` key en GitHub Pages.
+
+Las tablas deben tener RLS activo. Como actualmente existe un único usuario administrador, las operaciones de edición deben requerir una sesión autenticada. Ver `supabase-configuracion-rls.sql`.
