@@ -550,3 +550,385 @@ buscador.addEventListener(
 // =====================================
 
 cargarHistorial();
+
+// =====================================
+// DESCARGAR TODOS LOS PRESUPUESTOS
+// =====================================
+
+async function descargarTodosLosPresupuestos() {
+
+    const boton =
+        document.getElementById(
+            "descargarTodos"
+        );
+
+
+    if (
+        !presupuestosGuardados.length
+    ) {
+
+        alert(
+            "No hay presupuestos para descargar."
+        );
+
+        return;
+
+    }
+
+
+    const textoOriginal =
+        boton.textContent;
+
+
+    boton.disabled = true;
+
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("presupuestos")
+                .select("*")
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        const presupuestos =
+            data || [];
+
+
+        if (!presupuestos.length) {
+
+            alert(
+                "No hay presupuestos para descargar."
+            );
+
+            return;
+
+        }
+
+
+        const zip =
+            new JSZip();
+
+
+        const nombresUsados =
+            new Set();
+
+
+        for (
+            let i = 0;
+            i < presupuestos.length;
+            i++
+        ) {
+
+            const presupuesto =
+                presupuestos[i];
+
+
+            boton.textContent =
+                `Preparando ${i + 1} de ${presupuestos.length}...`;
+
+
+            const conIVA =
+                presupuesto.tipo_planilla ===
+                "PresupuestosM3+IVA";
+
+
+            const bytes =
+                conIVA
+                    ? await generarM3IVA(
+                        presupuesto
+                    )
+                    : await generarM3(
+                        presupuesto
+                    );
+
+
+            let nombreBase =
+                limpiarNombreArchivo(
+                    `${presupuesto.senores || "Cliente"} - ` +
+                    `Presupuesto ${presupuesto.presupuesto_numero || presupuesto.id}`
+                );
+
+
+            if (!nombreBase) {
+
+                nombreBase =
+                    `Presupuesto ${presupuesto.id}`;
+
+            }
+
+
+            let nombrePDF =
+                `${nombreBase}.pdf`;
+
+
+            let repetido = 2;
+
+
+            while (
+                nombresUsados.has(
+                    nombrePDF
+                )
+            ) {
+
+                nombrePDF =
+                    `${nombreBase} (${repetido}).pdf`;
+
+                repetido++;
+
+            }
+
+
+            nombresUsados.add(
+                nombrePDF
+            );
+
+
+            zip.file(
+                nombrePDF,
+                bytes
+            );
+
+        }
+
+
+        boton.textContent =
+            "Armando ZIP...";
+
+
+        const archivoZIP =
+            await zip.generateAsync({
+                type: "blob"
+            });
+
+
+        const url =
+            URL.createObjectURL(
+                archivoZIP
+            );
+
+
+        const enlace =
+            document.createElement(
+                "a"
+            );
+
+
+        enlace.href = url;
+
+        enlace.download =
+            "Historial Presupuestos Monteverdi.zip";
+
+
+        document.body.appendChild(
+            enlace
+        );
+
+
+        enlace.click();
+
+        enlace.remove();
+
+
+        setTimeout(
+            function () {
+
+                URL.revokeObjectURL(
+                    url
+                );
+
+            },
+            1000
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Error descargando historial:",
+            error
+        );
+
+
+        alert(
+            "No se pudo descargar todo el historial."
+        );
+
+
+    } finally {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            textoOriginal;
+
+    }
+
+}
+
+
+// =====================================
+// ELIMINAR TODOS LOS PRESUPUESTOS
+// =====================================
+
+async function eliminarTodosLosPresupuestos() {
+
+    if (
+        !presupuestosGuardados.length
+    ) {
+
+        alert(
+            "No hay presupuestos para eliminar."
+        );
+
+        return;
+
+    }
+
+
+    const confirmar =
+        confirm(
+            `Se eliminarán los ${presupuestosGuardados.length} presupuestos del historial. ` +
+            "Esta acción no se puede deshacer. ¿Desea continuar?"
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    const confirmarFinal =
+        confirm(
+            "Última confirmación: ¿eliminar TODO el historial?"
+        );
+
+
+    if (!confirmarFinal) {
+
+        return;
+
+    }
+
+
+    const boton =
+        document.getElementById(
+            "eliminarTodos"
+        );
+
+
+    const textoOriginal =
+        boton.textContent;
+
+
+    boton.disabled = true;
+
+    boton.textContent =
+        "Eliminando...";
+
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("presupuestos")
+                .delete()
+                .not(
+                    "id",
+                    "is",
+                    null
+                )
+                .select("id");
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            alert(
+                "No se eliminó ningún presupuesto. Verifique los permisos del administrador."
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            `Se eliminaron ${data.length} presupuestos correctamente.`
+        );
+
+
+        await cargarHistorial();
+
+
+    } catch (error) {
+
+        console.error(
+            "Error eliminando todo el historial:",
+            error
+        );
+
+
+        alert(
+            "No se pudo eliminar todo el historial."
+        );
+
+
+    } finally {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            textoOriginal;
+
+    }
+
+}
+
+
+// =====================================
+// BOTONES GENERALES DEL HISTORIAL
+// =====================================
+
+document
+    .getElementById(
+        "descargarTodos"
+    )
+    .addEventListener(
+        "click",
+        descargarTodosLosPresupuestos
+    );
+
+
+document
+    .getElementById(
+        "eliminarTodos"
+    )
+    .addEventListener(
+        "click",
+        eliminarTodosLosPresupuestos
+    );
