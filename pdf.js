@@ -1239,7 +1239,7 @@ const CONFIG_M3 = {
         false,
 
     plantilla:
-        "assets/plantilla-m3.pdf",
+        "assets/plantilla-m3.pdf?v=2",
 
 
     general: {
@@ -1485,7 +1485,7 @@ const CONFIG_IVA = {
         true,
 
     plantilla:
-        "assets/plantilla-m3-iva.pdf",
+        "assets/plantilla-m3-iva.pdf?v=2",
 
 
     general: {
@@ -2658,7 +2658,7 @@ async function generarConConfig(
 
 
     return await pdfDoc
-        .save();
+        .save({ useObjectStreams: false });
 
 }
 
