@@ -445,6 +445,21 @@ function obtenerPrecioHormigonFila(
     fila
 ) {
 
+    if (
+        fila.dataset
+            .precioManual ===
+        "true"
+    ) {
+
+        return Number(
+            fila.dataset
+                .precioManualValor ||
+            0
+        ) || 0;
+
+    }
+
+
     const select =
         fila.querySelector(
             ".tipo-hormigon"
@@ -638,10 +653,17 @@ function calcularFilaHormigon(
 
     if (precioInput) {
 
-        precioInput.value =
-            formatoPesos(
-                precio
-            );
+        if (
+            document.activeElement !==
+            precioInput
+        ) {
+
+            precioInput.value =
+                formatoPesos(
+                    precio
+                );
+
+        }
 
     }
 
@@ -804,7 +826,8 @@ function crearFilaHormigon() {
             <input
                 type="text"
                 class="precio-hormigon"
-                readonly
+                inputmode="decimal"
+                autocomplete="off"
                 placeholder="$ 0,00"
             >
 
@@ -885,6 +908,12 @@ function limpiarFilaHormigon(
 
     delete fila.dataset
         .precioPersonalizado;
+
+    delete fila.dataset
+        .precioManual;
+
+    delete fila.dataset
+        .precioManualValor;
 
 
     calcularFilaHormigon(
@@ -1893,6 +1922,13 @@ if (filasHormigon) {
                 );
 
 
+                delete fila.dataset
+                    .precioManual;
+
+                delete fila.dataset
+                    .precioManualValor;
+
+
                 restablecerPreciosAditivosVinculados(
                     fila.dataset.id
                 );
@@ -1918,6 +1954,27 @@ if (filasHormigon) {
 
             if (!fila) {
                 return;
+            }
+
+
+            if (
+                event.target.classList
+                    .contains(
+                        "precio-hormigon"
+                    )
+            ) {
+
+                const valor =
+                    parsearPrecioAditivoManual(
+                        event.target.value
+                    );
+
+                fila.dataset.precioManual =
+                    "true";
+
+                fila.dataset.precioManualValor =
+                    String(valor);
+
             }
 
 
