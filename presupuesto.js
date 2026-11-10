@@ -3354,6 +3354,7 @@ function inicializarModoEdicion() {
         const datos = presupuestoEnEdicion.datos || {};
 
         console.log("datos completos:", datos);
+        console.log("claves de datos:", Object.keys(datos));
 
 
         // Si datos es string, parsear JSON
