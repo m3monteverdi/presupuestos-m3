@@ -603,25 +603,56 @@ input[readonly] {
 }
 
 
-.toggle-aprobacion {
-    width: 20px;
+.btn-estado {
+    width: 24px;
 
-    height: 20px;
+    height: 24px;
 
-    cursor: pointer;
+    border: 2px solid #b0b7bd;
 
-    accent-color: #0080a3;
-}
+    border-radius: 4px;
 
+    background: #fff;
 
-.texto-aprobacion {
-    font-size: 13px;
+    color: #4a4a4a;
 
     font-weight: 800;
 
-    min-width: 14px;
+    cursor: pointer;
 
-    text-align: center;
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    line-height: 1;
+
+    padding: 0;
+}
+
+
+.btn-estado.activo {
+    border-color: transparent;
+}
+
+
+.btn-ok.activo {
+    background: #2e7d32;
+
+    color: #fff;
+}
+
+
+.btn-no.activo {
+    background: #c62828;
+
+    color: #fff;
+}
+
+
+.btn-estado:hover {
+    border-color: #0080a3;
 }
 
 

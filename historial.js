@@ -469,87 +469,153 @@ function crearFila(presupuesto) {
     contenedorEstado.className =
         "estado-aprobacion";
 
-    const inputEstado =
-        document.createElement("input");
+    const btnAprobado =
+        document.createElement("button");
 
-    inputEstado.type =
-        "checkbox";
+    btnAprobado.type =
+        "button";
 
-    inputEstado.className =
-        "toggle-aprobacion";
+    btnAprobado.className =
+        "btn-estado btn-ok";
 
-    inputEstado.checked =
+    btnAprobado.textContent =
+        "OK";
+
+    btnAprobado.title =
+        "Marcar como aprobado";
+
+    const btnNoAprobado =
+        document.createElement("button");
+
+    btnNoAprobado.type =
+        "button";
+
+    btnNoAprobado.className =
+        "btn-estado btn-no";
+
+    btnNoAprobado.textContent =
+        "X";
+
+    btnNoAprobado.title =
+        "Marcar como no aprobado";
+
+    const aprobadoActual =
         Boolean(
             presupuesto.aprobado
         );
 
-    inputEstado.title =
-        presupuesto.aprobado
-            ? "Presupuesto aprobado"
-            : "Presupuesto no aprobado";
+    function aplicarEstado(
+        estado
+    ) {
 
-    const textoEstado =
-        document.createElement("span");
+        if (estado) {
 
-    textoEstado.className =
-        "texto-aprobacion";
+            btnAprobado.classList.add("activo");
 
-    textoEstado.textContent =
-        presupuesto.aprobado
-            ? "OK"
-            : "X";
+            btnAprobado.style.background =
+                "#2e7d32";
 
-    textoEstado.style.color =
-        presupuesto.aprobado
-            ? "#2e7d32"
-            : "#c62828";
+            btnAprobado.style.color =
+                "#fff";
 
-    inputEstado.addEventListener(
-        "change",
+            btnNoAprobado.classList.remove("activo");
+
+            btnNoAprobado.style.background =
+                "";
+
+            btnNoAprobado.style.color =
+                "";
+
+        } else {
+
+            btnNoAprobado.classList.add("activo");
+
+            btnNoAprobado.style.background =
+                "#c62828";
+
+            btnNoAprobado.style.color =
+                "#fff";
+
+            btnAprobado.classList.remove("activo");
+
+            btnAprobado.style.background =
+                "";
+
+            btnAprobado.style.color =
+                "";
+
+        }
+
+    }
+
+    aplicarEstado(aprobadoActual);
+
+    btnAprobado.addEventListener(
+        "click",
         async function () {
 
-            const nuevoEstado =
-                this.checked;
-
-            const ok =
-                await cambiarAprobacion(
-                    presupuesto,
-                    nuevoEstado
-                );
-
-            if (!ok) {
-
-                this.checked =
-                    !nuevoEstado;
+            if (
+                btnAprobado.classList
+                    .contains("activo")
+            ) {
 
                 return;
 
             }
 
-            textoEstado.textContent =
-                nuevoEstado
-                    ? "OK"
-                    : "X";
+            const ok =
+                await cambiarAprobacion(
+                    presupuesto,
+                    true
+                );
 
-            textoEstado.style.color =
-                nuevoEstado
-                    ? "#2e7d32"
-                    : "#c62828";
+            if (!ok) {
 
-            this.title =
-                nuevoEstado
-                    ? "Presupuesto aprobado"
-                    : "Presupuesto no aprobado";
+                return;
+
+            }
+
+            aplicarEstado(true);
+
+        }
+    );
+
+    btnNoAprobado.addEventListener(
+        "click",
+        async function () {
+
+            if (
+                btnNoAprobado.classList
+                    .contains("activo")
+            ) {
+
+                return;
+
+            }
+
+            const ok =
+                await cambiarAprobacion(
+                    presupuesto,
+                    false
+                );
+
+            if (!ok) {
+
+                return;
+
+            }
+
+            aplicarEstado(false);
 
         }
     );
 
     contenedorEstado.appendChild(
-        inputEstado
+        btnAprobado
     );
 
     contenedorEstado.appendChild(
-        textoEstado
+        btnNoAprobado
     );
 
     columnaAcciones.appendChild(
