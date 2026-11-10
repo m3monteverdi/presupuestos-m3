@@ -200,6 +200,7 @@ async function cargarHistorial() {
                 fecha,
                 total_final,
                 aprobado,
+                nulo,
                 datos
             `)
             .order(
@@ -368,7 +369,8 @@ async function cambiarAprobacion(
             .from("presupuestos")
             .update(
                 {
-                    aprobado: estado
+                    aprobado: estado,
+                    nulo: false
                 }
             )
             .eq(
@@ -402,6 +404,70 @@ async function cambiarAprobacion(
         presupuestosGuardados[
             indice
         ].aprobado = estado;
+        presupuestosGuardados[
+            indice
+        ].nulo = false;
+
+    }
+
+    actualizarResumen();
+
+    return true;
+
+}
+
+// =====================================
+// CAMBIAR ESTADO NULO
+// =====================================
+
+async function cambiarNulo(
+    presupuesto,
+    estado
+) {
+
+    const { error } =
+        await supabaseClient
+            .from("presupuestos")
+            .update(
+                {
+                    nulo: estado,
+                    aprobado: false
+                }
+            )
+            .eq(
+                "id",
+                presupuesto.id
+            )
+            .select();
+
+    if (error) {
+
+        console.error(
+            "Error actualizando nulo:",
+            error
+        );
+
+        alert(
+            "No se pudo actualizar el estado del presupuesto."
+        );
+
+        return false;
+
+    }
+
+    const indice =
+        presupuestosGuardados.findIndex(
+            p => String(p.id) === String(presupuesto.id)
+        );
+
+    if (indice !== -1) {
+
+        presupuestosGuardados[
+            indice
+        ].nulo = estado;
+        presupuestosGuardados[
+            indice
+        ].aprobado = false;
 
     }
 
@@ -645,16 +711,60 @@ function crearFila(presupuesto) {
     btnNoAprobado.title =
         "Marcar como no aprobado";
 
+    const btnNulo =
+        document.createElement("button");
+
+    btnNulo.type =
+        "button";
+
+    btnNulo.className =
+        "btn-estado btn-nulo";
+
+    btnNulo.textContent =
+        "Nulo";
+
+    btnNulo.title =
+        "Marcar como nulo";
+
     const aprobadoActual =
         Boolean(
             presupuesto.aprobado
         );
 
-    function aplicarEstado(
-        estado
-    ) {
+    const nuloActual =
+        Boolean(
+            presupuesto.nulo
+        );
 
-        if (estado) {
+    function aplicarEstado() {
+
+        if (nuloActual) {
+
+            btnNulo.classList.add("activo");
+
+            btnNulo.style.background =
+                "#ff9800";
+
+            btnNulo.style.color =
+                "#fff";
+
+            btnAprobado.classList.remove("activo");
+
+            btnAprobado.style.background =
+                "";
+
+            btnAprobado.style.color =
+                "";
+
+            btnNoAprobado.classList.remove("activo");
+
+            btnNoAprobado.style.background =
+                "";
+
+            btnNoAprobado.style.color =
+                "";
+
+        } else if (aprobadoActual) {
 
             btnAprobado.classList.add("activo");
 
@@ -670,6 +780,14 @@ function crearFila(presupuesto) {
                 "";
 
             btnNoAprobado.style.color =
+                "";
+
+            btnNulo.classList.remove("activo");
+
+            btnNulo.style.background =
+                "";
+
+            btnNulo.style.color =
                 "";
 
         } else {
@@ -690,15 +808,31 @@ function crearFila(presupuesto) {
             btnAprobado.style.color =
                 "";
 
+            btnNulo.classList.remove("activo");
+
+            btnNulo.style.background =
+                "";
+
+            btnNulo.style.color =
+                "";
+
         }
 
     }
 
-    aplicarEstado(aprobadoActual);
+    aplicarEstado();
 
     btnAprobado.addEventListener(
         "click",
         async function () {
+
+            if (
+                nuloActual
+            ) {
+
+                return;
+
+            }
 
             if (
                 btnAprobado.classList
@@ -721,7 +855,11 @@ function crearFila(presupuesto) {
 
             }
 
-            aplicarEstado(true);
+            aprobadoActual = true;
+
+            nuloActual = false;
+
+            aplicarEstado();
 
         }
     );
@@ -729,6 +867,14 @@ function crearFila(presupuesto) {
     btnNoAprobado.addEventListener(
         "click",
         async function () {
+
+            if (
+                nuloActual
+            ) {
+
+                return;
+
+            }
 
             if (
                 btnNoAprobado.classList
@@ -751,7 +897,45 @@ function crearFila(presupuesto) {
 
             }
 
-            aplicarEstado(false);
+            aprobadoActual = false;
+
+            nuloActual = false;
+
+            aplicarEstado();
+
+        }
+    );
+
+    btnNulo.addEventListener(
+        "click",
+        async function () {
+
+            if (
+                btnNulo.classList
+                    .contains("activo")
+            ) {
+
+                return;
+
+            }
+
+            const ok =
+                await cambiarNulo(
+                    presupuesto,
+                    true
+                );
+
+            if (!ok) {
+
+                return;
+
+            }
+
+            nuloActual = true;
+
+            aprobadoActual = false;
+
+            aplicarEstado();
 
         }
     );
@@ -762,6 +946,10 @@ function crearFila(presupuesto) {
 
     contenedorEstado.appendChild(
         btnNoAprobado
+    );
+
+    contenedorEstado.appendChild(
+        btnNulo
     );
 
     columnaAcciones.appendChild(
@@ -809,11 +997,16 @@ function crearFila(presupuesto) {
 
 function actualizarResumen() {
 
+    const noNulos =
+        presupuestosGuardados.filter(
+            p => !Boolean(p.nulo)
+        );
+
     const total =
-        presupuestosGuardados.length;
+        noNulos.length;
 
     const aprobados =
-        presupuestosGuardados.filter(
+        noNulos.filter(
             p => Boolean(p.aprobado)
         ).length;
 
@@ -835,13 +1028,13 @@ function actualizarResumen() {
             );
 
     const montoTotal =
-        presupuestosGuardados.reduce(
+        noNulos.reduce(
             (suma, p) => suma + (Number(p.total_final) || 0),
             0
         );
 
     const montoAprobados =
-        presupuestosGuardados
+        noNulos
             .filter(p => Boolean(p.aprobado))
             .reduce(
                 (suma, p) => suma + (Number(p.total_final) || 0),

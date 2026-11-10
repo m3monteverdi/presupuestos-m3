@@ -663,6 +663,13 @@ input[readonly] {
 }
 
 
+.btn-nulo.activo {
+    background: #ff9800;
+
+    color: #fff;
+}
+
+
 .btn-estado:hover {
     border-color: #0080a3;
 }
