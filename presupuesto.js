@@ -3197,6 +3197,8 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
+        console.log("DOMContentLoaded - presupuesto.js iniciado");
+
         colocarFechaDeHoy();
 
 
@@ -3309,9 +3311,15 @@ function inicializarModoEdicion() {
 
     try {
 
+        console.log("inicializarModoEdicion iniciado");
+
         const raw = localStorage.getItem("m3_presupuesto_editar");
 
+        console.log("localStorage raw:", raw);
+
         if (!raw) {
+
+            console.log("No hay datos en localStorage para editar");
 
             return;
 
@@ -3498,6 +3506,8 @@ function inicializarModoEdicion() {
         recalcularTodo();
 
         localStorage.removeItem("m3_presupuesto_editar");
+
+        console.log("Modo edición completado, datos cargados");
 
         alert("Modo edición activado. Cambiá el número de presupuesto antes de guardar.");
 

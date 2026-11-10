@@ -519,12 +519,16 @@ function crearFila(presupuesto) {
         "click",
         function () {
 
+            console.log("Editando presupuesto:", presupuesto);
+
             localStorage.setItem(
                 "m3_presupuesto_editar",
                 JSON.stringify(
                     presupuesto
                 )
             );
+
+            console.log("Guardado en localStorage:", localStorage.getItem("m3_presupuesto_editar"));
 
             window.location.href =
                 presupuesto.tipo_planilla ===
