@@ -856,45 +856,9 @@ function crearFila(presupuesto) {
     btnNulo.title =
         "Marcar como nulo";
 
-    const aprobadoActual =
-        Boolean(
-            presupuesto.aprobado
-        );
+    function cambiarColores(estado) {
 
-    const nuloActual =
-        Boolean(
-            presupuesto.nulo
-        );
-
-    function aplicarEstado() {
-
-        if (nuloActual) {
-
-            btnNulo.classList.add("activo");
-
-            btnNulo.style.background =
-                "#ff9800";
-
-            btnNulo.style.color =
-                "#fff";
-
-            btnAprobado.classList.remove("activo");
-
-            btnAprobado.style.background =
-                "";
-
-            btnAprobado.style.color =
-                "";
-
-            btnNoAprobado.classList.remove("activo");
-
-            btnNoAprobado.style.background =
-                "";
-
-            btnNoAprobado.style.color =
-                "";
-
-        } else if (aprobadoActual) {
+        if (estado === "ok") {
 
             btnAprobado.classList.add("activo");
 
@@ -920,7 +884,7 @@ function crearFila(presupuesto) {
             btnNulo.style.color =
                 "";
 
-        } else {
+        } else if (estado === "no") {
 
             btnNoAprobado.classList.add("activo");
 
@@ -946,18 +910,68 @@ function crearFila(presupuesto) {
             btnNulo.style.color =
                 "";
 
+        } else if (estado === "nulo") {
+
+            btnNulo.classList.add("activo");
+
+            btnNulo.style.background =
+                "#ff9800";
+
+            btnNulo.style.color =
+                "#fff";
+
+            btnAprobado.classList.remove("activo");
+
+            btnAprobado.style.background =
+                "";
+
+            btnAprobado.style.color =
+                "";
+
+            btnNoAprobado.classList.remove("activo");
+
+            btnNoAprobado.style.background =
+                "";
+
+            btnNoAprobado.style.color =
+                "";
+
         }
 
     }
 
-    aplicarEstado();
+    const aprobadoInicial =
+        Boolean(
+            presupuesto.aprobado
+        );
+
+    const nuloInicial =
+        Boolean(
+            presupuesto.nulo
+        );
+
+    if (nuloInicial) {
+
+        cambiarColores("nulo");
+
+    } else if (aprobadoInicial) {
+
+        cambiarColores("ok");
+
+    } else {
+
+        cambiarColores("no");
+
+    }
 
     btnAprobado.addEventListener(
         "click",
         async function () {
 
+            console.log("CLICK OK", presupuesto.id);
+
             if (
-                nuloActual
+                Boolean(presupuesto.nulo)
             ) {
 
                 return;
@@ -973,23 +987,86 @@ function crearFila(presupuesto) {
 
             }
 
-            const ok =
-                await cambiarAprobacion(
-                    presupuesto,
-                    true
-                );
+            try {
 
-            if (!ok) {
+                const indice =
+                    presupuestosGuardados.findIndex(
+                        p => String(p.id) === String(presupuesto.id)
+                    );
 
-                return;
+                if (indice !== -1) {
+
+                    presupuestosGuardados[
+                        indice
+                    ].aprobado = true;
+
+                    presupuestosGuardados[
+                        indice
+                    ].nulo = false;
+
+                }
+
+                try {
+
+                    actualizarResumen();
+
+                } catch (e) {
+
+                    console.error("Error actualizarResumen:", e);
+
+                }
+
+                cambiarColores("ok");
+
+                try {
+
+                    await supabaseClient
+                        .from("presupuestos")
+                        .update(
+                            {
+                                aprobado: true,
+
+                                nulo: false
+
+                            }
+
+                        )
+                        .eq(
+                            "id",
+
+                            presupuesto.id
+
+                        )
+                        .select();
+
+                } catch (e) {
+
+                    console.error("Error supabase OK:", e);
+
+                    try {
+
+                        guardarEstadoLocal(
+                            presupuesto.id,
+
+                            { aprobado: true, nulo: false }
+
+                        );
+
+                    } catch (e2) {
+
+                        console.error("Error localStorage OK:", e2);
+
+                    }
+
+                }
+
+            } catch (e) {
+
+                console.error("Error general OK:", e);
+
+                cambiarColores("ok");
 
             }
-
-            aprobadoActual = true;
-
-            nuloActual = false;
-
-            aplicarEstado();
 
         }
     );
@@ -998,8 +1075,10 @@ function crearFila(presupuesto) {
         "click",
         async function () {
 
+            console.log("CLICK X", presupuesto.id);
+
             if (
-                nuloActual
+                Boolean(presupuesto.nulo)
             ) {
 
                 return;
@@ -1015,23 +1094,86 @@ function crearFila(presupuesto) {
 
             }
 
-            const ok =
-                await cambiarAprobacion(
-                    presupuesto,
-                    false
-                );
+            try {
 
-            if (!ok) {
+                const indice =
+                    presupuestosGuardados.findIndex(
+                        p => String(p.id) === String(presupuesto.id)
+                    );
 
-                return;
+                if (indice !== -1) {
+
+                    presupuestosGuardados[
+                        indice
+                    ].aprobado = false;
+
+                    presupuestosGuardados[
+                        indice
+                    ].nulo = false;
+
+                }
+
+                try {
+
+                    actualizarResumen();
+
+                } catch (e) {
+
+                    console.error("Error actualizarResumen:", e);
+
+                }
+
+                cambiarColores("no");
+
+                try {
+
+                    await supabaseClient
+                        .from("presupuestos")
+                        .update(
+                            {
+                                aprobado: false,
+
+                                nulo: false
+
+                            }
+
+                        )
+                        .eq(
+                            "id",
+
+                            presupuesto.id
+
+                        )
+                        .select();
+
+                } catch (e) {
+
+                    console.error("Error supabase X:", e);
+
+                    try {
+
+                        guardarEstadoLocal(
+                            presupuesto.id,
+
+                            { aprobado: false, nulo: false }
+
+                        );
+
+                    } catch (e2) {
+
+                        console.error("Error localStorage X:", e2);
+
+                    }
+
+                }
+
+            } catch (e) {
+
+                console.error("Error general X:", e);
+
+                cambiarColores("no");
 
             }
-
-            aprobadoActual = false;
-
-            nuloActual = false;
-
-            aplicarEstado();
 
         }
     );
@@ -1039,6 +1181,8 @@ function crearFila(presupuesto) {
     btnNulo.addEventListener(
         "click",
         async function () {
+
+            console.log("CLICK NULO", presupuesto.id);
 
             if (
                 btnNulo.classList
@@ -1049,23 +1193,86 @@ function crearFila(presupuesto) {
 
             }
 
-            const ok =
-                await cambiarNulo(
-                    presupuesto,
-                    true
-                );
+            try {
 
-            if (!ok) {
+                const indice =
+                    presupuestosGuardados.findIndex(
+                        p => String(p.id) === String(presupuesto.id)
+                    );
 
-                return;
+                if (indice !== -1) {
+
+                    presupuestosGuardados[
+                        indice
+                    ].nulo = true;
+
+                    presupuestosGuardados[
+                        indice
+                    ].aprobado = false;
+
+                }
+
+                try {
+
+                    actualizarResumen();
+
+                } catch (e) {
+
+                    console.error("Error actualizarResumen:", e);
+
+                }
+
+                cambiarColores("nulo");
+
+                try {
+
+                    await supabaseClient
+                        .from("presupuestos")
+                        .update(
+                            {
+                                nulo: true,
+
+                                aprobado: false
+
+                            }
+
+                        )
+                        .eq(
+                            "id",
+
+                            presupuesto.id
+
+                        )
+                        .select();
+
+                } catch (e) {
+
+                    console.error("Error supabase Nulo:", e);
+
+                    try {
+
+                        guardarEstadoLocal(
+                            presupuesto.id,
+
+                            { nulo: true, aprobado: false }
+
+                        );
+
+                    } catch (e2) {
+
+                        console.error("Error localStorage Nulo:", e2);
+
+                    }
+
+                }
+
+            } catch (e) {
+
+                console.error("Error general Nulo:", e);
+
+                cambiarColores("nulo");
 
             }
-
-            nuloActual = true;
-
-            aprobadoActual = false;
-
-            aplicarEstado();
 
         }
     );
