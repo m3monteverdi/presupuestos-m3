@@ -224,8 +224,37 @@ async function cargarHistorial() {
 
 
 // =====================================
-// VER PRESUPUESTO
+// EDITAR PRESUPUESTO
+// Consulta el registro completo por ID para cargar todos los datos
 // =====================================
+
+async function obtenerPresupuestoCompleto(id) {
+
+    const { data, error } =
+        await supabaseClient
+            .from("presupuestos")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+    if (error) {
+
+        console.error(
+            "Error obteniendo presupuesto completo:",
+            error
+        );
+
+        alert(
+            "No se pudo obtener el presupuesto completo."
+        );
+
+        return null;
+
+    }
+
+    return data;
+
+}
 
 function verPresupuesto(id) {
 
@@ -518,21 +547,34 @@ function crearFila(presupuesto) {
 
     botonEditar.addEventListener(
         "click",
-        function () {
+        async function () {
 
             console.log("Editando presupuesto:", presupuesto);
+
+            const completo =
+                await obtenerPresupuestoCompleto(
+                    presupuesto.id
+                );
+
+            if (!completo) {
+
+                return;
+
+            }
+
+            console.log("Presupuesto completo:", completo);
 
             localStorage.setItem(
                 "m3_presupuesto_editar",
                 JSON.stringify(
-                    presupuesto
+                    completo
                 )
             );
 
             console.log("Guardado en localStorage:", localStorage.getItem("m3_presupuesto_editar"));
 
             window.location.href =
-                presupuesto.tipo_planilla ===
+                completo.tipo_planilla ===
                 "PresupuestosM3+IVA"
                     ? "presupuesto-iva.html"
                     : "presupuesto.html";
