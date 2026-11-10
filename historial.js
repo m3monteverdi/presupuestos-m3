@@ -387,7 +387,21 @@ async function cambiarAprobacion(
         );
 
         alert(
-            "No se pudo actualizar el estado del presupuesto."
+            "Error al guardar: " +
+            (error.message || error)
+        );
+
+        return false;
+
+    }
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        alert(
+            "No tiene permiso para modificar este presupuesto."
         );
 
         return false;
@@ -448,7 +462,21 @@ async function cambiarNulo(
         );
 
         alert(
-            "No se pudo actualizar el estado del presupuesto."
+            "Error al guardar: " +
+            (error.message || error)
+        );
+
+        return false;
+
+    }
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        alert(
+            "No tiene permiso para modificar este presupuesto."
         );
 
         return false;
