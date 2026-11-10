@@ -2144,40 +2144,61 @@ if (filasAditivo) {
         "input",
         function (event) {
 
+            const fila =
+                event.target.closest(
+                    ".fila-aditivo-dinamica"
+                );
+
+            if (!fila) return;
+
+
             if (
-                !event.target.classList
+                event.target.classList
                     .contains(
                         "precio-aditivo"
                     )
             ) {
+
+                fila.dataset.precioManual =
+                    "true";
+
+                fila.dataset.precioManualValor =
+                    String(
+                        parsearPrecioAditivoManual(
+                            event.target.value
+                        )
+                    );
+
+                calcularAditivos();
 
                 return;
 
             }
 
 
-            const fila =
-                event.target.closest(
-                    ".fila-aditivo-dinamica"
-                );
-
-
-            if (!fila) return;
-
-
-            fila.dataset.precioManual =
-                "true";
-
-
-            fila.dataset.precioManualValor =
-                String(
-                    parsearPrecioAditivoManual(
-                        event.target.value
+            if (
+                event.target.classList
+                    .contains(
+                        "cantidad-aditivo"
                     )
-                );
+            ) {
 
+                const valor =
+                    Number(
+                        event.target.value
+                    ) || 0;
 
-            calcularAditivos();
+                fila.dataset.cantidadManual =
+                    "true";
+
+                fila.dataset.cantidadManualValor =
+                    String(valor);
+
+                calcularAditivos();
+
+                return;
+
+            }
 
         }
     );
