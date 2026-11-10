@@ -970,23 +970,6 @@ function crearFila(presupuesto) {
 
             console.log("CLICK OK", presupuesto.id);
 
-            if (
-                Boolean(presupuesto.nulo)
-            ) {
-
-                return;
-
-            }
-
-            if (
-                btnAprobado.classList
-                    .contains("activo")
-            ) {
-
-                return;
-
-            }
-
             try {
 
                 const indice =
@@ -1006,15 +989,7 @@ function crearFila(presupuesto) {
 
                 }
 
-                try {
-
-                    actualizarResumen();
-
-                } catch (e) {
-
-                    console.error("Error actualizarResumen:", e);
-
-                }
+                actualizarResumen();
 
                 cambiarColores("ok");
 
@@ -1043,20 +1018,12 @@ function crearFila(presupuesto) {
 
                     console.error("Error supabase OK:", e);
 
-                    try {
+                    guardarEstadoLocal(
+                        presupuesto.id,
 
-                        guardarEstadoLocal(
-                            presupuesto.id,
+                        { aprobado: true, nulo: false }
 
-                            { aprobado: true, nulo: false }
-
-                        );
-
-                    } catch (e2) {
-
-                        console.error("Error localStorage OK:", e2);
-
-                    }
+                    );
 
                 }
 
@@ -1077,23 +1044,6 @@ function crearFila(presupuesto) {
 
             console.log("CLICK X", presupuesto.id);
 
-            if (
-                Boolean(presupuesto.nulo)
-            ) {
-
-                return;
-
-            }
-
-            if (
-                btnNoAprobado.classList
-                    .contains("activo")
-            ) {
-
-                return;
-
-            }
-
             try {
 
                 const indice =
@@ -1113,15 +1063,7 @@ function crearFila(presupuesto) {
 
                 }
 
-                try {
-
-                    actualizarResumen();
-
-                } catch (e) {
-
-                    console.error("Error actualizarResumen:", e);
-
-                }
+                actualizarResumen();
 
                 cambiarColores("no");
 
@@ -1150,20 +1092,12 @@ function crearFila(presupuesto) {
 
                     console.error("Error supabase X:", e);
 
-                    try {
+                    guardarEstadoLocal(
+                        presupuesto.id,
 
-                        guardarEstadoLocal(
-                            presupuesto.id,
+                        { aprobado: false, nulo: false }
 
-                            { aprobado: false, nulo: false }
-
-                        );
-
-                    } catch (e2) {
-
-                        console.error("Error localStorage X:", e2);
-
-                    }
+                    );
 
                 }
 
@@ -1184,15 +1118,6 @@ function crearFila(presupuesto) {
 
             console.log("CLICK NULO", presupuesto.id);
 
-            if (
-                btnNulo.classList
-                    .contains("activo")
-            ) {
-
-                return;
-
-            }
-
             try {
 
                 const indice =
@@ -1212,15 +1137,7 @@ function crearFila(presupuesto) {
 
                 }
 
-                try {
-
-                    actualizarResumen();
-
-                } catch (e) {
-
-                    console.error("Error actualizarResumen:", e);
-
-                }
+                actualizarResumen();
 
                 cambiarColores("nulo");
 
@@ -1249,20 +1166,12 @@ function crearFila(presupuesto) {
 
                     console.error("Error supabase Nulo:", e);
 
-                    try {
+                    guardarEstadoLocal(
+                        presupuesto.id,
 
-                        guardarEstadoLocal(
-                            presupuesto.id,
+                        { nulo: true, aprobado: false }
 
-                            { nulo: true, aprobado: false }
-
-                        );
-
-                    } catch (e2) {
-
-                        console.error("Error localStorage Nulo:", e2);
-
-                    }
+                    );
 
                 }
 
