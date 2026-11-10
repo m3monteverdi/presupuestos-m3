@@ -152,7 +152,8 @@ async function cargarHistorial() {
                 senores,
                 presupuesto_numero,
                 fecha,
-                total_final
+                total_final,
+                aprobado
             `)
             .order(
                 "created_at",
@@ -276,8 +277,48 @@ async function eliminarPresupuesto(
 
 
 // =====================================
-// CREAR FILA
+// CAMBIAR ESTADO DE APROBACION
 // =====================================
+
+async function cambiarAprobacion(
+    presupuesto,
+    estado
+) {
+
+    const { error } =
+        await supabaseClient
+            .from("presupuestos")
+            .update(
+                {
+                    aprobado: estado
+                }
+            )
+            .eq(
+                "id",
+                presupuesto.id
+            )
+            .select();
+
+    if (error) {
+
+        console.error(
+            "Error actualizando aprobacion:",
+            error
+        );
+
+        alert(
+            "No se pudo actualizar el estado del presupuesto."
+        );
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+
 
 function crearFila(presupuesto) {
 
@@ -418,6 +459,104 @@ function crearFila(presupuesto) {
     columnaAcciones.appendChild(
         botonEliminar
     );
+
+
+    // ESTADO DE APROBACION
+
+    const contenedorEstado =
+        document.createElement("div");
+
+    contenedorEstado.className =
+        "estado-aprobacion";
+
+    const inputEstado =
+        document.createElement("input");
+
+    inputEstado.type =
+        "checkbox";
+
+    inputEstado.className =
+        "toggle-aprobacion";
+
+    inputEstado.checked =
+        Boolean(
+            presupuesto.aprobado
+        );
+
+    inputEstado.title =
+        presupuesto.aprobado
+            ? "Presupuesto aprobado"
+            : "Presupuesto no aprobado";
+
+    const textoEstado =
+        document.createElement("span");
+
+    textoEstado.className =
+        "texto-aprobacion";
+
+    textoEstado.textContent =
+        presupuesto.aprobado
+            ? "OK"
+            : "X";
+
+    textoEstado.style.color =
+        presupuesto.aprobado
+            ? "#2e7d32"
+            : "#c62828";
+
+    inputEstado.addEventListener(
+        "change",
+        async function () {
+
+            const nuevoEstado =
+                this.checked;
+
+            const ok =
+                await cambiarAprobacion(
+                    presupuesto,
+                    nuevoEstado
+                );
+
+            if (!ok) {
+
+                this.checked =
+                    !nuevoEstado;
+
+                return;
+
+            }
+
+            textoEstado.textContent =
+                nuevoEstado
+                    ? "OK"
+                    : "X";
+
+            textoEstado.style.color =
+                nuevoEstado
+                    ? "#2e7d32"
+                    : "#c62828";
+
+            this.title =
+                nuevoEstado
+                    ? "Presupuesto aprobado"
+                    : "Presupuesto no aprobado";
+
+        }
+    );
+
+    contenedorEstado.appendChild(
+        inputEstado
+    );
+
+    contenedorEstado.appendChild(
+        textoEstado
+    );
+
+    columnaAcciones.appendChild(
+        contenedorEstado
+    );
+
+
 
 
     // ARMAR FILA

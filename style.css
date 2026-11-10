@@ -585,8 +585,46 @@ input[readonly] {
 
 
 /* =====================================
-   VER PRESUPUESTO
+   ESTADO DE APROBACION HISTORIAL
 ===================================== */
+
+.estado-aprobacion {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+
+.toggle-aprobacion {
+    width: 20px;
+
+    height: 20px;
+
+    cursor: pointer;
+
+    accent-color: #0080a3;
+}
+
+
+.texto-aprobacion {
+    font-size: 13px;
+
+    font-weight: 800;
+
+    min-width: 14px;
+
+    text-align: center;
+}
+
+
 
 .detalle-encabezado {
     margin-bottom: 30px;
