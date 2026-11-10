@@ -3353,6 +3353,29 @@ function inicializarModoEdicion() {
 
         const datos = presupuestoEnEdicion.datos || {};
 
+        console.log("datos completos:", datos);
+
+
+        // Si datos es string, parsear JSON
+
+        if (typeof datos === "string") {
+
+            try {
+
+                const parseado = JSON.parse(datos);
+
+                console.log("datos parseado desde string:", parseado);
+
+                Object.assign(datos, parseado);
+
+            } catch (e) {
+
+                console.error("Error parseando datos como JSON:", e);
+
+            }
+
+        }
+
 
         if (campoSenores && presupuestoEnEdicion.senores) {
 
@@ -3396,6 +3419,8 @@ function inicializarModoEdicion() {
         const hormigonesLista =
             datos.hormigones ||
             (datos.hormigon ? [datos.hormigon] : []);
+
+        console.log("hormigonesLista:", hormigonesLista);
 
         if (Array.isArray(hormigonesLista) && hormigonesLista.length > 0) {
 
@@ -3459,6 +3484,8 @@ function inicializarModoEdicion() {
         const aditivosLista =
             datos.aditivos ||
             (datos.aditivo ? [datos.aditivo] : []);
+
+        console.log("aditivosLista:", aditivosLista);
 
         if (Array.isArray(aditivosLista) && aditivosLista.length > 0) {
 
