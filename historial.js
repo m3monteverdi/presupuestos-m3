@@ -43,6 +43,26 @@ const resumenPorcNoAprobados =
         "resumenPorcNoAprobados"
     );
 
+const resumenMontoAprobados =
+    document.getElementById(
+        "resumenMontoAprobados"
+    );
+
+const resumenMontoNoAprobados =
+    document.getElementById(
+        "resumenMontoNoAprobados"
+    );
+
+const resumenPorcMontoAprobados =
+    document.getElementById(
+        "resumenPorcMontoAprobados"
+    );
+
+const resumenPorcMontoNoAprobados =
+    document.getElementById(
+        "resumenPorcMontoNoAprobados"
+    );
+
 
 let presupuestosGuardados = [];
 
@@ -814,6 +834,37 @@ function actualizarResumen() {
                 (noAprobados / total) * 100
             );
 
+    const montoTotal =
+        presupuestosGuardados.reduce(
+            (suma, p) => suma + (Number(p.total_final) || 0),
+            0
+        );
+
+    const montoAprobados =
+        presupuestosGuardados
+            .filter(p => Boolean(p.aprobado))
+            .reduce(
+                (suma, p) => suma + (Number(p.total_final) || 0),
+                0
+            );
+
+    const montoNoAprobados =
+        montoTotal - montoAprobados;
+
+    const porcMontoAprobados =
+        montoTotal === 0
+            ? 0
+            : Math.round(
+                (montoAprobados / montoTotal) * 100
+            );
+
+    const porcMontoNoAprobados =
+        montoTotal === 0
+            ? 0
+            : Math.round(
+                (montoNoAprobados / montoTotal) * 100
+            );
+
     if (resumenTotal) {
 
         resumenTotal.textContent =
@@ -846,6 +897,38 @@ function actualizarResumen() {
 
         resumenPorcNoAprobados.textContent =
             porcNoAprobados;
+
+    }
+
+    if (resumenMontoAprobados) {
+
+        resumenMontoAprobados.textContent =
+            formatoPesos(
+                montoAprobados
+            );
+
+    }
+
+    if (resumenMontoNoAprobados) {
+
+        resumenMontoNoAprobados.textContent =
+            formatoPesos(
+                montoNoAprobados
+            );
+
+    }
+
+    if (resumenPorcMontoAprobados) {
+
+        resumenPorcMontoAprobados.textContent =
+            porcMontoAprobados;
+
+    }
+
+    if (resumenPorcMontoNoAprobados) {
+
+        resumenPorcMontoNoAprobados.textContent =
+            porcMontoNoAprobados;
 
     }
 
