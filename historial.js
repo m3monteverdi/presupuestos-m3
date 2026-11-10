@@ -179,7 +179,8 @@ async function cargarHistorial() {
                 presupuesto_numero,
                 fecha,
                 total_final,
-                aprobado
+                aprobado,
+                datos
             `)
             .order(
                 "created_at",
