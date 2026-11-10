@@ -18,6 +18,32 @@ const buscador =
     );
 
 
+const resumenTotal =
+    document.getElementById(
+        "resumenTotal"
+    );
+
+const resumenAprobados =
+    document.getElementById(
+        "resumenAprobados"
+    );
+
+const resumenNoAprobados =
+    document.getElementById(
+        "resumenNoAprobados"
+    );
+
+const resumenPorcAprobados =
+    document.getElementById(
+        "resumenPorcAprobados"
+    );
+
+const resumenPorcNoAprobados =
+    document.getElementById(
+        "resumenPorcNoAprobados"
+    );
+
+
 let presupuestosGuardados = [];
 
 
@@ -191,6 +217,8 @@ async function cargarHistorial() {
 
     mostrarHistorial();
 
+    actualizarResumen();
+
 }
 
 
@@ -313,6 +341,21 @@ async function cambiarAprobacion(
         return false;
 
     }
+
+    const indice =
+        presupuestosGuardados.findIndex(
+            p => String(p.id) === String(presupuesto.id)
+        );
+
+    if (indice !== -1) {
+
+        presupuestosGuardados[
+            indice
+        ].aprobado = estado;
+
+    }
+
+    actualizarResumen();
 
     return true;
 
@@ -658,8 +701,74 @@ function crearFila(presupuesto) {
 
 
 // =====================================
-// MOSTRAR HISTORIAL
+// ACTUALIZAR RESUMEN
 // =====================================
+
+function actualizarResumen() {
+
+    const total =
+        presupuestosGuardados.length;
+
+    const aprobados =
+        presupuestosGuardados.filter(
+            p => Boolean(p.aprobado)
+        ).length;
+
+    const noAprobados =
+        total - aprobados;
+
+    const porcAprobados =
+        total === 0
+            ? 0
+            : Math.round(
+                (aprobados / total) * 100
+            );
+
+    const porcNoAprobados =
+        total === 0
+            ? 0
+            : Math.round(
+                (noAprobados / total) * 100
+            );
+
+    if (resumenTotal) {
+
+        resumenTotal.textContent =
+            total;
+
+    }
+
+    if (resumenAprobados) {
+
+        resumenAprobados.textContent =
+            aprobados;
+
+    }
+
+    if (resumenNoAprobados) {
+
+        resumenNoAprobados.textContent =
+            noAprobados;
+
+    }
+
+    if (resumenPorcAprobados) {
+
+        resumenPorcAprobados.textContent =
+            porcAprobados;
+
+    }
+
+    if (resumenPorcNoAprobados) {
+
+        resumenPorcNoAprobados.textContent =
+            porcNoAprobados;
+
+    }
+
+}
+
+
 
 function mostrarHistorial() {
 
@@ -736,6 +845,9 @@ function mostrarHistorial() {
 
         }
     );
+
+
+    actualizarResumen();
 
 }
 

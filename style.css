@@ -1207,3 +1207,49 @@ input[readonly] {
         grid-template-columns: 1fr;
     }
 }
+
+/* =====================================
+   RESUMEN HISTORIAL
+===================================== */
+
+.resumen-historial {
+    display: flex;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+
+    padding: 14px 16px;
+
+    background: #f3f7f9;
+
+    border: 1px solid #d8dfe4;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+}
+
+
+.resumen-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    white-space: nowrap;
+}
+
+
+.resumen-item strong {
+    color: #0080a3;
+
+    margin-right: 4px;
+}
