@@ -1137,6 +1137,12 @@ function restablecerPrecioAutomaticoFilaAditivo(
     delete fila.dataset
         .precioManualValor;
 
+    delete fila.dataset
+        .cantidadManual;
+
+    delete fila.dataset
+        .cantidadManualValor;
+
 }
 
 
@@ -1174,22 +1180,61 @@ function prepararFilaAditivoEditable(fila) {
 
     if (!fila) return;
 
-    const input =
+    const inputPrecio =
         fila.querySelector(
             ".precio-aditivo"
         );
 
-    if (!input) return;
+    if (!inputPrecio) return;
 
 
-    input.readOnly =
+    inputPrecio.readOnly =
         false;
 
-    input.inputMode =
+    inputPrecio.inputMode =
         "decimal";
 
-    input.autocomplete =
+    inputPrecio.autocomplete =
         "off";
+
+
+    const inputCantidad =
+        fila.querySelector(
+            ".cantidad-aditivo"
+        );
+
+    if (!inputCantidad) return;
+
+
+    inputCantidad.readOnly =
+        false;
+
+    inputCantidad.inputMode =
+        "decimal";
+
+    inputCantidad.autocomplete =
+        "off";
+
+
+    inputCantidad.addEventListener(
+        "input",
+        function () {
+
+            const valor =
+                Number(
+                    this.value
+                ) || 0;
+
+            fila.dataset.cantidadManual =
+                "true";
+
+            fila.dataset.cantidadManualValor =
+                String(valor);
+
+            calcularAditivos();
+
+        }
+    );
 
 }
 
@@ -1355,7 +1400,7 @@ function calcularFilaAditivo(
             : null;
 
 
-    const cantidadHormigonInput =
+    let cantidadHormigonInput =
         hormigon
             ? hormigon.querySelector(
                 ".cantidad-hormigon"
@@ -1363,12 +1408,25 @@ function calcularFilaAditivo(
             : null;
 
 
-    const cantidad =
+    const esManual =
+        fila.dataset.cantidadManual ===
+        "true";
+
+    const cantidadManualValor =
         Number(
-            cantidadHormigonInput
-                ? cantidadHormigonInput.value
-                : 0
-        ) || 0;
+            fila.dataset.cantidadManualValor || 0
+        );
+
+    const cantidad =
+        esManual
+            ? cantidadManualValor
+            : (
+                Number(
+                    cantidadHormigonInput
+                        ? cantidadHormigonInput.value
+                        : 0
+                ) || 0
+            );
 
 
     const precio =
@@ -1382,7 +1440,7 @@ function calcularFilaAditivo(
         precio;
 
 
-    if (cantidadInput) {
+    if (cantidadInput && !esManual) {
 
         cantidadInput.value =
             cantidad || "";
@@ -1517,7 +1575,9 @@ function crearFilaAditivo() {
             <input
                 type="text"
                 class="cantidad-aditivo"
-                readonly
+                inputmode="decimal"
+                autocomplete="off"
+                placeholder="0"
             >
 
         </div>
@@ -2592,18 +2652,16 @@ function obtenerAditivosParaGuardar() {
                     );
 
 
-                const cantidadInput =
-                    hormigon
-                        ? hormigon.querySelector(
-                            ".cantidad-hormigon"
-                        )
-                        : null;
+                const cantidadInputAditivo =
+                    fila.querySelector(
+                        ".cantidad-aditivo"
+                    );
 
 
                 const cantidad =
                     Number(
-                        cantidadInput
-                            ? cantidadInput.value
+                        cantidadInputAditivo
+                            ? cantidadInputAditivo.value
                             : 0
                     ) || 0;
 
