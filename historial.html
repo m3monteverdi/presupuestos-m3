@@ -7,7 +7,7 @@
 
     <title>Historial de presupuestos</title>
 
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body class="pagina-presupuesto">
@@ -53,7 +53,7 @@
                 <div class="resumen-item"><strong>Plata No aprobados:</strong> <span id="resumenMontoNoAprobados">$ 0,00</span> (<span id="resumenPorcMontoNoAprobados">0</span>%)</div>
             </div>
 
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:25px;">
+            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:25px; align-items:center;">
 
                 <button
                     type="button"
@@ -63,13 +63,9 @@
                     Descargar todos
                 </button>
 
-                <button
-                    type="button"
-                    id="eliminarTodos"
-                    class="boton-historial boton-eliminar"
-                >
-                    Eliminar todos
-                </button>
+                <span class="msj-descargar">
+                    POR FAVOR TODOS LOS PRIMEROS DÍAS HÁBILES DE CADA MES DESCARGAR TODOS LOS PRESUPUESTOS Y GUARDARLOS EN UNA CARPETA DE REGISTRO
+                </span>
 
             </div>
 
@@ -123,7 +119,7 @@
 
 <script src="pdf-configuracion.js?v=2"></script>
 
-<script src="historial.js?v=300"></script>
+<script src="historial.js?v=400"></script>
 
 </body>
 </html>

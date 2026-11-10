@@ -1844,13 +1844,3 @@ document
         "click",
         descargarTodosLosPresupuestos
     );
-
-
-document
-    .getElementById(
-        "eliminarTodos"
-    )
-    .addEventListener(
-        "click",
-        eliminarTodosLosPresupuestos
-    );
