@@ -3307,6 +3307,99 @@ let presupuestoEnEdicion = null;
 let numeroOriginal = null;
 
 
+// =====================================
+// DETECTAR LISTA DE HORMIGONES
+// Busca en todas las claves de datos un array de objetos
+// que tengan campos tipo hormigon (tipo, cantidad, precioM3)
+// =====================================
+
+function detectarListaHormigones(datos) {
+
+    if (!datos || typeof datos !== "object") {
+
+        return [];
+
+    }
+
+    for (const clave in datos) {
+
+        const valor = datos[clave];
+
+        if (Array.isArray(valor) && valor.length > 0) {
+
+            const primero = valor[0];
+
+            if (
+                primero &&
+                typeof primero === "object" &&
+                (
+                    primero.tipo ||
+                    primero.codigo ||
+                    primero.cantidad !== undefined ||
+                    primero.precioM3 !== undefined
+                )
+            ) {
+
+                console.log("Hormigones detectados en clave:", clave);
+
+                return valor;
+
+            }
+
+        }
+
+    }
+
+    return [];
+
+}
+
+
+// =====================================
+// DETECTAR LISTA DE ADITIVOS
+// Busca en todas las claves de datos un array de objetos
+// que tengan campos tipo aditivo (tipo, precioM3)
+// =====================================
+
+function detectarListaAditivos(datos) {
+
+    if (!datos || typeof datos !== "object") {
+
+        return [];
+
+    }
+
+    for (const clave in datos) {
+
+        const valor = datos[clave];
+
+        if (Array.isArray(valor) && valor.length > 0) {
+
+            const primero = valor[0];
+
+            if (
+                primero &&
+                typeof primero === "object" &&
+                primero.tipo &&
+                primero.precioM3 !== undefined &&
+                !primero.cantidad
+            ) {
+
+                console.log("Aditivos detectados en clave:", clave);
+
+                return valor;
+
+            }
+
+        }
+
+    }
+
+    return [];
+
+}
+
+
 function inicializarModoEdicion() {
 
     try {
@@ -3415,13 +3508,11 @@ function inicializarModoEdicion() {
         }
 
 
-        // Cargar filas de hormigones (soporta formato nuevo y antiguo)
+        // Cargar filas de hormigones (detectar automaticamente la clave)
 
-        const hormigonesLista =
-            datos.hormigones ||
-            (datos.hormigon ? [datos.hormigon] : []);
+        const hormigonesLista = detectarListaHormigones(datos);
 
-        console.log("hormigonesLista:", hormigonesLista);
+        console.log("hormigonesLista detectada:", hormigonesLista);
 
         if (Array.isArray(hormigonesLista) && hormigonesLista.length > 0) {
 
@@ -3480,13 +3571,11 @@ function inicializarModoEdicion() {
         }
 
 
-        // Cargar filas de aditivos (soporta formato nuevo y antiguo)
+        // Cargar filas de aditivos (detectar automaticamente la clave)
 
-        const aditivosLista =
-            datos.aditivos ||
-            (datos.aditivo ? [datos.aditivo] : []);
+        const aditivosLista = detectarListaAditivos(datos);
 
-        console.log("aditivosLista:", aditivosLista);
+        console.log("aditivosLista detectada:", aditivosLista);
 
         if (Array.isArray(aditivosLista) && aditivosLista.length > 0) {
 
