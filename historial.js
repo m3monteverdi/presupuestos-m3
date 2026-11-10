@@ -504,6 +504,42 @@ function crearFila(presupuesto) {
     );
 
 
+    // BOTON EDITAR
+
+    const botonEditar =
+        document.createElement("button");
+
+    botonEditar.textContent =
+        "Editar";
+
+    botonEditar.className =
+        "boton-historial boton-editar";
+
+    botonEditar.addEventListener(
+        "click",
+        function () {
+
+            localStorage.setItem(
+                "m3_presupuesto_editar",
+                JSON.stringify(
+                    presupuesto
+                )
+            );
+
+            window.location.href =
+                presupuesto.tipo_planilla ===
+                "PresupuestosM3+IVA"
+                    ? "presupuesto-iva.html"
+                    : "presupuesto.html";
+
+        }
+    );
+
+    columnaAcciones.appendChild(
+        botonEditar
+    );
+
+
     // ESTADO DE APROBACION
 
     const contenedorEstado =

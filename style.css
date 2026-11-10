@@ -584,6 +584,18 @@ input[readonly] {
 }
 
 
+.boton-editar {
+    background: #f5a623;
+
+    color: #fff;
+}
+
+
+.boton-editar:hover {
+    background: #e0921d;
+}
+
+
 /* =====================================
    ESTADO DE APROBACION HISTORIAL
 ===================================== */

@@ -2701,6 +2701,43 @@ async function guardarPresupuesto() {
     }
 
 
+    if (
+        presupuestoEnEdicion
+    ) {
+
+        const campoNumero = $("presupuestoNumero");
+
+        const nuevoNumero =
+            campoNumero
+                ? campoNumero.value.trim()
+                : "";
+
+        if (!nuevoNumero) {
+
+            alert(
+                "Ingresá un número de presupuesto."
+            );
+
+            return;
+
+        }
+
+        if (
+            String(nuevoNumero) ===
+            String(numeroOriginal)
+        ) {
+
+            alert(
+                "El número de presupuesto debe ser diferente al original."
+            );
+
+            return;
+
+        }
+
+    }
+
+
     botonGuardarPresupuesto.disabled =
         true;
 
@@ -3252,5 +3289,217 @@ document.addEventListener(
 
         cargarPreciosDesdeSupabase();
 
+
+        inicializarModoEdicion();
+
     }
 );
+
+
+// =====================================
+// MODO EDICION DESDE HISTORIAL
+// =====================================
+
+let presupuestoEnEdicion = null;
+
+let numeroOriginal = null;
+
+
+function inicializarModoEdicion() {
+
+    const raw = localStorage.getItem("m3_presupuesto_editar");
+
+    if (!raw) {
+
+        return;
+
+    }
+
+    try {
+
+        presupuestoEnEdicion = JSON.parse(raw);
+
+    } catch (e) {
+
+        return;
+
+    }
+
+    if (!presupuestoEnEdicion) {
+
+        return;
+
+    }
+
+
+    numeroOriginal = String(
+        presupuestoEnEdicion.presupuesto_numero || ""
+    );
+
+
+    const campoSenores = $("senores");
+
+    const campoFecha = $("fecha");
+
+    const campoAtencion = $("atencion");
+
+    const campoDestino = $("destino");
+
+    const campoNumero = $("presupuestoNumero");
+
+    const campoCuit = $("cuit");
+
+
+    const datos = presupuestoEnEdicion.datos || {};
+
+
+    if (campoSenores && presupuestoEnEdicion.senores) {
+
+        campoSenores.value = presupuestoEnEdicion.senores;
+
+    }
+
+    if (campoFecha && presupuestoEnEdicion.fecha) {
+
+        campoFecha.value = presupuestoEnEdicion.fecha;
+
+    }
+
+    if (campoAtencion && datos.atencion) {
+
+        campoAtencion.value = datos.atencion;
+
+    }
+
+    if (campoDestino && datos.destino) {
+
+        campoDestino.value = datos.destino;
+
+    }
+
+    if (campoCuit && datos.cuit) {
+
+        campoCuit.value = datos.cuit;
+
+    }
+
+    if (campoNumero) {
+
+        campoNumero.value = numeroOriginal;
+
+    }
+
+
+    // Cargar filas de hormigones
+
+    if (datos.hormigones && Array.isArray(datos.hormigones)) {
+
+        const contenedor = $("filasHormigon");
+
+        const filasExistentes = contenedor.querySelectorAll(".fila-hormigon-dinamica");
+
+        filasExistentes.forEach(fila => fila.remove());
+
+        datos.hormigones.forEach((h, idx) => {
+
+            const fila = crearFilaHormigon();
+
+            contenedor.appendChild(fila);
+
+            const tipoSelect = fila.querySelector(".tipo-hormigon");
+
+            const cantidadInput = fila.querySelector(".cantidad-hormigon");
+
+            const distanciaInput = fila.querySelector(".distancia-hormigon");
+
+            const precioInput = fila.querySelector(".precio-hormigon");
+
+            if (tipoSelect) {
+
+                tipoSelect.value = h.codigo || h.tipo || "";
+
+            }
+
+            if (cantidadInput) {
+
+                cantidadInput.value = h.cantidad || 0;
+
+            }
+
+            if (distanciaInput) {
+
+                distanciaInput.value = h.distancia || 0;
+
+            }
+
+            if (precioInput && h.precioM3) {
+
+                fila.dataset.precioManual = "true";
+
+                fila.dataset.precioManualValor = String(h.precioM3);
+
+                precioInput.value = formatoPesos(h.precioM3);
+
+            }
+
+            calcularFilaHormigon(fila);
+
+        });
+
+    }
+
+
+    // Cargar filas de aditivos
+
+    if (datos.aditivos && Array.isArray(datos.aditivos)) {
+
+        const contenedor = $("filasAditivo");
+
+        const filasExistentes = contenedor.querySelectorAll(".fila-aditivo-dinamica");
+
+        filasExistentes.forEach(fila => fila.remove());
+
+        datos.aditivos.forEach((a, idx) => {
+
+            const fila = crearFilaAditivo();
+
+            contenedor.appendChild(fila);
+
+            const selectHormigon = fila.querySelector(".hormigon-aditivo");
+
+            const selectAditivo = fila.querySelector(".tipo-aditivo");
+
+            const precioInput = fila.querySelector(".precio-aditivo");
+
+            if (selectAditivo && a.tipo) {
+
+                selectAditivo.value = a.tipo;
+
+            }
+
+            if (precioInput && a.precioM3) {
+
+                fila.dataset.precioManual = "true";
+
+                fila.dataset.precioManualValor = String(a.precioM3);
+
+                precioInput.value = formatoPesos(a.precioM3);
+
+            }
+
+            calcularFilaAditivo(fila);
+
+        });
+
+    }
+
+
+    actualizarOpcionesHormigonAditivos();
+
+    recalcularTodo();
+
+    localStorage.removeItem("m3_presupuesto_editar");
+
+    alert("Modo edición activado. Cambiá el número de presupuesto antes de guardar.");
+
+}
