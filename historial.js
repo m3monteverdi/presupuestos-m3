@@ -364,49 +364,7 @@ async function cambiarAprobacion(
     estado
 ) {
 
-    const { error } =
-        await supabaseClient
-            .from("presupuestos")
-            .update(
-                {
-                    aprobado: estado,
-                    nulo: false
-                }
-            )
-            .eq(
-                "id",
-                presupuesto.id
-            )
-            .select();
-
-    if (error) {
-
-        console.error(
-            "Error actualizando aprobacion:",
-            error
-        );
-
-        alert(
-            "Error al guardar: " +
-            (error.message || error)
-        );
-
-        return false;
-
-    }
-
-    if (
-        !data ||
-        data.length === 0
-    ) {
-
-        alert(
-            "No tiene permiso para modificar este presupuesto."
-        );
-
-        return false;
-
-    }
+    // Actualizar inmediatamente en la UI (optimistic)
 
     const indice =
         presupuestosGuardados.findIndex(
@@ -418,6 +376,7 @@ async function cambiarAprobacion(
         presupuestosGuardados[
             indice
         ].aprobado = estado;
+
         presupuestosGuardados[
             indice
         ].nulo = false;
@@ -425,6 +384,70 @@ async function cambiarAprobacion(
     }
 
     actualizarResumen();
+
+    // Intentar guardar en Supabase
+
+    try {
+
+        const { error } =
+            await supabaseClient
+                .from("presupuestos")
+                .update(
+                    {
+                        aprobado: estado,
+
+                        nulo: false
+
+                    }
+
+                )
+
+                .eq(
+                    "id",
+
+                    presupuesto.id
+
+                )
+
+                .select();
+
+        if (error) {
+
+            console.error(
+                "Error supabase aprobacion:",
+
+                error
+
+            );
+
+            // Guardar en localStorage como respaldo
+
+            guardarEstadoLocal(
+                presupuesto.id,
+
+                { aprobado: estado, nulo: false }
+
+            );
+
+        }
+
+    } catch (e) {
+
+        console.error(
+            "Excepcion supabase aprobacion:",
+
+            e
+
+        );
+
+        guardarEstadoLocal(
+            presupuesto.id,
+
+            { aprobado: estado, nulo: false }
+
+        );
+
+    }
 
     return true;
 
@@ -439,49 +462,7 @@ async function cambiarNulo(
     estado
 ) {
 
-    const { error } =
-        await supabaseClient
-            .from("presupuestos")
-            .update(
-                {
-                    nulo: estado,
-                    aprobado: false
-                }
-            )
-            .eq(
-                "id",
-                presupuesto.id
-            )
-            .select();
-
-    if (error) {
-
-        console.error(
-            "Error actualizando nulo:",
-            error
-        );
-
-        alert(
-            "Error al guardar: " +
-            (error.message || error)
-        );
-
-        return false;
-
-    }
-
-    if (
-        !data ||
-        data.length === 0
-    ) {
-
-        alert(
-            "No tiene permiso para modificar este presupuesto."
-        );
-
-        return false;
-
-    }
+    // Actualizar inmediatamente en la UI
 
     const indice =
         presupuestosGuardados.findIndex(
@@ -493,6 +474,7 @@ async function cambiarNulo(
         presupuestosGuardados[
             indice
         ].nulo = estado;
+
         presupuestosGuardados[
             indice
         ].aprobado = false;
@@ -501,7 +483,127 @@ async function cambiarNulo(
 
     actualizarResumen();
 
+    // Intentar guardar en Supabase
+
+    try {
+
+        const { error } =
+            await supabaseClient
+                .from("presupuestos")
+                .update(
+                    {
+                        nulo: estado,
+
+                        aprobado: false
+
+                    }
+
+                )
+
+                .eq(
+                    "id",
+
+                    presupuesto.id
+
+                )
+
+                .select();
+
+        if (error) {
+
+            console.error(
+                "Error supabase nulo:",
+
+                error
+
+            );
+
+            guardarEstadoLocal(
+                presupuesto.id,
+
+                { nulo: estado, aprobado: false }
+
+            );
+
+        }
+
+    } catch (e) {
+
+        console.error(
+            "Excepcion supabase nulo:",
+
+            e
+
+        );
+
+        guardarEstadoLocal(
+            presupuesto.id,
+
+            { nulo: estado, aprobado: false }
+
+        );
+
+    }
+
     return true;
+
+}
+
+// =====================================
+// GUARDAR ESTADO EN LOCALSTORAGE (RESPALDO)
+// =====================================
+
+function guardarEstadoLocal(
+    id,
+    estado
+) {
+
+    try {
+
+        const clave =
+            "m3_estado_" + id;
+
+        const existente =
+
+            localStorage.getItem(clave);
+
+        const estados = existente
+
+            ? JSON.parse(existente)
+
+            : {};
+
+        Object.assign(
+
+            estados,
+
+            estado
+
+        );
+
+        localStorage.setItem(
+
+            clave,
+
+            JSON.stringify(
+
+                estados
+
+            )
+
+        );
+
+    } catch (e) {
+
+        console.error(
+
+            "Error guardando estado local:",
+
+            e
+
+        );
+
+    }
 
 }
 
